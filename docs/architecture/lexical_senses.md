@@ -24,4 +24,6 @@ The canonical identity resolver creates a sense UUID from its owner UUID, part o
 
 ## Browser contract
 
-The browser export projects ordered sense links onto a word and exports the sense objects themselves. A page can therefore show several meanings while preserving direct routes to each sense. The browser may use the first evidenced English gloss for a compact label, but it must not collapse senses back into a single canonical definition.
+The browser export projects ordered sense links onto a word and exports the sense objects themselves. It also projects `sentence_source_alignments` onto each sense as `sense_examples`, so a meaning panel can show only source-aligned examples.
+
+The default learning surface is an owner-word shell: the lemma remains the visual anchor, while one selected sense expands in place. A direct route to a `lexical_sense` resolves to its owner word with that canonical sense selected. This is presentation state, not an identity merge: the browser may use the first evidenced English gloss for a compact label, but it must not collapse senses back into one canonical definition.

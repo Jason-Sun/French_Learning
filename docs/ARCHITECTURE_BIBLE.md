@@ -46,7 +46,7 @@ Grammar is first-class graph knowledge, not per-sentence AI output. `grammar_con
 
 Relationships are directional and typed. Examples: `has_sense`, `inflected_form_of`, `belongs_to_conjugation`, `member_of_paradigm`, `contains`, `realizes_tense`, `explains`, `illustrates`, and `has_pronunciation`.
 
-Lexical meaning is graph-native. A `word` links to ordered `lexical_sense` objects through `has_sense`; each sense owns independently evidenced, predicate-based gloss facts. A browser may project a compact gloss, but it must not collapse distinct senses into one canonical definition.
+Lexical meaning is graph-native. A `word` links to ordered `lexical_sense` objects through `has_sense`; each sense owns independently evidenced, predicate-based gloss facts. A browser may project a compact gloss, but it must not collapse distinct senses into one canonical definition. The primary learning surface preserves the owner word as the visual anchor and renders a selected sense as contextual expansion state; direct sense links resolve to that owner shell. Source-aligned examples are projected only onto their matching sense.
 
 ## Browser and search architecture
 

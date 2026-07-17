@@ -61,6 +61,20 @@ for row in db.execute('SELECT source_object_id, target_object_id, relationship_t
     relationships.setdefault(row['source_object_id'], []).append({'type': row['relationship_type_code'], 'target': row['target_object_id']})
     if row['relationship_type_code'] == 'illustrates':
         examples.setdefault(row['target_object_id'], []).append(row['source_object_id'])
+sense_examples = {}
+try:
+    for row in db.execute(
+        """SELECT sense.language_object_id AS sense_object_id,
+                  alignment.sentence_object_id
+           FROM sentence_source_alignments AS alignment
+           JOIN canonical_objects AS sense
+             ON sense.canonical_id=alignment.target_canonical_id
+           ORDER BY sense.language_object_id, alignment.sentence_object_id"""
+    ):
+        sense_examples.setdefault(row['sense_object_id'], []).append(row['sentence_object_id'])
+except sqlite3.OperationalError:
+    # Databases from before source-backed sentence alignment remain exportable.
+    pass
 lexical_senses = {}
 try:
     for row in db.execute(
@@ -106,7 +120,7 @@ if paradigm_ids:
     ))
 objects = []
 for row in [*base_rows, *extra_rows]:
-    item = dict(row); item['canonical_id'] = canonical_ids.get(row['id']); item['facts'] = canonical_facts.get(item['canonical_id'], []); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['senses'] = lexical_senses.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
+    item = dict(row); item['canonical_id'] = canonical_ids.get(row['id']); item['facts'] = canonical_facts.get(item['canonical_id'], []); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['senses'] = lexical_senses.get(row['id'], []); item['sense_examples'] = sense_examples.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
     objects.append(item)
 payload = {'version': 4, 'objects': objects}
 args.output.parent.mkdir(parents=True, exist_ok=True)

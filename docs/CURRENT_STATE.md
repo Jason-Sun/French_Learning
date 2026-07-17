@@ -20,6 +20,7 @@
 - Kaikki's hash-locked English Wiktionary extraction provides 3,301 first-class lexical-sense objects and 3,383 independently evidenced English-gloss facts for 1,222 of the 1,247 A1 words; the 25 unmatched A1 entries are explicit coverage gaps, not generated content.
 - Imported Kaikki `has_sense` links and Lexique `has_pronunciation` links now retain their own source records, alongside the evidence held by their facts or pronunciation representations.
 - The browser export projects ordered lexical senses and renders them on the existing Word Learning page without changing the core navigation model.
+- Multi-sense words now use a progressive in-place Meaning explorer: the lemma remains the anchor, one source-backed sense expands at a time, only the first four senses appear initially, and a selected panel renders its source-aligned examples. Direct sense routes preserve canonical identity while opening the owner-word context.
 - New canonical graph relationship imports now support independent source evidence; legacy edges are retained as compatibility data and will be audited separately.
 - The CC-BY Tex grammar index now supplies an evidenced A1 grammar network of eight topics, twelve constructions/patterns, and 31 typed graph links.
 - Kaikki now contributes 1,903 attributable translated example-sentence objects, 1,911 evidenced `illustrates` links, and 205 source-backed synonym/antonym links for the A1 graph.

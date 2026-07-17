@@ -120,3 +120,14 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Alternatives:** Encode components in JSON; rely on `contains` edge order; store only the display string.
 
 **Long-term impact:** Multi-word objects can support reliable navigation, matching, source comparison, and future sentence analysis without special cases or schema redesign.
+
+## ADR-012 — Lexical senses render in their owner-word context
+
+**Date:** 2026-07-17
+**Decision:** Preserve each lexical sense as a canonical Language Object, but render it as selected expansion state inside its owner word’s learning surface. A direct sense route resolves to the owner word with that sense selected.
+
+**Reason:** A learner exploring several meanings is still learning one word. Replacing the lemma with a long sense label fragments the learning flow and wastes the strongest visual anchor.
+
+**Alternatives:** A full generic page for every sense; a heavy tab route; flatten senses back into one word-level definition.
+
+**Long-term impact:** Sense identity, saving, examples, and graph traversal remain independent, while the browser presents a calmer, scalable learning experience. Source-aligned examples can appear on the matching sense without borrowing unrelated word-level context.
