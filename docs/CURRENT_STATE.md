@@ -20,6 +20,7 @@
 - Kaikki's hash-locked English Wiktionary extraction provides 3,301 first-class lexical-sense objects and 3,383 independently evidenced English-gloss facts for 1,222 of the 1,247 A1 words; the 25 unmatched A1 entries are explicit coverage gaps, not generated content.
 - The browser export projects ordered lexical senses and renders them on the existing Word Learning page without changing the core navigation model.
 - New canonical graph relationship imports now support independent source evidence; legacy edges are retained as compatibility data and will be audited separately.
+- The CC-BY Tex grammar index now supplies an evidenced A1 grammar network of eight topics, twelve constructions/patterns, and 31 typed graph links.
 - First-class Grammar Language Object taxonomy, semantic grammar relationships, and generic grammar-object analysis matches are established; no new grammar inventory has been imported.
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.

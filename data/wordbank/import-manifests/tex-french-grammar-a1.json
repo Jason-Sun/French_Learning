@@ -1,0 +1,20 @@
+{
+  "catalog": {
+    "id": "tex-french-grammar",
+    "name": "Tex's French Grammar",
+    "homepage_url": "https://laits.utexas.edu/tex/gr/",
+    "license": "CC BY",
+    "attribution_text": "Tex's French Grammar by Carl Blyth and Karen Kelton, COERLL, University of Texas at Austin, CC BY."
+  },
+  "release": {
+    "id": "tex-french-grammar-index-2026-07-17",
+    "label": "Grammar index retrieved 2026-07-17",
+    "artifact_uri": "https://laits.utexas.edu/tex/gr/",
+    "sha256": "1cdda433b633bd56090995acfac42626c60338d5376053217333f0e59a765fb7",
+    "scope": "CC-BY grammar-index taxonomy used for reviewed A1 canonical grammar objects and relationships."
+  },
+  "import": {
+    "adapter": "tex_french_grammar_a1",
+    "adapter_version": "1"
+  }
+}

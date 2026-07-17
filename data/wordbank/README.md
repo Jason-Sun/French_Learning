@@ -142,6 +142,19 @@ python3 scripts/import_kaikki_a1_senses.py \
   --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-senses.json
 ```
 
+### Source-backed Tex A1 grammar network
+
+The Tex's French Grammar CC-BY index is frozen as a source release for a reviewed A1 grammar taxonomy. The catalog contains only source-indexed topics, constructions, and component links; every imported relationship receives `relationship_evidence`.
+
+```bash
+python3 scripts/import_tex_a1_grammar.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/tex-grammar-index.html \
+  --manifest data/wordbank/import-manifests/tex-french-grammar-a1.json \
+  --catalog data/wordbank/tex-french-grammar-a1.json \
+  --report data/wordbank/import-reports/tex-french-grammar-a1.json
+```
+
 ### Source-backed Lexique A1 pronunciation representations
 
 The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. It does not convert the code to IPA and does not modify the browser's verified-IPA projection.

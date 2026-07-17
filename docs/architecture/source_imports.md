@@ -47,3 +47,7 @@ The pronunciation report accounts for every eligible source row as a mapped targ
 Kaikki's French dictionary is a structured extraction from English Wiktionary. The frozen A1 sense release and its checksum live in `kaikki-enwiktionary-french-a1-senses.json`; it carries the upstream CC BY-SA/GFDL attribution obligations. It is used for English glosses, not as a CEFR classifier.
 
 The adapter matches a source entry only when its French headword and mapped part of speech unambiguously identify an existing FLELex A1 word. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
+
+## Tex A1 grammar baseline
+
+Tex's French Grammar is a CC-BY educational grammar published by COERLL. Its frozen grammar-index artifact supplies a reviewed, bounded A1 topology: grammar topics, indexed constructions, and directly named components. The importer creates first-class Grammar Objects and records evidence for every new topic, component, and relationship. It does not import unbounded prose explanations as canonical facts.

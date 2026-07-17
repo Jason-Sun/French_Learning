@@ -1,0 +1,47 @@
+{
+  "topics": [
+    {"key":"nouns","label":"Nouns","category":"grammar_topic","source_key":"no1.html","source_title":"nouns: introduction"},
+    {"key":"determiners","label":"Determiners","category":"grammar_topic","source_key":"det1.html","source_title":"determiners: introduction"},
+    {"key":"adjectives","label":"Adjectives","category":"grammar_topic","source_key":"adj1.html","source_title":"adjectives: introduction"},
+    {"key":"pronouns","label":"Pronouns","category":"grammar_topic","source_key":"pro1.html","source_title":"pronouns: introduction"},
+    {"key":"negation-topic","label":"Negation","category":"grammar_topic","source_key":"neg1.html","source_title":"negation: introduction"},
+    {"key":"prepositions","label":"Prepositions","category":"grammar_topic","source_key":"pre1.html","source_title":"prepositions: introduction"},
+    {"key":"interrogation-topic","label":"Interrogatives","category":"grammar_topic","source_key":"int1.html","source_title":"interrogatives: introduction"},
+    {"key":"tense-aspect-mood","label":"Tense, aspect, mood, and voice","category":"grammar_topic","source_key":"ta1.html","source_title":"tense/aspect/mood/voice: introduction"}
+  ],
+  "objects": [
+    {"key":"noun-number","label":"Noun number","type":"grammar_construction","category":"agreement","cefr":"A1","topic":"nouns","source_key":"no2.html","source_title":"number: singular and plural"},
+    {"key":"noun-gender","label":"Noun gender","type":"grammar_construction","category":"agreement","cefr":"A1","topic":"nouns","source_key":"no3.html","source_title":"gender: masculine and feminine"},
+    {"key":"definite-articles","label":"Definite articles","type":"grammar_construction","category":"determiner","cefr":"A1","topic":"determiners","source_key":"det2.html","source_title":"definite articles"},
+    {"key":"indefinite-articles","label":"Indefinite articles","type":"grammar_construction","category":"determiner","cefr":"A1","topic":"determiners","source_key":"det4.html","source_title":"indefinite articles"},
+    {"key":"possessive-determiners","label":"Possessive determiners","type":"grammar_construction","category":"determiner","cefr":"A1","topic":"determiners","source_key":"det6.html","source_title":"possessive determiners: mon, ma, mes"},
+    {"key":"demonstrative-determiners","label":"Demonstrative determiners","type":"grammar_construction","category":"determiner","cefr":"A1","topic":"determiners","source_key":"det7.html","source_title":"demonstrative determiners: ce, cet, cette, ces"},
+    {"key":"adjective-agreement-placement","label":"Adjective agreement and placement","type":"grammar_construction","category":"agreement","cefr":"A1","topic":"adjectives","source_key":"adj2.html","source_title":"adjectives: formation and placement"},
+    {"key":"subject-pronouns","label":"Subject pronouns","type":"grammar_construction","category":"pronoun_system","cefr":"A1","topic":"pronouns","source_key":"pro2.html","source_title":"subject pronouns: je, tu, il, elle, on, nous, vous, ils, elles"},
+    {"key":"preposition-article-contractions","label":"Preposition and article contractions","type":"grammar_construction","category":"orthography","cefr":"A1","topic":"prepositions","source_key":"pre2.html","source_title":"contractions of à and de with definite article"},
+    {"key":"basic-negation-pattern","label":"ne … pas","type":"sentence_pattern","category":"negation","cefr":"A1","topic":"negation-topic","source_key":"neg2.html","source_title":"basic negation: ne … pas"},
+    {"key":"futur-proche-pattern","label":"aller + infinitive","type":"sentence_pattern","category":"verb_construction","cefr":"A1","topic":"tense-aspect-mood","source_key":"taf1.html","source_title":"futur proche: aller + infinitive"},
+    {"key":"yes-no-questions","label":"Yes/no questions","type":"grammar_construction","category":"interrogation","cefr":"A1","topic":"interrogation-topic","source_key":"int2.html","source_title":"yes/no questions: est-ce que, n'est-ce pas"}
+  ],
+  "links": [
+    {"source":"basic-negation-pattern","target_id":"fr:grammar:negation","type":"expresses","source_key":"neg2.html"},
+    {"source":"basic-negation-pattern","target_id":"fr:word:ne:adv","type":"contains","source_key":"neg2.html"},
+    {"source":"basic-negation-pattern","target_id":"fr:word:pas:adv","type":"contains","source_key":"neg2.html"},
+    {"source":"futur-proche-pattern","target_id":"fr:grammar:futur_proche","type":"expresses","source_key":"taf1.html"},
+    {"source":"futur-proche-pattern","target_id":"fr:tense:periphrastic_futur_proche","type":"expresses","source_key":"taf1.html"},
+    {"source":"futur-proche-pattern","target_id":"fr:word:aller:ver","type":"contains","source_key":"taf1.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:je:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:tu:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:il:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:elle:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:on:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:nous:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"subject-pronouns","target_id":"fr:word:vous:pro","type":"contains","source_key":"pro2.html"},
+    {"source":"definite-articles","target_id":"fr:word:le:det:art","type":"contains","source_key":"det2.html"},
+    {"source":"indefinite-articles","target_id":"fr:word:un:det:art","type":"contains","source_key":"det4.html"},
+    {"source":"possessive-determiners","target_id":"fr:word:mon:det:pos","type":"contains","source_key":"det6.html"},
+    {"source":"demonstrative-determiners","target_id":"fr:word:ce:pro","type":"contains","source_key":"det7.html"},
+    {"source":"preposition-article-contractions","target_id":"fr:word:au:prp:det","type":"contains","source_key":"pre2.html"},
+    {"source":"preposition-article-contractions","target_id":"fr:word:du:prp:det","type":"contains","source_key":"pre2.html"}
+  ]
+}

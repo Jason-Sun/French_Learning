@@ -28,6 +28,10 @@ Grammar objects use ordinary typed graph relationships. Important edges include:
 
 Long learner-facing explanations are revisioned Learning Resources. Atomic canonical claims remain predicate facts with evidence.
 
+## A1 source baseline
+
+The first A1 grammar network is sourced from the frozen CC-BY Tex's French Grammar index. It covers source-indexed noun, determiner, adjective, pronoun, negation, preposition, interrogative, and tense/aspect/mood topics, with selected construction patterns and components. It is intentionally a navigational foundation, not an assertion of exhaustive French grammar coverage.
+
 ## Sentence gateway contract
 
 Future sentence analysis records `grammar_object` matches against canonical UUIDs, alongside lemmas, inflected forms, contractions, and expressions. It retains evidence spans and confidence but cannot create canonical objects, facts, or relationships.
