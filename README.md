@@ -21,7 +21,11 @@ Then visit `http://localhost:8000`.
 
 ## Hackathon status
 
-This runnable prototype demonstrates the core product loop: Learn → Explore → Save → Review. The next implementation increment adds a server-side GPT-5.6 analysis layer for arbitrary French input while keeping structured lexical facts and API credentials outside the browser.
+This runnable prototype demonstrates the core product loop: Learn → Explore → Save → Review, plus a first local Sentence Intelligence workflow. Multi-word input is analyzed in the browser against the exported Language Object Graph: known forms, expressions, grammar signals, graph relationships, and learning opportunities are rendered without an AI or API call.
+
+## Local sentence exploration
+
+Serve the project as a static site, then enter a sentence such as `Je suis allé à Paris.` or `Il a besoin de temps.` The browser-side Sentence Intelligence adapter produces an analysis instance from the local graph and keeps every recognized word, expression, and grammar object clickable.
 
 ## Built with Codex and GPT-5.6
 
