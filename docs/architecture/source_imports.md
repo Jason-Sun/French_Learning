@@ -12,7 +12,7 @@ source catalog → frozen release → source records → import run
       → fact evidence → browser export
 ```
 
-`source_catalogs` stores provider and licence policy. `source_releases` freezes a version, artifact location, checksum, and scope. `source_records` preserves a source-native key. `import_runs` records reproducibility. Each eligible record must be mapped to a canonical object or receive an explicit exclusion reason.
+`source_catalogs` stores provider and licence policy. `source_releases` freezes a version, artifact location, checksum, and scope. `source_records` preserves a source-native key. `import_runs` records reproducibility. Each eligible record must be mapped to a canonical object or receive an explicit exclusion reason. Canonical facts use `fact_evidence`; new canonical relationships use `relationship_evidence`.
 
 ## Identity contract
 

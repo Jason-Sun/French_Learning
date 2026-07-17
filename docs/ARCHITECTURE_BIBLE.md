@@ -36,7 +36,7 @@ Canonical linguistic assertions are modeled separately as **Language Object → 
 
 Every fact is predicate-based: **Language Object → predicate → typed value → Evidence**. The predicate registry owns value type and query semantics, while a fact lifecycle belongs to the individual claim. Facts never become anonymous JSON values. Conflicting source claims remain separate, evidenced facts until an explicit editorial policy selects or supersedes a claim.
 
-Typed `relationships` provide graph navigation. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
+Typed `relationships` provide graph navigation. New canonical relationship imports carry independent `relationship_evidence`, so an edge can be supported, disputed, or superseded without changing either endpoint identity. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
 
 Important object types include `word`, `lexical_sense`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
 

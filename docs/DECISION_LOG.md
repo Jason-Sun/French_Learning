@@ -60,6 +60,16 @@ This is an append-only record. Amend historical entries only to correct factual 
 
 **Long-term impact:** Multiple lexical sources can map records to stable senses, senses can connect to examples, expressions, and relationships, and the browser can present ordered meanings without owning canonical data.
 
+## ADR-008 — Canonical graph edges require independent evidence
+
+**Decision:** Add `relationship_evidence` for new canonical relationship imports, separate from relationship identity and endpoint objects.
+
+**Reason:** A relationship is a linguistic claim in its own right. Its source support must be queryable and revisable just as a predicate fact’s support is.
+
+**Alternatives:** Treat relationship provenance as a column on the edge; infer evidence from either endpoint; store it as importer-only metadata.
+
+**Long-term impact:** Grammar, lexical relations, expressions, and sentence links can retain complete provenance and future conflicts can be represented without graph redesign.
+
 ## ADR-007 — Documentation as a production boundary
 
 **Date:** 2026-07-17  
