@@ -14,7 +14,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-The next planned architecture milestone is **Review and Collections**. It begins only after the learner-state, collection, and offline-first scheduling contracts have been reviewed and approved.
+**Production lexical foundation:** establish source-independent canonical identity, fact/evidence provenance, the Learning Layer, and reproducible A1 source imports before enriching or expanding learner-facing content.
 
 ## Next capability themes
 

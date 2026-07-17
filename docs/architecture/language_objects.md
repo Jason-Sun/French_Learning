@@ -6,7 +6,8 @@ Provide one stable, reusable identity for every durable learnable French element
 
 ## Core contract
 
-- `language_objects` owns identity and canonical/display metadata.
+- The canonical identity registry owns permanent UUIDv5 identities. Current `language_objects.id` remains a browser-compatible runtime key during migration; external links and future learner state use `canonical_id`.
+- Canonical knowledge follows **Object → Fact → Evidence**. Objects own identity, atomic facts own claims, and evidence links each claim to one or more immutable source records.
 - `relationships` owns directed semantic and navigational links.
 - Specialized tables own structured facts without fragmenting identity.
 - The browser uses stable IDs; it may not create a second canonical representation of linguistic knowledge.

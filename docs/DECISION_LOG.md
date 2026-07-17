@@ -57,3 +57,11 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Reason:** Future contributors and AI agents must be able to work from explicit decisions rather than conversation history.  
 **Alternatives:** README-only notes; relying on commits and chat logs.  
 **Long-term impact:** Architectural review becomes repeatable across years and contributors.
+
+## ADR-008 — Source-independent canonical identities, facts, and Learning Layer
+
+**Date:** 2026-07-17
+**Decision:** Canonical Language Objects use permanent source-independent UUID identities. Linguistic knowledge is represented as Object → Fact → Evidence, and explanations live in a general Learning Layer rather than an AI-specific layer.
+**Reason:** Imports must be replaceable without breaking saved objects, APIs, or learner history; individual facts require independent provenance and conflict handling; learning material can be AI-, teacher-, human-, or source-authored without becoming canonical truth.
+**Alternatives:** Importer-generated object IDs; object-level source attribution only; an AI-only enrichment table.
+**Long-term impact:** The graph can evolve across sources and content authors while preserving durable identity and provenance.

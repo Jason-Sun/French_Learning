@@ -16,6 +16,11 @@ def search_key(value: str) -> str:
 
 
 db = sqlite3.connect(args.source); db.row_factory = sqlite3.Row
+canonical_ids = {row['language_object_id']: row['canonical_id'] for row in db.execute('SELECT language_object_id,canonical_id FROM canonical_objects')} if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='canonical_objects'").fetchone() else {}
+canonical_facts = {}
+if canonical_ids:
+    for row in db.execute("SELECT f.canonical_subject_id,f.predicate_code,f.lifecycle,cv.value_code,nv.value_number,nv.unit_code,tv.language_code,tv.value_text,ov.value_canonical_id FROM canonical_facts f LEFT JOIN fact_code_values cv ON cv.fact_id=f.id LEFT JOIN fact_number_values nv ON nv.fact_id=f.id LEFT JOIN fact_text_values tv ON tv.fact_id=f.id LEFT JOIN fact_object_values ov ON ov.fact_id=f.id"):
+        canonical_facts.setdefault(row['canonical_subject_id'], []).append(dict(row))
 definitions = {}
 for row in db.execute('SELECT * FROM object_definitions ORDER BY position'):
     definitions.setdefault(row['object_id'], []).append(dict(row))
@@ -89,7 +94,7 @@ if paradigm_ids:
     ))
 objects = []
 for row in [*base_rows, *extra_rows]:
-    item = dict(row); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
+    item = dict(row); item['canonical_id'] = canonical_ids.get(row['id']); item['facts'] = canonical_facts.get(item['canonical_id'], []); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
     objects.append(item)
 payload = {'version': 3, 'objects': objects}
 args.output.parent.mkdir(parents=True, exist_ok=True)

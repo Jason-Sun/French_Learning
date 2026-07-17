@@ -1,8 +1,8 @@
 # Liens Current State
 
 **Snapshot date:** 2026-07-17  
-**Canonical product branch:** `agent/import-liens-demo`  
-**Latest completed milestone:** UI interaction and visual refinement
+**Canonical product branch:** `Liens_dev`
+**Current milestone:** Source-independent production lexical foundation
 
 ## Implemented
 
@@ -16,6 +16,7 @@
 - Optional Chinese display; English always visible; local saved-object state.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
+- Canonical UUID registry, fact/evidence provenance model, and general Learning Layer infrastructure are being introduced before any A1 source import.
 
 ## Pending
 

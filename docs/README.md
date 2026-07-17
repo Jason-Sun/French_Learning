@@ -23,6 +23,7 @@ This directory is the durable source of truth for Liens. It records the product 
 | [Contributing](CONTRIBUTING.md) | Required working agreement for people and AI agents. | Development standards or review protocol change. |
 | [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) | Required workflow for AI-assisted project work. | AI development or commit-audit workflow changes. |
 | [architecture/](architecture/) | Focused subsystem contracts. | The relevant subsystem’s data or interface changes. |
+| [Source and Import Layer](architecture/source_imports.md) | Source-independent ingestion, mapping, and provenance rules. | An importer, release, identity, or evidence contract changes. |
 
 ## Scope hierarchy
 

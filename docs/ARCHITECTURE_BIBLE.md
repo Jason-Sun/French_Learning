@@ -30,7 +30,11 @@ SQLite is the authoritative linguistic store. `wordbank-index.json` is a read-op
 
 ## Language Object Graph
 
-`language_objects` supplies stable IDs, canonical and display forms, type, CEFR, part of speech, frequency, provenance, and lifecycle status. Typed `relationships` provide graph navigation. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
+`language_objects` supplies the current browser-compatible representation. The source-independent canonical identity registry owns permanent UUIDv5 `canonical_id` values and canonical identity keys; importers resolve or map to those IDs and never invent identity. External links, learner state, collections, and future APIs must use canonical IDs.
+
+Canonical linguistic assertions are modeled separately as **Language Object → Fact → Evidence**. `canonical_facts` holds an atomic claim; typed value tables hold code, number, text, or object values; `fact_evidence` supports one or more source records per claim. This allows CEFR, IPA, frequency, morphology, and other facts to have independent provenance and future conflict resolution.
+
+Typed `relationships` provide graph navigation. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
 
 Important object types include `word`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
 
@@ -80,9 +84,11 @@ The legacy `pronunciations` table remains an import-compatible boundary and is s
 
 Every saved or reviewable item is keyed by a stable Language Object ID. The current static prototype stores saved items and the Chinese-display preference in browser local storage. SQLite provides durable linguistic data; account-level review synchronization is a future persistence concern and must reference IDs rather than copy language content.
 
-## AI enrichment architecture
+## Source and Learning Layers
 
-Future AI output is structured enrichment, not direct truth. It must be attached to an object with source, provenance, confidence, review status, and a draft lifecycle. Curated data is never overwritten by an AI draft. AI must use existing object identities and relation types whenever possible.
+The Source Layer is independent from the graph: source catalogs, frozen releases, import runs, immutable source records, mappings, exclusions, and fact evidence let FLELex, Lexique, Lefff, Wiktionary, commercial datasets, or future sources feed the same canonical schema. No canonical table is shaped around a particular provider.
+
+The Learning Layer contains explanations, teacher notes, memory hints, usage advice, and future exercises as `learning_resource` objects linked to canonical IDs. AI is one authoring mode alongside human, teacher, and imported resources. Learning resources never write canonical linguistic facts; promotion requires an explicit reviewed canonical import.
 
 ## Scalability and extension rule
 
