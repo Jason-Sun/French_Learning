@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-07-17  
 **Canonical product branch:** `agent/import-liens-demo`  
-**Latest completed milestone:** Graph-native Pronunciation System (`0274480`)
+**Latest completed milestone:** Documentation governance baseline (`c7533f1`)
 
 ## Implemented
 
@@ -14,6 +14,7 @@
 - Pedagogical conjugation UI for the eight seeded core verbs; data-first support for unfilled future tenses.
 - Graph-native IPA and independent pronunciation for all 56 seeded core forms; local recording → local cached TTS → browser synthesis provider chain.
 - Optional Chinese display; English always visible; local saved-object state.
+- A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 
 ## Pending
 
@@ -39,4 +40,4 @@ Define the **review and collections architecture**: stable learner-state model, 
 
 ## Required maintenance
 
-Update this file at the end of every completed milestone. Keep counts and branch only when verified from the database/repository; do not estimate them.
+Update this file only when a completed milestone or verified project state makes it inaccurate. Keep counts and branch only when verified from the database/repository; do not estimate them.
