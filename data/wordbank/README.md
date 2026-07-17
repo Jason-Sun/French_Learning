@@ -115,6 +115,8 @@ python3 scripts/import_lexique_a1_morphology.py \
 
 Conflicting source rows are written to `import_exclusions`; they are never silently treated as canonical forms.
 
+The morphology import also writes row-level `relationship_evidence` for every `inflected_form_of` edge. Its `member_of_paradigm` edges are marked `derived_from_asserted_form`, because Lexique asserts the form analysis while Liens deterministically connects that form through the existing verb paradigm.
+
 `scripts/import_lexique_a1_nominal_morphology.py` applies the same release to A1 noun and adjective gender/number forms and writes `lexique383-a1-nominal-morphology.json` as its audit report.
 
 ### Source-backed Lexique A1 function-word morphology
