@@ -114,6 +114,8 @@ python3 scripts/import_lexique_a1_morphology.py \
 
 Conflicting source rows are written to `import_exclusions`; they are never silently treated as canonical forms.
 
+`scripts/import_lexique_a1_nominal_morphology.py` applies the same release to A1 noun and adjective gender/number forms and writes `lexique383-a1-nominal-morphology.json` as its audit report.
+
 ### Graph-native pronunciation and core forms
 
 After any importer that creates legacy pronunciation records, synchronize their graph representation:
