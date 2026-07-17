@@ -11,7 +11,8 @@
 - 8,767 A1–B2 word objects, 10,627 source-backed inflected-form objects, 96 graph-native conjugation realizations, learning groups/tenses, 41 example sentence objects, grammar structures, teacher resources, and 11,777 Pronunciation Objects.
 - Accent-insensitive lookup that preserves canonical French spelling on pages.
 - Deterministic Sentence Intelligence for local token resolution, selected contractions/elisions, expressions, grammar patterns, and review candidates.
-- Pedagogical conjugation UI for the eight seeded core verbs; data-first support for unfilled future tenses.
+- Pedagogical conjugation UI for every locally paradigm-linked verb; data-first support for unfilled future tenses.
+- A versioned, evidence-backed French verb-group derivation imports 1,630 canonical `verb_group` facts: 1,440 first-group, 5 second-group, and 185 third-group classifications. The 153 `-ir` verbs without the required present-participle evidence remain explicitly unclassified.
 - Graph-native IPA and independent pronunciation for all 56 seeded core forms; local recording → local cached TTS → browser synthesis provider chain.
 - Optional Chinese display; English always visible; local saved-object state.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
@@ -20,7 +21,7 @@
 - Kaikki's hash-locked English Wiktionary extraction provides 3,301 first-class lexical-sense objects and 3,383 independently evidenced English-gloss facts for 1,222 of the 1,247 A1 words; the 25 unmatched A1 entries are explicit coverage gaps, not generated content.
 - Imported Kaikki `has_sense` links and Lexique `has_pronunciation` links now retain their own source records, alongside the evidence held by their facts or pronunciation representations.
 - The browser export projects ordered lexical senses and renders them on the existing Word Learning page without changing the core navigation model.
-- Multi-sense words now use a progressive in-place Meaning explorer: the lemma remains the anchor, one source-backed sense expands at a time, only the first four senses appear initially, and a selected panel renders its source-aligned examples. Direct sense routes preserve canonical identity while opening the owner-word context.
+- Multi-sense words now use a progressive in-place Meaning explorer: the lemma remains the anchor, any source-backed sense can expand in place or all panels can be collapsed, only the first four senses appear initially, and a selected panel renders its source-aligned examples. Direct sense routes preserve canonical identity while opening the owner-word context.
 - New canonical graph relationship imports now support independent source evidence; legacy edges are retained as compatibility data and will be audited separately.
 - The CC-BY Tex grammar index now supplies an evidenced A1 grammar network of eight topics, twelve constructions/patterns, and 31 typed graph links.
 - Kaikki now contributes 1,903 attributable translated example-sentence objects, 1,911 evidenced `illustrates` links, and 205 source-backed synonym/antonym links for the A1 graph.

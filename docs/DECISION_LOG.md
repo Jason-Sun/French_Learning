@@ -131,3 +131,15 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Alternatives:** A full generic page for every sense; a heavy tab route; flatten senses back into one word-level definition.
 
 **Long-term impact:** Sense identity, saving, examples, and graph traversal remain independent, while the browser presents a calmer, scalable learning experience. Source-aligned examples can appear on the matching sense without borrowing unrelated word-level context.
+
+## ADR-013 — French verb groups are evidence-backed derived facts
+
+**Date:** 2026-07-17
+
+**Decision:** Represent `verb_group` as a canonical predicate fact. Derive it with a versioned policy from canonical lemma spelling and, for `-ir` verbs, source-backed present-participle morphology; record both policy and source-record evidence. Leave unsupported cases unclassified.
+
+**Reason:** Group is important learner-facing conjugation knowledge, but the current lexical sources do not directly publish it. A deterministic derivation is more transparent and maintainable than UI heuristics or AI-generated labels.
+
+**Alternatives:** Hard-code groups in the browser; write group values into legacy `verb_metadata` without fact evidence; infer groups with AI; assign every `-ir` verb from spelling alone.
+
+**Long-term impact:** Every group label is queryable, reproducible, and revisable when richer lexical evidence arrives; the UI can distinguish unavailable data from a linguistic claim.

@@ -82,6 +82,8 @@ verb → root paradigm → tense paradigm → reusable tense
 
 Learning groups (Core A1–A2 and Advanced B1+) contain reusable tense objects. Verb-specific paradigms realize them. Simple forms are `inflected_form` objects; compound and periphrastic forms are `conjugation_realization` objects assembled from ordered component Language Objects. Teaching explanations are `learning_resource` objects, never UI literals. The browser renders pedagogical subject order and one selected tense at a time.
 
+French verb-group classification is a predicate fact, not a browser rule or a property assumed from a lexical importer. The versioned derivation policy uses canonical lemma spelling and, where necessary, source-backed present-participle morphology. Its fact evidence records both the policy run and the source records it derived from. A verb without enough evidence remains unclassified in the UI.
+
 ## Pronunciation system
 
 Pronunciation is a first-class graph subsystem. A language object links to one or more `pronunciation` objects through `has_pronunciation`. Each Pronunciation Object owns multiple evidence-backed representations: source phonological codes, verified IPA, syllabification, variants, audio assets, and future TTS metadata. IPA is not assumed to be the canonical source representation.

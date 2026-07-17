@@ -1,0 +1,11 @@
+{
+  "policy_id": "liens-verb-group-policy-v1",
+  "label": "French verb group derivation policy",
+  "purpose": "A reproducible classifier for learner-facing French verb groups. It derives a group from canonical lemma spelling and imported morphology; it is not a replacement for a lexical source assertion.",
+  "rules": {
+    "first_group": "An infinitive ending in -er, unless it appears in third_group_exceptions.",
+    "second_group": "An infinitive ending in -ir whose imported present participle ends in -issant.",
+    "third_group": "Any remaining verb for which the available lemma or morphology evidence rules out the first and second groups."
+  },
+  "third_group_exceptions": ["aller"]
+}
