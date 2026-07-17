@@ -80,6 +80,18 @@ python3 scripts/import_a1_foundation.py \
 
 The importer creates `ai_enriched` definitions, pronunciation records, first-class sentence objects, and `illustrates` graph edges. The browser exposes this provenance as **AI draft**, so no generated learning content is presented as curated data.
 
+### Core conjugation import
+
+`core-conjugation-paradigms.json` is declarative graph data, not browser lookup code. Import it with:
+
+```bash
+python3 scripts/import_conjugation_paradigms.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --input data/wordbank/core-conjugation-paradigms.json
+```
+
+Each record becomes an `inflected_form` Language Object with `form_features`, an `inflected_form_of` edge to its canonical lemma, and a `member_of_paradigm` edge. Search routes any such form to the canonical lemma page while preserving the form context in the page label.
+
 ## Local lookup contract
 
 The app resolves a typed token locally in this order:
