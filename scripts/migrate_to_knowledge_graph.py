@@ -45,6 +45,14 @@ CREATE TABLE relationships (
 CREATE INDEX relationships_from ON relationships(source_object_id, relationship_type_code);
 CREATE INDEX relationships_to ON relationships(target_object_id, relationship_type_code);
 CREATE TABLE form_features (object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE, mood TEXT, tense TEXT, person TEXT, number TEXT, gender TEXT);
+CREATE TABLE verb_metadata (
+  object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE,
+  verb_group_code TEXT, is_irregular INTEGER NOT NULL DEFAULT 0,
+  future_stem TEXT, auxiliary_lemma_id TEXT REFERENCES language_objects(id),
+  note_en TEXT, note_zh TEXT, source_id TEXT REFERENCES sources(id),
+  provenance TEXT NOT NULL DEFAULT 'curated', confidence REAL,
+  status TEXT NOT NULL DEFAULT 'metadata_ready', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE pronunciations (
   id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE,
   ipa TEXT, syllables_json TEXT NOT NULL DEFAULT '[]', stress_json TEXT NOT NULL DEFAULT '[]',

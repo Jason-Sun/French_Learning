@@ -90,7 +90,13 @@ python3 scripts/import_conjugation_paradigms.py \
   --input data/wordbank/core-conjugation-paradigms.json
 ```
 
-Each record becomes an `inflected_form` Language Object with `form_features`, an `inflected_form_of` edge to its canonical lemma, and a `member_of_paradigm` edge. Search routes any such form to the canonical lemma page while preserving the form context in the page label.
+Each record becomes an `inflected_form` Language Object with `form_features`, an `inflected_form_of` edge to its canonical lemma, and a `member_of_paradigm` edge. Search opens the form's own page; its `inflected_form_of` edge provides the explicit, clickable route back to the canonical lemma.
+
+### Tense paradigms and verb metadata
+
+Each verb has a root `conjugation_paradigm` object. Each available mood-tense combination is a separate `conjugation_paradigm` child with a stable ID, `conjugation_features` object attribute, and `member_of_paradigm` edges from its forms. This lets the browser present a textbook-style tense selector without hard-coding verb forms.
+
+`verb_metadata` is lemma-owned data: verb group, irregularity, future stem, auxiliary lemma, explanations, provenance, confidence, and status. It is intentionally separate from `form_features`, which belong only to an inflected form.
 
 ## Local lookup contract
 

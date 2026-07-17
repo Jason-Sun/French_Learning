@@ -30,6 +30,10 @@ def add_relation(db: sqlite3.Connection, source: str, target: str, relationship_
     )
 
 
+def tense_paradigm_id(lemma_id: str, mood: str, tense: str) -> str:
+    return stable_id('paradigm', lemma_id, mood or 'unclassified', tense or 'unclassified')
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--database', type=Path, required=True)
@@ -47,6 +51,7 @@ def main() -> None:
     # The importer owns these generated rows. Removing them first makes every
     # run reproducible while preserving forms imported from other sources.
     db.execute("DELETE FROM language_objects WHERE type_code='inflected_form' AND source_id=?", (SOURCE_ID,))
+    db.execute("DELETE FROM language_objects WHERE type_code='conjugation_paradigm' AND source_id=?", (SOURCE_ID,))
     imported = 0
     for paradigm in paradigms:
         row = db.execute(
@@ -62,7 +67,37 @@ def main() -> None:
             "AND relationship_type_code='belongs_to_conjugation'",
             (lemma_id,),
         ).fetchone()
-        paradigm_id = paradigm_row[0] if paradigm_row else None
+        root_paradigm_id = paradigm_row[0] if paradigm_row else stable_id('paradigm', lemma_id)
+        if not paradigm_row:
+            db.execute(
+                "INSERT OR IGNORE INTO language_objects "
+                "(id,type_code,canonical_form,display_form,normalized_form,part_of_speech,source_id,content_status,provenance) "
+                "VALUES (?,?,?,?,?,?,?,?,?)",
+                (root_paradigm_id, 'conjugation_paradigm', paradigm['lemma'], f"{paradigm['lemma']} conjugation",
+                 normalise(paradigm['lemma']), 'VER', SOURCE_ID, 'metadata_ready', 'ai_enriched'),
+            )
+            add_relation(db, lemma_id, root_paradigm_id, 'belongs_to_conjugation')
+        grouped_forms: dict[tuple[str, str], list[dict]] = {}
+        for form in paradigm['forms']:
+            grouped_forms.setdefault((form.get('mood') or '', form.get('tense') or ''), []).append(form)
+        tense_paradigms: dict[tuple[str, str], str] = {}
+        for (mood, tense), forms in grouped_forms.items():
+            tense_id = tense_paradigm_id(lemma_id, mood, tense)
+            tense_paradigms[(mood, tense)] = tense_id
+            db.execute(
+                "INSERT OR REPLACE INTO language_objects "
+                "(id,type_code,canonical_form,display_form,normalized_form,part_of_speech,source_id,content_status,provenance) "
+                "VALUES (?,?,?,?,?,?,?,?,?)",
+                (tense_id, 'conjugation_paradigm', f"{paradigm['lemma']} {mood} {tense}",
+                 f"{mood} {tense}", normalise(f"{paradigm['lemma']} {mood} {tense}"),
+                 'VER', SOURCE_ID, 'metadata_ready', 'ai_enriched'),
+            )
+            db.execute(
+                "INSERT OR REPLACE INTO object_attributes(object_id,key,value_json) VALUES (?,?,?)",
+                (tense_id, 'conjugation_features', json.dumps({'mood': mood, 'tense': tense, 'version': 1})),
+            )
+            db.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (tense_id,))
+            add_relation(db, root_paradigm_id, tense_id, 'contains')
         for form in paradigm['forms']:
             # Match the historic graph ID contract: person distinguishes the
             # two identical present forms (for example, je/tu fais), while
@@ -80,8 +115,7 @@ def main() -> None:
             )
             db.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (form_id,))
             add_relation(db, form_id, lemma_id, 'inflected_form_of')
-            if paradigm_id:
-                add_relation(db, form_id, paradigm_id, 'member_of_paradigm')
+            add_relation(db, form_id, tense_paradigms[(form.get('mood') or '', form.get('tense') or '')], 'member_of_paradigm')
             imported += 1
     db.execute("INSERT INTO metadata(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", ('core_conjugation_status', f'{imported} declarative form records; review required'))
     db.commit()
