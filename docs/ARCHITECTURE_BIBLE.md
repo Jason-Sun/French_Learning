@@ -84,6 +84,8 @@ Learning groups (Core A1–A2 and Advanced B1+) contain reusable tense objects. 
 
 French verb-group classification is a predicate fact, not a browser rule or a property assumed from a lexical importer. The versioned derivation policy uses canonical lemma spelling and, where necessary, source-backed present-participle morphology. Its fact evidence records both the policy run and the source records it derived from. A verb without enough evidence remains unclassified in the UI.
 
+Imported form analyses are not enough by themselves for learner-facing conjugation. A deterministic, evidenced projection maps each supported morphology pair to the shared tense taxonomy and builds the verb-specific tense-paradigm path used by the browser. This makes forms such as `mange`, `manges`, and `mangeons` available under `Présent` without treating the UI as the source of their grouping.
+
 ## Pronunciation system
 
 Pronunciation is a first-class graph subsystem. A language object links to one or more `pronunciation` objects through `has_pronunciation`. Each Pronunciation Object owns multiple evidence-backed representations: source phonological codes, verified IPA, syllabification, variants, audio assets, and future TTS metadata. IPA is not assumed to be the canonical source representation.

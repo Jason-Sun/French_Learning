@@ -115,7 +115,17 @@ python3 scripts/import_lexique_a1_morphology.py \
 
 Conflicting source rows are written to `import_exclusions`; they are never silently treated as canonical forms.
 
-The morphology import also writes row-level `relationship_evidence` for every `inflected_form_of` edge. Its `member_of_paradigm` edges are marked `derived_from_asserted_form`, because Lexique asserts the form analysis while Liens deterministically connects that form through the existing verb paradigm.
+The morphology import also writes row-level `relationship_evidence` for every `inflected_form_of` edge. Its legacy root-paradigm `member_of_paradigm` edges are marked `derived_from_asserted_form`, because Lexique asserts the form analysis while Liens deterministically connects that form through the existing verb paradigm.
+
+After the learning taxonomy has been seeded, project the imported analyses into the reusable tense model:
+
+```bash
+python3 scripts/project_lexique_forms_to_tense_paradigms.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --report data/wordbank/import-reports/lexique-tense-paradigm-projection.json
+```
+
+This creates the structural path `root paradigm → tense paradigm → form` only for catalogued mood/tense pairs. Each edge retains evidence derived from the original asserted Lexique form row. Unsupported source tenses remain preserved on the root paradigm but are not misrepresented as an available learning target.
 
 `scripts/import_lexique_a1_nominal_morphology.py` applies the same release to A1 noun and adjective gender/number forms and writes `lexique383-a1-nominal-morphology.json` as its audit report.
 

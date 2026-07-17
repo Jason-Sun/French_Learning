@@ -143,3 +143,15 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Alternatives:** Hard-code groups in the browser; write group values into legacy `verb_metadata` without fact evidence; infer groups with AI; assign every `-ir` verb from spelling alone.
 
 **Long-term impact:** Every group label is queryable, reproducible, and revisable when richer lexical evidence arrives; the UI can distinguish unavailable data from a linguistic claim.
+
+## ADR-014 — Source form analyses project into learning tense paradigms
+
+**Date:** 2026-07-17
+
+**Decision:** Keep imported inflected forms as source assertions, then use a versioned deterministic projection to connect each supported `(mood, tense)` analysis to a verb-specific paradigm and a reusable learning tense. Preserve evidence on every derived graph edge.
+
+**Reason:** A root-level form link makes morphology searchable but does not tell the learning UI which tense table should contain the form. The graph, rather than browser code, must perform that mapping.
+
+**Alternatives:** Filter all lemma forms in the browser; copy conjugation tables into JSON; attach every source tense to a learner selector; create only a special `manger` repair.
+
+**Long-term impact:** Any source-backed form can appear in its correct learning table after a reproducible data projection, while unsupported source tenses remain present in the graph without being falsely advertised as an available learning module.
