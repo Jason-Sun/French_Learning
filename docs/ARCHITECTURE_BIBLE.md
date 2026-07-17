@@ -40,6 +40,8 @@ Typed `relationships` provide graph navigation. Flexible structured data is held
 
 Important object types include `word`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
 
+Grammar is first-class graph knowledge, not per-sentence AI output. `grammar_construction`, `conjugation_tense`, and `sentence_pattern` are grammar objects; `grammar_topic` provides broad navigation without duplicating those concepts. Their taxonomy lives in `grammar_metadata`, their identity and structural relationships are canonical, and their learner-facing explanations are revisioned Learning Resources.
+
 Relationships are directional and typed. Examples: `inflected_form_of`, `belongs_to_conjugation`, `member_of_paradigm`, `contains`, `realizes_tense`, `explains`, `illustrates`, and `has_pronunciation`.
 
 ## Browser and search architecture
@@ -97,6 +99,8 @@ Learning Resource content is revisioned and immutable. A resource has ordered re
 ## Natural-language analysis boundary
 
 Future sentence parsing may be deterministic, AI-assisted, or hybrid, but its output remains non-canonical. It may resolve spans to canonical UUIDs, including lemmas, inflected forms, contraction components, expressions, collocations, grammar constructions, and sentence targets. It may attach a Learning Resource revision for an explanation. It must never directly create or overwrite canonical objects, facts, or relationships.
+
+The analysis role is `grammar_object`, not a specific tense or construction type. It identifies existing grammar nodes and their typed graph paths; AI may explain why a matched node applies but cannot invent or redefine it.
 
 ## Scalability and extension rule
 

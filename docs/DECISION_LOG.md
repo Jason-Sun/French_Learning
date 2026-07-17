@@ -73,3 +73,11 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Reason:** Predicate claims make indexing and conflict handling explicit; revisions preserve teaching-content history; natural-language analysis must enrich graph navigation without redefining linguistic truth.
 **Alternatives:** Anonymous property values; destructive edits to explanations; allowing parser/AI outputs to write directly to the graph.
 **Long-term impact:** The future parser can support arbitrary French input and AI-assisted explanations without requiring a graph redesign or weakening provenance.
+
+## ADR-010 — Grammar is first-class graph knowledge
+
+**Date:** 2026-07-17
+**Decision:** Treat grammar constructions, tenses, moods, patterns, and broad topics as canonical Language Objects classified through shared grammar metadata and linked by typed grammar relationships. Sentence analysis identifies these existing objects; Learning Resources explain them.
+**Reason:** A sentence should lead learners into a durable grammar network rather than generate a one-off grammar answer. Keeping identity and relationships canonical preserves exploration, reuse, and review.
+**Alternatives:** AI-generated grammar labels per sentence; a parallel grammar database; duplicating each tense or construction as a generic grammar object.
+**Long-term impact:** Grammar pages, examples, comparisons, prerequisites, and future review can grow as graph data without changing the sentence-analysis contract.

@@ -17,6 +17,7 @@
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
 - `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
 - `sentence_analysis_object_matches`: non-canonical parser matches from input spans to canonical UUIDs, including contractions and multi-word objects.
+- `grammar_metadata` and `grammar_categories`: shared taxonomy and sentence-detection metadata for first-class Grammar Language Objects.
 - `sentence_learning_items`: review and learning opportunities extracted from an analysis without re-parsing the sentence later.
 - `learning_resource_revisions` and `learning_resource_revision_texts`: immutable, ordered revisions for teacher, human, imported, or AI-authored learning content.
 

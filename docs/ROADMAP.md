@@ -14,7 +14,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Production lexical foundation:** establish source-independent canonical identity, fact/evidence provenance, the Learning Layer, and reproducible A1 source imports before enriching or expanding learner-facing content.
+**Production lexical foundation:** establish source-independent canonical identity, fact/evidence provenance, the Learning Layer, first-class Grammar Object infrastructure, and reproducible A1 source imports before enriching or expanding learner-facing content.
 
 ## Next capability themes
 

@@ -19,6 +19,7 @@ Provide one stable, reusable identity for every durable learnable French element
 | Lemma spelling, CEFR, POS, frequency | `word` object |
 | Person/mood/tense of a surface form | `inflected_form` + `form_features` |
 | Pedagogical tense placement | `conjugation_tense` + learning group |
+| Grammar category and analysis priority | `grammar_metadata` on a canonical grammar object |
 | Component sequence of a compound realization | `conjugation_realization_components` |
 | IPA and pronunciation notes | `pronunciation` object + details |
 | Teacher explanation | `learning_resource` + teaching guidance |

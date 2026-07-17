@@ -11,7 +11,7 @@ Output: tokens, resolved object/lemma IDs, analysis nodes, typed edges, recogniz
 
 ## Canonical boundary
 
-An analysis may resolve spans to canonical UUIDs through `sentence_analysis_object_matches`, including contraction components and overlapping multi-word objects. It remains a per-input, non-canonical record. Deterministic and future AI-assisted analysis may link a Learning Resource revision for learner-facing guidance, but cannot create or overwrite canonical Language Objects, Facts, Evidence, or relationships.
+An analysis may resolve spans to canonical UUIDs through `sentence_analysis_object_matches`, including contraction components, overlapping multi-word objects, and first-class `grammar_object` matches. It remains a per-input, non-canonical record. Deterministic and future AI-assisted analysis may link a Learning Resource revision for learner-facing guidance, but cannot create or overwrite canonical Language Objects, Facts, Evidence, or relationships.
 
 ## Current behavior
 
