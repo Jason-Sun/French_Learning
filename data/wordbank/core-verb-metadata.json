@@ -1,0 +1,10 @@
+[
+  {"lemma":"avoir","verb_group_code":"third_group","is_irregular":true,"future_stem":"aur-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."},
+  {"lemma":"être","verb_group_code":"third_group","is_irregular":true,"future_stem":"ser-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."},
+  {"lemma":"aller","verb_group_code":"third_group","is_irregular":true,"future_stem":"ir-","auxiliary":"être","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses être as its auxiliary."},
+  {"lemma":"faire","verb_group_code":"third_group","is_irregular":true,"future_stem":"fer-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."},
+  {"lemma":"pouvoir","verb_group_code":"third_group","is_irregular":true,"future_stem":"pourr-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."},
+  {"lemma":"vouloir","verb_group_code":"third_group","is_irregular":true,"future_stem":"voudr-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."},
+  {"lemma":"venir","verb_group_code":"third_group","is_irregular":true,"future_stem":"viendr-","auxiliary":"être","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses être as its auxiliary."},
+  {"lemma":"prendre","verb_group_code":"third_group","is_irregular":true,"future_stem":"prendr-","auxiliary":"avoir","note_en":"Third-group irregular verb. The present tense uses an irregular paradigm; the passé composé uses avoir as its auxiliary."}
+]
