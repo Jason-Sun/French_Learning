@@ -80,7 +80,7 @@ Learning groups (Core A1–A2 and Advanced B1+) contain reusable tense objects. 
 
 ## Pronunciation system
 
-Pronunciation is a first-class graph subsystem. A language object links to one or more `pronunciation` objects through `has_pronunciation`. `pronunciation_object_details` stores IPA, syllables, stress, liaison, silent letters, elision, variants, source, confidence, review status, and optional local audio metadata.
+Pronunciation is a first-class graph subsystem. A language object links to one or more `pronunciation` objects through `has_pronunciation`. Each Pronunciation Object owns multiple evidence-backed representations: source phonological codes, verified IPA, syllabification, variants, audio assets, and future TTS metadata. IPA is not assumed to be the canonical source representation.
 
 The legacy `pronunciations` table remains an import-compatible boundary and is synchronized into graph objects. A form can only display or play its own pronunciation—never its lemma’s pronunciation. The browser provider interface is local recording → cached local TTS → browser speech synthesis. No online provider is currently registered.
 

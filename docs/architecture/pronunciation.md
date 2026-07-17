@@ -6,7 +6,9 @@ Model pronunciation as reusable linguistic knowledge, independent from page rend
 
 ## Data contract
 
-An owner Language Object connects to one or more `pronunciation` objects via `has_pronunciation`. `pronunciation_object_details` supports IPA, syllables, stress, liaison, silent letters, elision, notes, regional variant, source, confidence, review status, audio URI, and local audio path.
+An owner Language Object connects to one or more `pronunciation` objects via `has_pronunciation`. A Pronunciation Object can own multiple evidence-backed `pronunciation_representations`: verified IPA, a source-specific phonological code, syllabification, variant data, audio assets, or future TTS metadata. IPA is one representation type, never the assumed canonical source form.
+
+`pronunciation_object_details` remains the browser-compatible detail projection for currently supported verified IPA and delivery metadata. `pronunciation_representation_evidence` independently links every representation to one or more immutable source records.
 
 The retained `pronunciations` table is an importer compatibility boundary. `scripts/add_graph_native_pronunciation_schema.py` materializes each compatible record as a graph object and relationship.
 
@@ -26,4 +28,4 @@ No cloud provider is registered. Future cached audio or premium providers must i
 
 ## AI rule
 
-AI-generated IPA, notes, variants, or audio must create a draft Pronunciation Object with provenance, confidence, and review status. It cannot overwrite a curated pronunciation object.
+AI-generated IPA, notes, variants, or audio must create a draft representation with provenance, confidence, and review status. It cannot overwrite a curated representation or relabel a source phonological code as verified IPA.

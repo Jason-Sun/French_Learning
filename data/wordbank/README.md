@@ -12,7 +12,7 @@
 - `relationships`: directed, typed graph edges. Navigation is a graph traversal, not a page hierarchy.
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
 - `pronunciations`: the retained import-compatible record table.
-- `pronunciation_object_details`: structured linguistic metadata owned by first-class `pronunciation` Language Objects.
+- `pronunciation_object_details` and `pronunciation_representations`: browser-compatible detail projection plus evidence-backed source, IPA, syllable, variant, audio, and future-TTS representations owned by first-class `pronunciation` Language Objects.
 - `learning_metadata`, `review_metadata`, and `media`: learning and delivery information kept distinct from linguistic facts.
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
 - `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
@@ -31,7 +31,7 @@
 
 ### Pronunciation contract
 
-Pronunciation belongs to the graph, never to a UI component. A learnable object links to one or more `pronunciation` Language Objects through `has_pronunciation`. Its `pronunciation_object_details` stores IPA, syllables, stress, liaison, silent letters, elision, regional variant, source, confidence, review status, optional audio URI, and optional local audio path. The browser embeds these graph nodes behind the compatible `object.pronunciations` adapter field, so every surface can reuse the same data without duplicating it.
+Pronunciation belongs to the graph, never to a UI component. A learnable object links to one or more `pronunciation` Language Objects through `has_pronunciation`. Each Pronunciation Object can own multiple evidence-backed representations, including source phonological codes, verified IPA, syllabification, variants, audio, and future TTS metadata. The browser keeps its compatible `object.pronunciations` adapter field; it displays only verified IPA where available.
 
 Pronunciation is never inherited across relationships: an `inflected_form` may link to its lemma with `inflected_form_of`, but it must have its own Pronunciation Object before IPA or playback is shown. The legacy `language_objects.ipa` column and `pronunciations` table remain readable/importable; `scripts/add_graph_native_pronunciation_schema.py` synchronizes them into graph nodes.
 
@@ -102,7 +102,7 @@ The adapter resolves existing canonical UUIDs, records immutable source rows and
 
 ### Source-backed Lexique A1 morphology import
 
-Lexique 3.83 provides inflected forms, lemma links, grammatical features, IPA, and syllabification. Its hash-locked manifest currently drives the A1 verb-form import:
+Lexique 3.83 provides inflected forms, lemma links, grammatical features, a source-specific phonological code, and syllabification. Its code is not treated as IPA.
 
 ```bash
 python3 scripts/import_lexique_a1_morphology.py \
