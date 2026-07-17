@@ -8,6 +8,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from pronunciation_graph import sync_graph
+
 
 def normalise(value: str) -> str:
     return " ".join(value.casefold().replace("’", "'").split())
@@ -142,7 +144,7 @@ def main() -> None:
     db.executemany('INSERT INTO object_types VALUES (?, ?, ?)', OBJECT_TYPES)
     db.executemany('INSERT INTO relationship_types VALUES (?, ?, 1, ?)', RELATIONSHIP_TYPES)
     db.executemany('INSERT INTO sources VALUES (?, ?, ?, ?, ?)', old.execute('SELECT id,name,url,license,citation FROM sources'))
-    db.executemany('INSERT INTO metadata VALUES (?, ?)', [('schema_version', '4'), ('architecture', 'Language Object knowledge graph'), ('migration_source', str(args.source)), ('pronunciation_model', 'pronunciations: IPA, syllables, stress, audio references, provenance, confidence')])
+    db.executemany('INSERT INTO metadata VALUES (?, ?)', [('schema_version', '5'), ('architecture', 'Language Object knowledge graph'), ('migration_source', str(args.source)), ('pronunciation_model', 'graph-native Pronunciation Objects linked with has_pronunciation')])
     lexeme_map: dict[int, str] = {}
     for row in old.execute('SELECT * FROM lexemes'):
         obj_id = oid('word', row['normalized_lemma'], row['part_of_speech'])
@@ -185,6 +187,7 @@ def main() -> None:
     for verb, preposition in (('venir', 'chez'), ('penser', 'à')):
         source, target = word_id(verb), word_id(preposition)
         if source and target: add_relation(db, source, target, 'governs_preposition' if verb == 'penser' else 'commonly_used_with')
+    sync_graph(db)
     db.commit(); db.execute('VACUUM'); print(f'Migrated {len(lexeme_map)} words into {args.output}')
 
 

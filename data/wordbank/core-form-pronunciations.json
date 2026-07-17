@@ -1,0 +1,10 @@
+[
+  {"lemma":"avoir","forms":{"ai":"/e/","as":"/a/","a":"/a/","avons":"/avɔ̃/","avez":"/ave/","ont":"/ɔ̃/","eu":"/y/"}},
+  {"lemma":"être","forms":{"suis":"/sɥi/","es":"/ɛ/","est":"/ɛ/","sommes":"/sɔm/","êtes":"/ɛt/","sont":"/sɔ̃/","été":"/ete/"}},
+  {"lemma":"aller","forms":{"vais":"/vɛ/","vas":"/va/","va":"/va/","allons":"/alɔ̃/","allez":"/ale/","vont":"/vɔ̃/","allé":"/ale/"}},
+  {"lemma":"faire","forms":{"fais":"/fɛ/","fait":"/fɛ/","faisons":"/fəzɔ̃/","faites":"/fɛt/","font":"/fɔ̃/"}},
+  {"lemma":"pouvoir","forms":{"peux":"/pø/","peut":"/pø/","pouvons":"/puvɔ̃/","pouvez":"/puve/","peuvent":"/pœv/","pu":"/py/"}},
+  {"lemma":"vouloir","forms":{"veux":"/vø/","veut":"/vø/","voulons":"/vulɔ̃/","voulez":"/vule/","veulent":"/vœl/","voulu":"/vuly/"}},
+  {"lemma":"venir","forms":{"viens":"/vjɛ̃/","vient":"/vjɛ̃/","venons":"/vənɔ̃/","venez":"/vəne/","viennent":"/vjɛn/","venu":"/v(ə)ny/"}},
+  {"lemma":"prendre","forms":{"prends":"/pʁɑ̃/","prend":"/pʁɑ̃/","prenons":"/pʁənɔ̃/","prenez":"/pʁəne/","prennent":"/pʁɛn/","pris":"/pʁi/"}}
+]
