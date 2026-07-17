@@ -106,6 +106,8 @@ The Learning Layer contains explanations, teacher notes, memory hints, usage adv
 
 Learning Resource content is revisioned and immutable. A resource has ordered revisions, with at most one published revision at a time; later authoring supersedes a revision rather than destructively changing it.
 
+The first browser AI-assistance adapter is learner-scoped and non-canonical: it can cache labelled AI drafts in contextual teaching slots, but it never writes SQLite or the browser graph export. See [AI Learning Assistance](architecture/ai_learning_assistance.md).
+
 ## Natural-language analysis boundary
 
 Future sentence parsing may be deterministic, AI-assisted, or hybrid, but its output remains non-canonical. It may resolve spans to canonical UUIDs, including lemmas, inflected forms, contraction components, expressions, collocations, grammar constructions, and sentence targets. It may attach a Learning Resource revision for an explanation. It must never directly create or overwrite canonical objects, facts, or relationships.
