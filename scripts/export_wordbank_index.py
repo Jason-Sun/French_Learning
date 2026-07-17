@@ -12,14 +12,17 @@ definitions = {}
 for row in db.execute('SELECT * FROM object_definitions ORDER BY position'):
     definitions.setdefault(row['object_id'], []).append(dict(row))
 features = {row['object_id']: dict(row) for row in db.execute('SELECT * FROM form_features')}
+pronunciations = {}
+for row in db.execute("SELECT * FROM pronunciations WHERE status <> 'deprecated' ORDER BY object_id, confidence DESC, id"):
+    pronunciations.setdefault(row['object_id'], []).append(dict(row))
 relationships = {}
 for row in db.execute('SELECT source_object_id, target_object_id, relationship_type_code FROM relationships'):
     relationships.setdefault(row['source_object_id'], []).append({'type': row['relationship_type_code'], 'target': row['target_object_id']})
 objects = []
 for row in db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','expression','idiom','collocation','grammar_construction')"):
-    item = dict(row); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['relationships'] = relationships.get(row['id'], [])
+    item = dict(row); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], [])
     objects.append(item)
-payload = {'version': 1, 'objects': objects}
+payload = {'version': 2, 'objects': objects}
 args.output.parent.mkdir(parents=True, exist_ok=True)
 args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 print(f'Exported {len(objects)} language objects to {args.output}')
