@@ -34,12 +34,44 @@ def tense_paradigm_id(lemma_id: str, mood: str, tense: str) -> str:
     return stable_id('paradigm', lemma_id, mood or 'unclassified', tense or 'unclassified')
 
 
+def materialize_tense_paradigm(
+    db: sqlite3.Connection, root_id: str, lemma: str, lemma_id: str, spec: dict
+) -> str:
+    mood, tense = spec.get('mood') or '', spec.get('tense') or ''
+    tense_id = tense_paradigm_id(lemma_id, mood, tense)
+    label = spec.get('label') or f"{mood} {tense}".strip()
+    features = {
+        'mood': mood,
+        'tense': tense,
+        'label': label,
+        'display_order': spec.get('display_order', 999),
+        'formation': spec.get('formation', 'simple'),
+        'version': 1,
+    }
+    db.execute(
+        "INSERT OR REPLACE INTO language_objects "
+        "(id,type_code,canonical_form,display_form,normalized_form,part_of_speech,source_id,content_status,provenance) "
+        "VALUES (?,?,?,?,?,?,?,?,?)",
+        (tense_id, 'conjugation_paradigm', f"{lemma} {mood} {tense}", label,
+         normalise(f"{lemma} {mood} {tense}"), 'VER', SOURCE_ID, 'metadata_ready', 'ai_enriched'),
+    )
+    db.execute(
+        "INSERT OR REPLACE INTO object_attributes(object_id,key,value_json) VALUES (?,?,?)",
+        (tense_id, 'conjugation_features', json.dumps(features)),
+    )
+    db.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (tense_id,))
+    add_relation(db, root_id, tense_id, 'contains')
+    return tense_id
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--database', type=Path, required=True)
     parser.add_argument('--input', type=Path, required=True)
+    parser.add_argument('--catalog', type=Path, required=True)
     args = parser.parse_args()
     paradigms = json.loads(args.input.read_text(encoding='utf-8'))
+    catalog = json.loads(args.catalog.read_text(encoding='utf-8'))
 
     db = sqlite3.connect(args.database)
     db.execute('PRAGMA foreign_keys = ON')
@@ -77,27 +109,21 @@ def main() -> None:
                  normalise(paradigm['lemma']), 'VER', SOURCE_ID, 'metadata_ready', 'ai_enriched'),
             )
             add_relation(db, lemma_id, root_paradigm_id, 'belongs_to_conjugation')
+        tense_paradigms: dict[tuple[str, str], str] = {}
+        for spec in catalog:
+            key = (spec.get('mood') or '', spec.get('tense') or '')
+            tense_paradigms[key] = materialize_tense_paradigm(
+                db, root_paradigm_id, paradigm['lemma'], lemma_id, spec
+            )
         grouped_forms: dict[tuple[str, str], list[dict]] = {}
         for form in paradigm['forms']:
             grouped_forms.setdefault((form.get('mood') or '', form.get('tense') or ''), []).append(form)
-        tense_paradigms: dict[tuple[str, str], str] = {}
-        for (mood, tense), forms in grouped_forms.items():
-            tense_id = tense_paradigm_id(lemma_id, mood, tense)
-            tense_paradigms[(mood, tense)] = tense_id
-            db.execute(
-                "INSERT OR REPLACE INTO language_objects "
-                "(id,type_code,canonical_form,display_form,normalized_form,part_of_speech,source_id,content_status,provenance) "
-                "VALUES (?,?,?,?,?,?,?,?,?)",
-                (tense_id, 'conjugation_paradigm', f"{paradigm['lemma']} {mood} {tense}",
-                 f"{mood} {tense}", normalise(f"{paradigm['lemma']} {mood} {tense}"),
-                 'VER', SOURCE_ID, 'metadata_ready', 'ai_enriched'),
-            )
-            db.execute(
-                "INSERT OR REPLACE INTO object_attributes(object_id,key,value_json) VALUES (?,?,?)",
-                (tense_id, 'conjugation_features', json.dumps({'mood': mood, 'tense': tense, 'version': 1})),
-            )
-            db.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (tense_id,))
-            add_relation(db, root_paradigm_id, tense_id, 'contains')
+        for (mood, tense) in grouped_forms:
+            if (mood, tense) not in tense_paradigms:
+                tense_paradigms[(mood, tense)] = materialize_tense_paradigm(
+                    db, root_paradigm_id, paradigm['lemma'], lemma_id,
+                    {'mood': mood, 'tense': tense},
+                )
         for form in paradigm['forms']:
             # Match the historic graph ID contract: person distinguishes the
             # two identical present forms (for example, je/tu fais), while
