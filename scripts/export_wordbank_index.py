@@ -61,7 +61,19 @@ for row in db.execute('SELECT source_object_id, target_object_id, relationship_t
     relationships.setdefault(row['source_object_id'], []).append({'type': row['relationship_type_code'], 'target': row['target_object_id']})
     if row['relationship_type_code'] == 'illustrates':
         examples.setdefault(row['target_object_id'], []).append(row['source_object_id'])
-base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','sentence','learning_group','conjugation_tense','learning_resource','pronunciation')"))
+lexical_senses = {}
+try:
+    for row in db.execute(
+        """SELECT owner.language_object_id AS owner_id, sense.sense_object_id
+           FROM lexical_senses sense
+           JOIN canonical_objects owner ON owner.canonical_id=sense.owner_canonical_id
+           ORDER BY owner.language_object_id, sense.display_order, sense.sense_object_id"""
+    ):
+        lexical_senses.setdefault(row['owner_id'], []).append(row['sense_object_id'])
+except sqlite3.OperationalError:
+    # Pre-sense-schema databases remain exportable during an additive migration.
+    pass
+base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','lexical_sense','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','sentence','learning_group','conjugation_tense','learning_resource','pronunciation')"))
 paradigm_ids = {
     relation['target_object_id'] for relation in db.execute(
         "SELECT target_object_id FROM relationships WHERE relationship_type_code='member_of_paradigm'"
@@ -94,9 +106,9 @@ if paradigm_ids:
     ))
 objects = []
 for row in [*base_rows, *extra_rows]:
-    item = dict(row); item['canonical_id'] = canonical_ids.get(row['id']); item['facts'] = canonical_facts.get(item['canonical_id'], []); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
+    item = dict(row); item['canonical_id'] = canonical_ids.get(row['id']); item['facts'] = canonical_facts.get(item['canonical_id'], []); item['search_key'] = search_key(row['normalized_form']); item['definitions'] = definitions.get(row['id'], []); item['senses'] = lexical_senses.get(row['id'], []); item['features'] = features.get(row['id']); item['verb_metadata'] = verb_metadata.get(row['id']); item['tense_metadata'] = tense_metadata.get(row['id']); item['realization'] = realizations.get(row['id']); item['realization_components'] = realization_components.get(row['id'], []); item['teaching_guidance'] = teaching_guidance.get(row['id']); item['attributes'] = attributes.get(row['id'], {}); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
     objects.append(item)
-payload = {'version': 3, 'objects': objects}
+payload = {'version': 4, 'objects': objects}
 args.output.parent.mkdir(parents=True, exist_ok=True)
 args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 print(f'Exported {len(objects)} language objects to {args.output}')

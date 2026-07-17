@@ -19,6 +19,7 @@ Turn learner input into the best local learning route while preserving canonical
 - `etre` resolves to canonical `être`; stored display text is never degraded.
 - `as` resolves to its own form object, then exposes its `inflected_form_of` link to `avoir`.
 - Multi-word expressions can resolve as one object before sentence analysis.
+- A resolved word may project its ordered `has_sense` links from the browser index, while each lexical sense remains its own navigable object and retains its own evidenced gloss facts.
 
 ## Boundaries
 
