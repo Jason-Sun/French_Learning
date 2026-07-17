@@ -87,14 +87,15 @@ The importer creates `ai_enriched` definitions, pronunciation records, first-cla
 ```bash
 python3 scripts/import_conjugation_paradigms.py \
   --database data/wordbank/liens-knowledge.sqlite \
-  --input data/wordbank/core-conjugation-paradigms.json
+  --input data/wordbank/core-conjugation-paradigms.json \
+  --catalog data/wordbank/conjugation-paradigm-catalog.json
 ```
 
 Each record becomes an `inflected_form` Language Object with `form_features`, an `inflected_form_of` edge to its canonical lemma, and a `member_of_paradigm` edge. Search opens the form's own page; its `inflected_form_of` edge provides the explicit, clickable route back to the canonical lemma.
 
 ### Tense paradigms and verb metadata
 
-Each verb has a root `conjugation_paradigm` object. Each available mood-tense combination is a separate `conjugation_paradigm` child with a stable ID, `conjugation_features` object attribute, and `member_of_paradigm` edges from its forms. This lets the browser present a textbook-style tense selector without hard-coding verb forms.
+Each verb has a root `conjugation_paradigm` object. Each catalogued mood-tense combination is a separate `conjugation_paradigm` child with a stable ID and `conjugation_features` object attribute. When forms exist, they add `member_of_paradigm` edges to that child. This lets the browser present a textbook-style tense selector without hard-coding verb forms, while making unfilled paradigms explicit rather than fabricating content.
 
 `verb_metadata` is lemma-owned data: verb group, irregularity, future stem, auxiliary lemma, explanations, provenance, confidence, and status. It is intentionally separate from `form_features`, which belong only to an inflected form.
 

@@ -39,6 +39,24 @@ paradigm_ids = {
         "SELECT target_object_id FROM relationships WHERE relationship_type_code='member_of_paradigm'"
     )
 }
+paradigm_ids.update(
+    row['id'] for row in db.execute(
+        "SELECT DISTINCT child.id FROM language_objects AS child "
+        "JOIN relationships AS child_link ON child_link.target_object_id=child.id "
+        "AND child_link.relationship_type_code='contains' "
+        "JOIN relationships AS verb_link ON verb_link.target_object_id=child_link.source_object_id "
+        "AND verb_link.relationship_type_code='belongs_to_conjugation' "
+        "WHERE child.type_code='conjugation_paradigm'"
+    )
+)
+root_ids = {
+    relation['source_object_id'] for relation in db.execute(
+        "SELECT source_object_id FROM relationships WHERE relationship_type_code='contains' "
+        "AND target_object_id IN ({})".format(','.join('?' for _ in paradigm_ids)),
+        tuple(sorted(paradigm_ids)),
+    )
+} if paradigm_ids else set()
+paradigm_ids.update(root_ids)
 extra_rows = []
 if paradigm_ids:
     placeholders = ','.join('?' for _ in paradigm_ids)
