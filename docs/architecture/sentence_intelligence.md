@@ -13,6 +13,8 @@ Output: tokens, resolved object/lemma IDs, analysis nodes, typed edges, recogniz
 
 An analysis may resolve spans to canonical UUIDs through `sentence_analysis_object_matches`, including contraction components, overlapping multi-word objects, and first-class `grammar_object` matches. It remains a per-input, non-canonical record. Deterministic and future AI-assisted analysis may link a Learning Resource revision for learner-facing guidance, but cannot create or overwrite canonical Language Objects, Facts, Evidence, or relationships.
 
+Deterministic construction recognition must test the complete structural condition before attaching a Grammar Object. For example, *futur proche* requires a present-tense inflected form of `aller` followed by an infinitive verb; a present form of `aller` followed by a destination phrase is not *futur proche*.
+
 ## Current behavior
 
 - Tokenizes French text and handles selected contractions and elisions.
