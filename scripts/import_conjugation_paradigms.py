@@ -46,6 +46,7 @@ def materialize_tense_paradigm(
         'label': label,
         'display_order': spec.get('display_order', 999),
         'formation': spec.get('formation', 'simple'),
+        'tense_object_id': stable_id('tense', spec['code']) if spec.get('code') else None,
         'version': 1,
     }
     db.execute(
@@ -61,6 +62,8 @@ def materialize_tense_paradigm(
     )
     db.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (tense_id,))
     add_relation(db, root_id, tense_id, 'contains')
+    if spec.get('code'):
+        add_relation(db, tense_id, stable_id('tense', spec['code']), 'realizes_tense')
     return tense_id
 
 
@@ -71,7 +74,8 @@ def main() -> None:
     parser.add_argument('--catalog', type=Path, required=True)
     args = parser.parse_args()
     paradigms = json.loads(args.input.read_text(encoding='utf-8'))
-    catalog = json.loads(args.catalog.read_text(encoding='utf-8'))
+    catalog_data = json.loads(args.catalog.read_text(encoding='utf-8'))
+    catalog = catalog_data['tenses'] if isinstance(catalog_data, dict) else catalog_data
 
     db = sqlite3.connect(args.database)
     db.execute('PRAGMA foreign_keys = ON')

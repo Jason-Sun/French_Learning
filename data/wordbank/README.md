@@ -97,6 +97,17 @@ Each record becomes an `inflected_form` Language Object with `form_features`, an
 
 Each verb has a root `conjugation_paradigm` object. Each catalogued mood-tense combination is a separate `conjugation_paradigm` child with a stable ID and `conjugation_features` object attribute. When forms exist, they add `member_of_paradigm` edges to that child. This lets the browser present a textbook-style tense selector without hard-coding verb forms, while making unfilled paradigms explicit rather than fabricating content.
 
+Learning sequence is graph data too: `learning_group` objects contain reusable `conjugation_tense` objects through `contains`; a verb-specific paradigm points to its reusable tense through `realizes_tense`. `conjugation_tense_metadata` stores CEFR recommendation, group, mood, tense, ordering, formation type, structured explanation/usage-note references, example reference, source, confidence, and review status. Verb-level conjugation explanations are `learning_resource` objects linked with `explains_conjugation`, rather than hard-coded UI copy.
+
+Seed the learning taxonomy before importing verb-specific paradigms:
+
+```bash
+python3 scripts/add_conjugation_learning_schema.py --database data/wordbank/liens-knowledge.sqlite
+python3 scripts/seed_conjugation_learning_catalog.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --catalog data/wordbank/conjugation-paradigm-catalog.json
+```
+
 `verb_metadata` is lemma-owned data: verb group, irregularity, future stem, auxiliary lemma, explanations, provenance, confidence, and status. It is intentionally separate from `form_features`, which belong only to an inflected form.
 
 ## Local lookup contract
