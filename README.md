@@ -19,6 +19,10 @@ Then visit `http://localhost:8000`.
 3. Tap a form in the sentence breakdown to explore the word object.
 4. Save a word or sentence; open Vocabulary; start a review.
 
+## Local pronunciation playback
+
+IPA and audio references live in the Language Object graph. The playback layer is separate from that metadata: it first uses a local cached recording when `local_audio_path` is present, otherwise the browser's local `SpeechSynthesis` provider speaks the object's canonical French form. Neither path uses a server, cloud API, or AI service. Later local-TTS providers can be added without changing the button or pronunciation metadata.
+
 ## Hackathon status
 
 This runnable prototype demonstrates the core product loop: Learn → Explore → Save → Review. The next implementation increment adds a server-side GPT-5.6 analysis layer for arbitrary French input while keeping structured lexical facts and API credentials outside the browser.
