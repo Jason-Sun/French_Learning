@@ -4,12 +4,13 @@
 
 Before proposing or implementing a feature, every contributor—including an AI agent—must read:
 
-1. [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md)
-2. [Architecture Bible](ARCHITECTURE_BIBLE.md)
-3. [Product Bible](PRODUCT_BIBLE.md)
-4. [Roadmap](ROADMAP.md)
-5. [Current State](CURRENT_STATE.md)
-6. [Decision Log](DECISION_LOG.md)
+1. [Liens Bible](LIENS_BIBLE.md)
+2. [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md)
+3. [Architecture Bible](ARCHITECTURE_BIBLE.md)
+4. [Product Bible](PRODUCT_BIBLE.md)
+5. [Roadmap](ROADMAP.md)
+6. [Current State](CURRENT_STATE.md)
+7. [Decision Log](DECISION_LOG.md)
 
 Then verify that the proposal is consistent with them. If it conflicts, explain the conflict and obtain a decision before editing implementation code.
 
@@ -67,7 +68,8 @@ Perform a Documentation Audit before **every** Git commit. This is a targeted ac
 | --- | --- |
 | System architecture or a cross-system contract | `ARCHITECTURE_FREEZE_V1.md`, `ARCHITECTURE_BIBLE.md`, and any affected subsystem contract |
 | Significant architectural decision | Append `DECISION_LOG.md` |
-| Product or learning philosophy | `PRODUCT_BIBLE.md` |
+| Enduring product identity | `LIENS_BIBLE.md` |
+| Active product or learning philosophy | `PRODUCT_BIBLE.md` |
 | Verified project status or completed milestone | `CURRENT_STATE.md` |
 | Roadmap scope or sequencing | `ROADMAP.md` |
 | Development or AI-agent workflow | This file and `AI_DEVELOPMENT_PROTOCOL.md` |

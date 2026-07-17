@@ -1,5 +1,7 @@
 # Liens Product Bible
 
+> [Liens Bible](LIENS_BIBLE.md) is the highest-level product constitution: it defines Liens' durable identity and philosophy. This document records the active product and learning contract that operationalizes that constitution.
+
 ## Product definition
 
 Liens is a learning-first French environment built around connected language knowledge. It is designed to let a learner move naturally from a word to its forms, examples, constructions, pronunciation, and related language without leaving the learning flow.

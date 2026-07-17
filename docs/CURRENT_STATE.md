@@ -16,6 +16,10 @@
 
 The repository still contains generated SQLite and browser-index artifacts, and rebuilding currently requires manual source preparation. Before material A2 expansion or any history migration, Liens needs one deterministic end-to-end data build, immutable release manifests, and artifact distribution outside ordinary Git history.
 
+### Product constitution
+
+[LIENS_BIBLE.md](LIENS_BIBLE.md) is now the highest-level, long-lived product reference. It separates Liens' enduring identity from the active Product Bible and the technical Architecture Freeze.
+
 ## Implemented
 
 - Static browser app with direct local Language Object search and sentence routing.

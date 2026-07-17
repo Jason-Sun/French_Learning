@@ -4,7 +4,7 @@ This protocol governs any AI agent working on Liens. It exists to preserve produ
 
 ## Before implementation
 
-1. Read the Product Bible, Architecture Freeze v1.0, Architecture Bible, Roadmap, Current State, and Decision Log.
+1. Read the Liens Bible, Product Bible, Architecture Freeze v1.0, Architecture Bible, Roadmap, Current State, and Decision Log.
 2. Inspect the relevant code, data model, and current working tree.
 3. State the intended scope and any architectural conflict before changing code.
 4. Do not treat chat history as a source of truth when the documentation or repository provides stronger evidence.
@@ -24,7 +24,7 @@ Before creating a Git commit, audit documentation for accuracy:
 
 1. Did the system architecture change? Update `ARCHITECTURE_FREEZE_V1.md` when a frozen boundary changes, plus `ARCHITECTURE_BIBLE.md` and affected subsystem documentation.
 2. Was a significant architectural decision made? Append `DECISION_LOG.md`.
-3. Did product or learning philosophy change? Update `PRODUCT_BIBLE.md`.
+3. Did Liens' enduring product identity change? Update `LIENS_BIBLE.md`. Did active product or learning philosophy change? Update `PRODUCT_BIBLE.md`.
 4. Did verified project state or milestone change? Update `CURRENT_STATE.md`.
 5. Did the roadmap change? Update `ROADMAP.md`.
 6. Did the development workflow change? Update `CONTRIBUTING.md` and this protocol.

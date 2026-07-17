@@ -4,18 +4,20 @@ This directory is the durable source of truth for Liens. It records the product 
 
 ## Start here
 
-1. Read [PRODUCT_BIBLE.md](PRODUCT_BIBLE.md) to understand what Liens is trying to make possible for learners.
-2. Read [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md) before planning a future-facing system or changing a layer boundary.
-3. Read [ARCHITECTURE_BIBLE.md](ARCHITECTURE_BIBLE.md) before designing or changing a technical system.
-4. Read [CURRENT_STATE.md](CURRENT_STATE.md) before beginning work in the repository.
-5. Read [ROADMAP.md](ROADMAP.md) to place a proposed milestone in the larger product.
-6. Read [DECISION_LOG.md](DECISION_LOG.md) before revisiting an established architectural choice.
-7. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) for the required development protocol.
+1. Read [LIENS_BIBLE.md](LIENS_BIBLE.md) to understand Liens' enduring product identity.
+2. Read [PRODUCT_BIBLE.md](PRODUCT_BIBLE.md) to understand the active learning and experience contract.
+3. Read [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md) before planning a future-facing system or changing a layer boundary.
+4. Read [ARCHITECTURE_BIBLE.md](ARCHITECTURE_BIBLE.md) before designing or changing a technical system.
+5. Read [CURRENT_STATE.md](CURRENT_STATE.md) before beginning work in the repository.
+6. Read [ROADMAP.md](ROADMAP.md) to place a proposed milestone in the larger product.
+7. Read [DECISION_LOG.md](DECISION_LOG.md) before revisiting an established architectural choice.
+8. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) for the required development protocol.
 
 ## Documents and update rules
 
 | Document | Purpose | Update when |
 | --- | --- | --- |
+| [Liens Bible](LIENS_BIBLE.md) | Highest-level product constitution and long-lived identity. | Liens' enduring product philosophy changes. |
 | [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md) | Long-term product-system boundaries, data-build/release model, and mandatory engineering gates. | A documented architectural decision changes a frozen boundary. |
 | [Architecture Bible](ARCHITECTURE_BIBLE.md) | Constitutional technical principles and system boundaries. | A durable architecture, ownership rule, or cross-system contract changes. |
 | [Product Bible](PRODUCT_BIBLE.md) | Product philosophy and learner experience. | Product intent, learning flow, or interaction principles change. |
@@ -31,6 +33,6 @@ This directory is the durable source of truth for Liens. It records the product 
 
 ## Scope hierarchy
 
-The Product Bible explains **why**. The Architecture Bible explains **what must remain true**. Subsystem documents explain **how a bounded system works**. The Current State explains **what exists now**. The Decision Log records **why a choice was made at a point in time**.
+The Liens Bible explains **who Liens must remain**. The Product Bible explains **how that identity appears in the active learner experience**. The Architecture Freeze and Architecture Bible explain **what must remain true technically**. Subsystem documents explain **how a bounded system works**. The Current State explains **what exists now**. The Decision Log records **why a choice was made at a point in time**.
 
-When documents disagree, preserve learner intent from the Product Bible, then resolve the technical conflict through an explicit new decision rather than silently editing history.
+When documents disagree, preserve learner intent from the Liens Bible, then resolve the product or technical conflict through an explicit new decision rather than silently editing history.
