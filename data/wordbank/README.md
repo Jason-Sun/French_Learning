@@ -9,7 +9,8 @@
 - `language_objects`: the single identity layer for words, forms, expressions, idioms, constructions, paradigms, sentences, media-ready pronunciation objects, and future learning resources.
 - `relationships`: directed, typed graph edges. Navigation is a graph traversal, not a page hierarchy.
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
-- `pronunciations`: durable, object-linked pronunciation records. Each record may contain IPA, syllables, stress data, an external audio reference, a local cached-audio path, provenance, confidence, and status. Audio is metadata only in this milestone; no playback is implied.
+- `pronunciations`: the retained import-compatible record table.
+- `pronunciation_object_details`: structured linguistic metadata owned by first-class `pronunciation` Language Objects.
 - `learning_metadata`, `review_metadata`, and `media`: learning and delivery information kept distinct from linguistic facts.
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
 - `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
@@ -25,9 +26,9 @@
 
 ### Pronunciation contract
 
-Pronunciation belongs to a Language Object, never to a UI component. `pronunciations.object_id` supports one or more regional or source variants per object. `ipa` is the current display-ready field; `syllables_json` and `stress_json` preserve structured learning data; `audio_source_uri` and `local_audio_path` reserve future media delivery without coupling the graph to playback. `provenance`, `confidence`, `source_id`, and `status` follow the same curated-versus-enriched policy as the rest of the graph. Pronunciation is never inherited across relationships: an `inflected_form` may link to its lemma with `inflected_form_of`, but it must have its own pronunciation record before IPA or playback is shown.
+Pronunciation belongs to the graph, never to a UI component. A learnable object links to one or more `pronunciation` Language Objects through `has_pronunciation`. Its `pronunciation_object_details` stores IPA, syllables, stress, liaison, silent letters, elision, regional variant, source, confidence, review status, optional audio URI, and optional local audio path. The browser embeds these graph nodes behind the compatible `object.pronunciations` adapter field, so every surface can reuse the same data without duplicating it.
 
-The legacy `language_objects.ipa` column remains readable for compatibility. New pronunciation writes belong in `pronunciations`.
+Pronunciation is never inherited across relationships: an `inflected_form` may link to its lemma with `inflected_form_of`, but it must have its own Pronunciation Object before IPA or playback is shown. The legacy `language_objects.ipa` column and `pronunciations` table remain readable/importable; `scripts/add_graph_native_pronunciation_schema.py` synchronizes them into graph nodes.
 
 For example, `sommes` is an `inflected_form` object with an `inflected_form_of` edge to `être`, plus grammatical features. Every verb is connected to its own `conjugation_paradigm` object.
 
@@ -79,6 +80,27 @@ python3 scripts/import_a1_foundation.py \
 ```
 
 The importer creates `ai_enriched` definitions, pronunciation records, first-class sentence objects, and `illustrates` graph edges. The browser exposes this provenance as **AI draft**, so no generated learning content is presented as curated data.
+
+### Graph-native pronunciation and core forms
+
+After any importer that creates legacy pronunciation records, synchronize their graph representation:
+
+```bash
+python3 scripts/add_graph_native_pronunciation_schema.py \
+  --database data/wordbank/liens-knowledge.sqlite
+```
+
+The initial core conjugations have independent, reviewed IPA for each of their 56 inflected-form objects. They are declarative data, not a lemma fallback:
+
+```bash
+python3 scripts/import_core_form_pronunciations.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --input data/wordbank/core-form-pronunciations.json
+python3 scripts/add_graph_native_pronunciation_schema.py \
+  --database data/wordbank/liens-knowledge.sqlite
+```
+
+Playback is intentionally outside the database. The static browser chooses a provider in this local-first order: local recording, local cached TTS, browser SpeechSynthesis. A future provider may be registered without changing any page or graph schema. Remote providers are not part of the current stack.
 
 ### Core conjugation import
 

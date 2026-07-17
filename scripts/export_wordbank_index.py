@@ -31,15 +31,32 @@ attributes = {}
 for row in db.execute('SELECT object_id,key,value_json FROM object_attributes'):
     attributes.setdefault(row['object_id'], {})[row['key']] = json.loads(row['value_json'])
 pronunciations = {}
-for row in db.execute("SELECT * FROM pronunciations WHERE status <> 'deprecated' ORDER BY object_id, confidence DESC, id"):
-    pronunciations.setdefault(row['object_id'], []).append(dict(row))
+try:
+    pronunciation_rows = db.execute(
+        "SELECT edge.source_object_id AS owner_id, detail.*, pronunciation.display_form AS pronunciation_display_form, "
+        "source.name AS source_name FROM relationships AS edge "
+        "JOIN pronunciation_object_details AS detail ON detail.object_id=edge.target_object_id "
+        "JOIN language_objects AS pronunciation ON pronunciation.id=detail.object_id "
+        "LEFT JOIN sources AS source ON source.id=detail.source_id "
+        "WHERE edge.relationship_type_code='has_pronunciation' "
+        "AND detail.review_status <> 'deprecated' "
+        "ORDER BY edge.source_object_id, detail.confidence DESC, detail.object_id"
+    )
+    for row in pronunciation_rows:
+        record = dict(row)
+        pronunciations.setdefault(record.pop('owner_id'), []).append(record)
+except sqlite3.OperationalError:
+    # An older, exported database remains usable while it awaits the additive
+    # graph-native pronunciation migration.
+    for row in db.execute("SELECT * FROM pronunciations WHERE status <> 'deprecated' ORDER BY object_id, confidence DESC, id"):
+        pronunciations.setdefault(row['object_id'], []).append(dict(row))
 relationships = {}
 examples = {}
 for row in db.execute('SELECT source_object_id, target_object_id, relationship_type_code FROM relationships'):
     relationships.setdefault(row['source_object_id'], []).append({'type': row['relationship_type_code'], 'target': row['target_object_id']})
     if row['relationship_type_code'] == 'illustrates':
         examples.setdefault(row['target_object_id'], []).append(row['source_object_id'])
-base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','sentence','learning_group','conjugation_tense','learning_resource')"))
+base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','sentence','learning_group','conjugation_tense','learning_resource','pronunciation')"))
 paradigm_ids = {
     relation['target_object_id'] for relation in db.execute(
         "SELECT target_object_id FROM relationships WHERE relationship_type_code='member_of_paradigm'"

@@ -7,6 +7,8 @@ import argparse
 import sqlite3
 from pathlib import Path
 
+from pronunciation_graph import sync_graph
+
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -63,14 +65,15 @@ def main() -> None:
             (pronunciation_id(object_id), object_id, ipa, source_id, provenance),
         )
 
+    sync_graph(db)
     db.execute(
-        "INSERT INTO metadata(key, value) VALUES ('schema_version', '4') "
+        "INSERT INTO metadata(key, value) VALUES ('schema_version', '5') "
         "ON CONFLICT(key) DO UPDATE SET value=excluded.value"
     )
     db.execute(
         "INSERT INTO metadata(key, value) VALUES (?, ?) "
         "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-        ('pronunciation_model', 'pronunciations: IPA, syllables, stress, audio references, provenance, confidence'),
+        ('pronunciation_model', 'graph-native Pronunciation Objects linked with has_pronunciation'),
     )
     db.commit()
     print(f"Pronunciation schema ready; migrated {len(legacy_rows)} legacy IPA entries.")
