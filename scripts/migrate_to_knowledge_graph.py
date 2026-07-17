@@ -45,6 +45,15 @@ CREATE TABLE relationships (
 CREATE INDEX relationships_from ON relationships(source_object_id, relationship_type_code);
 CREATE INDEX relationships_to ON relationships(target_object_id, relationship_type_code);
 CREATE TABLE form_features (object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE, mood TEXT, tense TEXT, person TEXT, number TEXT, gender TEXT);
+CREATE TABLE pronunciations (
+  id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE,
+  ipa TEXT, syllables_json TEXT NOT NULL DEFAULT '[]', stress_json TEXT NOT NULL DEFAULT '[]',
+  variant_code TEXT, audio_source_uri TEXT, local_audio_path TEXT,
+  source_id TEXT REFERENCES sources(id), provenance TEXT NOT NULL DEFAULT 'curated',
+  confidence REAL, status TEXT NOT NULL DEFAULT 'metadata_ready', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK (ipa IS NOT NULL OR audio_source_uri IS NOT NULL OR local_audio_path IS NOT NULL)
+);
+CREATE INDEX pronunciations_by_object ON pronunciations(object_id, status, confidence DESC);
 CREATE TABLE media (id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE, kind TEXT NOT NULL, uri TEXT NOT NULL, license TEXT, source_id TEXT REFERENCES sources(id));
 CREATE TABLE learning_metadata (object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE, save_eligible INTEGER NOT NULL DEFAULT 1, review_eligible INTEGER NOT NULL DEFAULT 1, learning_priority INTEGER NOT NULL DEFAULT 0, tags_json TEXT NOT NULL DEFAULT '[]');
 CREATE TABLE ai_generated_content (id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE, content_kind TEXT NOT NULL, payload_json TEXT NOT NULL, model TEXT, prompt_version TEXT, confidence REAL, status TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -58,6 +67,7 @@ CREATE VIEW senses AS SELECT d.id, d.object_id AS lexeme_id, d.position, d.engli
 CREATE VIEW forms AS SELECT f.id, r.target_object_id AS lexeme_id, f.display_form AS surface, f.normalized_form AS normalized_surface, x.mood, x.tense, x.person, x.number, x.gender FROM language_objects f JOIN form_features x ON x.object_id=f.id JOIN relationships r ON r.source_object_id=f.id AND r.relationship_type_code='inflected_form_of' WHERE f.type_code='inflected_form';
 CREATE VIEW collocations AS SELECT id, display_form AS text, normalized_form AS normalized_text, cefr_level, content_status FROM language_objects WHERE type_code IN ('collocation','expression','idiom');
 CREATE VIEW grammar_patterns AS SELECT id, display_form AS name, cefr_level FROM language_objects WHERE type_code='grammar_construction';
+CREATE VIEW pronunciation_entries AS SELECT id, object_id, ipa, syllables_json, stress_json, variant_code, audio_source_uri, local_audio_path, source_id, provenance, confidence, status FROM pronunciations;
 """
 
 OBJECT_TYPES = [
@@ -97,12 +107,14 @@ def main() -> None:
     db.executemany('INSERT INTO object_types VALUES (?, ?, ?)', OBJECT_TYPES)
     db.executemany('INSERT INTO relationship_types VALUES (?, ?, 1, ?)', RELATIONSHIP_TYPES)
     db.executemany('INSERT INTO sources VALUES (?, ?, ?, ?, ?)', old.execute('SELECT id,name,url,license,citation FROM sources'))
-    db.executemany('INSERT INTO metadata VALUES (?, ?)', [('schema_version', '2'), ('architecture', 'Language Object knowledge graph'), ('migration_source', str(args.source))])
+    db.executemany('INSERT INTO metadata VALUES (?, ?)', [('schema_version', '4'), ('architecture', 'Language Object knowledge graph'), ('migration_source', str(args.source)), ('pronunciation_model', 'pronunciations: IPA, syllables, stress, audio references, provenance, confidence')])
     lexeme_map: dict[int, str] = {}
     for row in old.execute('SELECT * FROM lexemes'):
         obj_id = oid('word', row['normalized_lemma'], row['part_of_speech'])
         lexeme_map[row['id']] = obj_id
         db.execute('INSERT INTO language_objects (id,type_code,canonical_form,display_form,normalized_form,cefr_level,part_of_speech,ipa,frequency_per_million,source_id,content_status,provenance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', (obj_id, 'word', row['lemma'], row['lemma'], row['normalized_lemma'], row['cefr_level'], row['part_of_speech'], row['pronunciation_ipa'], row['frequency_per_million'], row['source_id'], row['content_status'], 'curated'))
+        if row['pronunciation_ipa']:
+            db.execute('INSERT INTO pronunciations (id,object_id,ipa,source_id,provenance,confidence,status) VALUES (?,?,?,?,?,?,?)', (oid('pronunciation', obj_id), obj_id, row['pronunciation_ipa'], row['source_id'], 'curated', 1.0, 'curated'))
         db.execute('INSERT INTO learning_metadata (object_id,learning_priority) VALUES (?, ?)', (obj_id, round(row['frequency_per_million'] or 0)))
         if row['part_of_speech'] in ('VER', 'V'):
             paradigm = oid('paradigm', row['normalized_lemma'])

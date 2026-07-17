@@ -9,6 +9,7 @@
 - `language_objects`: the single identity layer for words, forms, expressions, idioms, constructions, paradigms, sentences, media-ready pronunciation objects, and future learning resources.
 - `relationships`: directed, typed graph edges. Navigation is a graph traversal, not a page hierarchy.
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
+- `pronunciations`: durable, object-linked pronunciation records. Each record may contain IPA, syllables, stress data, an external audio reference, a local cached-audio path, provenance, confidence, and status. Audio is metadata only in this milestone; no playback is implied.
 - `learning_metadata`, `review_metadata`, and `media`: learning and delivery information kept distinct from linguistic facts.
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
 - `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
@@ -21,6 +22,12 @@
 ### Core relationship types
 
 `inflected_form_of`, `belongs_to_conjugation`, `member_of_paradigm`, `contains`, `commonly_used_with`, `governs_preposition`, `expresses`, `illustrates`, `has_pronunciation`, and `related_to` are seeded in `relationship_types`.
+
+### Pronunciation contract
+
+Pronunciation belongs to a Language Object, never to a UI component. `pronunciations.object_id` supports one or more regional or source variants per object. `ipa` is the current display-ready field; `syllables_json` and `stress_json` preserve structured learning data; `audio_source_uri` and `local_audio_path` reserve future media delivery without coupling the graph to playback. `provenance`, `confidence`, `source_id`, and `status` follow the same curated-versus-enriched policy as the rest of the graph.
+
+The legacy `language_objects.ipa` column remains readable for compatibility. New pronunciation writes belong in `pronunciations`.
 
 For example, `sommes` is an `inflected_form` object with an `inflected_form_of` edge to `être`, plus grammatical features. Every verb is connected to its own `conjugation_paradigm` object.
 
