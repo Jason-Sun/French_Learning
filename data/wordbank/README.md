@@ -128,6 +128,20 @@ python3 scripts/import_lexique_a1_function_word_morphology.py \
   --report data/wordbank/import-reports/lexique383-a1-function-word-morphology.json
 ```
 
+### Source-backed Kaikki / English Wiktionary A1 senses
+
+The Kaikki French dictionary extraction supplies French lexical senses with English glosses. It is a separate, hash-locked release under the upstream CC BY-SA/GFDL terms; its data must retain the manifest's attribution and licence obligations. The importer creates first-class `lexical_sense` objects and `english_gloss` facts with row-level source evidence. It does not write generated Chinese translations or learner explanations.
+
+```bash
+python3 scripts/add_lexical_sense_schema.py \
+  --database data/wordbank/liens-knowledge.sqlite
+python3 scripts/import_kaikki_a1_senses.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/kaikki.org-dictionary-French.jsonl \
+  --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-a1-senses.json \
+  --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-senses.json
+```
+
 ### Source-backed Lexique A1 pronunciation representations
 
 The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. It does not convert the code to IPA and does not modify the browser's verified-IPA projection.
