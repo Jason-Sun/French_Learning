@@ -9,6 +9,10 @@ Produce a deterministic, evidence-linked local analysis of a learner sentence us
 Input: source sentence and optional saved object IDs.  
 Output: tokens, resolved object/lemma IDs, analysis nodes, typed edges, recognized expressions, grammar nodes, unknown tokens, learning candidates, provenance, confidence, and transient cache status.
 
+## Canonical boundary
+
+An analysis may resolve spans to canonical UUIDs through `sentence_analysis_object_matches`, including contraction components and overlapping multi-word objects. It remains a per-input, non-canonical record. Deterministic and future AI-assisted analysis may link a Learning Resource revision for learner-facing guidance, but cannot create or overwrite canonical Language Objects, Facts, Evidence, or relationships.
+
 ## Current behavior
 
 - Tokenizes French text and handles selected contractions and elisions.

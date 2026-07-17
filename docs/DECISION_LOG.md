@@ -65,3 +65,11 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Reason:** Imports must be replaceable without breaking saved objects, APIs, or learner history; individual facts require independent provenance and conflict handling; learning material can be AI-, teacher-, human-, or source-authored without becoming canonical truth.
 **Alternatives:** Importer-generated object IDs; object-level source attribution only; an AI-only enrichment table.
 **Long-term impact:** The graph can evolve across sources and content authors while preserving durable identity and provenance.
+
+## ADR-009 — Predicate facts, immutable learning revisions, and non-canonical analysis
+
+**Date:** 2026-07-17
+**Decision:** Canonical knowledge uses predicate-based typed facts with fact-level evidence and lifecycle. Learning Resources have immutable ordered revisions, with at most one published revision. Sentence parser and AI outputs remain non-canonical analysis records that may reference canonical UUIDs and Learning Resource revisions only.
+**Reason:** Predicate claims make indexing and conflict handling explicit; revisions preserve teaching-content history; natural-language analysis must enrich graph navigation without redefining linguistic truth.
+**Alternatives:** Anonymous property values; destructive edits to explanations; allowing parser/AI outputs to write directly to the graph.
+**Long-term impact:** The future parser can support arbitrary French input and AI-assisted explanations without requiring a graph redesign or weakening provenance.

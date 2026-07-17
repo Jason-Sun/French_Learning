@@ -34,6 +34,8 @@ SQLite is the authoritative linguistic store. `wordbank-index.json` is a read-op
 
 Canonical linguistic assertions are modeled separately as **Language Object → Fact → Evidence**. `canonical_facts` holds an atomic claim; typed value tables hold code, number, text, or object values; `fact_evidence` supports one or more source records per claim. This allows CEFR, IPA, frequency, morphology, and other facts to have independent provenance and future conflict resolution.
 
+Every fact is predicate-based: **Language Object → predicate → typed value → Evidence**. The predicate registry owns value type and query semantics, while a fact lifecycle belongs to the individual claim. Facts never become anonymous JSON values. Conflicting source claims remain separate, evidenced facts until an explicit editorial policy selects or supersedes a claim.
+
 Typed `relationships` provide graph navigation. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
 
 Important object types include `word`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
@@ -89,6 +91,12 @@ Every saved or reviewable item is keyed by a stable Language Object ID. The curr
 The Source Layer is independent from the graph: source catalogs, frozen releases, import runs, immutable source records, mappings, exclusions, and fact evidence let FLELex, Lexique, Lefff, Wiktionary, commercial datasets, or future sources feed the same canonical schema. No canonical table is shaped around a particular provider.
 
 The Learning Layer contains explanations, teacher notes, memory hints, usage advice, and future exercises as `learning_resource` objects linked to canonical IDs. AI is one authoring mode alongside human, teacher, and imported resources. Learning resources never write canonical linguistic facts; promotion requires an explicit reviewed canonical import.
+
+Learning Resource content is revisioned and immutable. A resource has ordered revisions, with at most one published revision at a time; later authoring supersedes a revision rather than destructively changing it.
+
+## Natural-language analysis boundary
+
+Future sentence parsing may be deterministic, AI-assisted, or hybrid, but its output remains non-canonical. It may resolve spans to canonical UUIDs, including lemmas, inflected forms, contraction components, expressions, collocations, grammar constructions, and sentence targets. It may attach a Learning Resource revision for an explanation. It must never directly create or overwrite canonical objects, facts, or relationships.
 
 ## Scalability and extension rule
 

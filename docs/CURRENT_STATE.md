@@ -16,7 +16,7 @@
 - Optional Chinese display; English always visible; local saved-object state.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
-- Canonical UUID registry, fact/evidence provenance model, and general Learning Layer infrastructure are being introduced before any A1 source import.
+- Canonical UUID registry, predicate-based fact/evidence provenance, immutable Learning Resource revisions, and non-canonical parser-analysis boundaries are established before any A1 source import.
 
 ## Pending
 

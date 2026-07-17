@@ -7,6 +7,8 @@
 ## Contents
 
 - `language_objects`: the single identity layer for words, forms, expressions, idioms, constructions, paradigms, sentences, media-ready pronunciation objects, and future learning resources.
+- `canonical_objects`: permanent source-independent UUID identities. Legacy `language_objects.id` remains a browser compatibility key during migration.
+- `canonical_facts`, typed fact-value tables, and `fact_evidence`: predicate-based linguistic claims with independently evidenced values.
 - `relationships`: directed, typed graph edges. Navigation is a graph traversal, not a page hierarchy.
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
 - `pronunciations`: the retained import-compatible record table.
@@ -14,7 +16,9 @@
 - `learning_metadata`, `review_metadata`, and `media`: learning and delivery information kept distinct from linguistic facts.
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
 - `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
+- `sentence_analysis_object_matches`: non-canonical parser matches from input spans to canonical UUIDs, including contractions and multi-word objects.
 - `sentence_learning_items`: review and learning opportunities extracted from an analysis without re-parsing the sentence later.
+- `learning_resource_revisions` and `learning_resource_revision_texts`: immutable, ordered revisions for teacher, human, imported, or AI-authored learning content.
 
 ### Core object types
 
@@ -59,9 +63,9 @@ python3 scripts/add_sentence_intelligence_schema.py \
   --database data/wordbank/liens-knowledge.sqlite
 ```
 
-Migration preserves every v1 word, definition, form, grammar pattern, and source record. It assigns deterministic stable IDs such as `fr:word:être:ver` and `fr:form:...`, so a rebuilt database does not create a new identity for the same object.
+Migration preserves every v1 word, definition, form, grammar pattern, and source record. Legacy deterministic IDs such as `fr:word:être:ver` remain browser-compatible keys; source-independent canonical UUIDs are the permanent external identity for imports, learner state, APIs, and links.
 
-Sentence analyses deliberately do **not** become global Language Objects automatically. They reference stable objects, retain `engine_version`, `provenance`, `confidence`, and `cache_status`, and can be replayed or discarded independently. Only reviewed reusable knowledge is promoted into the global graph.
+Sentence analyses deliberately do **not** become global Language Objects automatically. They reference stable canonical objects, retain `engine_version`, `provenance`, `confidence`, and `cache_status`, and can be replayed or discarded independently. Only reviewed source/import work may promote reusable knowledge into the global graph.
 
 ## Enrichment rule
 
