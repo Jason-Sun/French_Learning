@@ -10,10 +10,11 @@ The roadmap is organized by product capability. It is not a promise of implement
 - **Verb system:** graph-native forms, pedagogical learning groups, reusable tenses, component-based realizations, and structured teaching resources.
 - **Pronunciation foundation:** graph-native pronunciation objects, independent core-form IPA, local-first provider architecture, and lightweight source display.
 - **Project governance:** durable documentation system and architecture decision record.
+- **Experience refinement:** consistent focus, hover, active, motion, responsive, and accessibility behavior across the existing learning surfaces.
 
 ## Current milestone
 
-Documentation governance is complete when this set is reviewed and kept current. It establishes the operating protocol for all later work.
+The next planned architecture milestone is **Review and Collections**. It begins only after the learner-state, collection, and offline-first scheduling contracts have been reviewed and approved.
 
 ## Next capability themes
 
