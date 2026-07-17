@@ -68,6 +68,18 @@ The database intentionally separates lexical coverage from authored explanations
 
 English is always displayed. Chinese is stored where available and controlled solely by the learner's `chineseExplanations` preference.
 
+### A1 Foundation import
+
+`a1-foundation-draft.json` is a reviewable, AI-assisted enrichment batch—not a lexical authority. Import it with:
+
+```bash
+python3 scripts/import_a1_foundation.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --input data/wordbank/a1-foundation-draft.json
+```
+
+The importer creates `ai_enriched` definitions, pronunciation records, first-class sentence objects, and `illustrates` graph edges. The browser exposes this provenance as **AI draft**, so no generated learning content is presented as curated data.
+
 ## Local lookup contract
 
 The app resolves a typed token locally in this order:

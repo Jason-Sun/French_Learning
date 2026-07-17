@@ -16,11 +16,14 @@ pronunciations = {}
 for row in db.execute("SELECT * FROM pronunciations WHERE status <> 'deprecated' ORDER BY object_id, confidence DESC, id"):
     pronunciations.setdefault(row['object_id'], []).append(dict(row))
 relationships = {}
+examples = {}
 for row in db.execute('SELECT source_object_id, target_object_id, relationship_type_code FROM relationships'):
     relationships.setdefault(row['source_object_id'], []).append({'type': row['relationship_type_code'], 'target': row['target_object_id']})
+    if row['relationship_type_code'] == 'illustrates':
+        examples.setdefault(row['target_object_id'], []).append(row['source_object_id'])
 objects = []
-for row in db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','expression','idiom','collocation','grammar_construction')"):
-    item = dict(row); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], [])
+for row in db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','inflected_form','expression','idiom','collocation','grammar_construction','sentence')"):
+    item = dict(row); item['definitions'] = definitions.get(row['id'], []); item['features'] = features.get(row['id']); item['pronunciations'] = pronunciations.get(row['id'], []); item['relationships'] = relationships.get(row['id'], []); item['examples'] = examples.get(row['id'], [])
     objects.append(item)
 payload = {'version': 2, 'objects': objects}
 args.output.parent.mkdir(parents=True, exist_ok=True)
