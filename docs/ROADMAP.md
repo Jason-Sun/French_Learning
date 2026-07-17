@@ -15,7 +15,21 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**A2 source-backed expansion:** select frozen, licensed source releases and replay the established canonical import, provenance, browser-export, and coverage-audit pipeline. Preserve the A1 reference slice and resolve gaps only through attributable sources or reviewed curation.
+**Architecture Freeze v1.0 — completed.** The next implementation milestone is the **Data Build and Release Foundation**, before material A2 expansion.
+
+## Near-term foundation milestone
+
+### Data Build and Release Foundation
+
+Before expanding the graph substantially beyond A1:
+
+- create one deterministic build command from pinned source manifests through validation, export, and audit;
+- emit immutable release manifests with source checksums, schema/importer versions, artifact hashes, coverage, attribution, and compatibility information;
+- treat SQLite and browser indexes as generated release artifacts rather than ordinary Git history;
+- define artifact distribution and rollback before rewriting the existing branch history;
+- establish browser data-package/access-adapter boundaries needed for sharded, lazy loading.
+
+This foundation is specified in [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md).
 
 ## Next capability themes
 

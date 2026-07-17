@@ -2,6 +2,30 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-015 — Architecture Freeze v1.0 and generated-artifact boundary
+
+**Date:** 2026-07-17
+**Status:** Accepted
+
+### Context
+
+Liens has reached a useful A1 Golden Slice, but its SQLite graph and browser index are large generated files currently present in Git history. This already blocks standard GitHub pushes and would become increasingly harmful as A2–C2, sentences, media, and future clients are added. At the same time, future review, collections, sync, and AI need clear boundaries so they do not corrupt canonical linguistic knowledge.
+
+### Decision
+
+Adopt [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md) as the living long-term architecture reference.
+
+- The canonical graph remains source-independent, UUID-based, and structured as Object → predicate-based Fact → Evidence, with typed evidence-backed relationships.
+- Local SQLite remains the authoritative runtime graph representation; it and browser indexes become generated, immutable release artifacts after a deterministic build/release pipeline is in place.
+- Git contains the reproducible recipe: schemas, migrations, importers, pinned manifests, curated inputs, validation, audit, documentation, and release configuration.
+- User state is a separate future domain referencing canonical UUIDs; collections and review are not shared Language Objects.
+- AI creates drafts and analyses only. Review and explicit promotion are required before any canonical graph change.
+- Browser clients access versioned data packages through stable adapters, evolving from the current eager prototype index to sharded/lazy packages as needed.
+
+### Consequences
+
+The next foundation milestone is a reproducible data build and release process, not additional prototype data. Existing branch history is not rewritten by this decision; any migration away from committed generated artifacts happens only after the build is proven and with explicit approval. Future architectural work must amend the Freeze and this log when it changes these boundaries.
+
 ## ADR-001 — Language Object Graph as the knowledge source of truth
 
 **Date:** 2026-07 (initial project architecture)  

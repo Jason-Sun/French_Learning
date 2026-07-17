@@ -2,7 +2,19 @@
 
 **Snapshot date:** 2026-07-17  
 **Canonical product branch:** `Liens_dev`
-**Current milestone:** A1 Golden Slice — completed source-backed reference implementation
+**Current milestone:** Architecture Freeze v1.0 — completed long-term architecture review
+
+## Architecture Freeze v1.0
+
+- The canonical long-term reference is [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md).
+- Canonical UUIDs, Object → Fact → Evidence, typed relationships, source independence, first-class grammar, pronunciation representations, and revisioned Learning Resources remain the durable graph foundation.
+- The local SQLite graph remains the authoritative runtime representation, but SQLite and browser indexes are designated generated release artifacts once the deterministic build/release pipeline is complete.
+- Collections, review, progress, preferences, and sync are explicitly a future user-state domain, separate from the shared canonical graph.
+- AI is frozen as a draft/analysis layer: it may not write canonical data without explicit validation, review, and promotion.
+
+### Current architecture gap
+
+The repository still contains generated SQLite and browser-index artifacts, and rebuilding currently requires manual source preparation. Before material A2 expansion or any history migration, Liens needs one deterministic end-to-end data build, immutable release manifests, and artifact distribution outside ordinary Git history.
 
 ## Implemented
 
@@ -57,7 +69,7 @@
 
 ## Recommended next milestone
 
-Select the next frozen, attributable source set for **A2** and replay the validated import/audit pipeline. Do not treat the A1 coverage gaps as invitations to fabricate canonical data.
+Build the **Data Build and Release Foundation**: one pinned, deterministic build through validation, export, audit, and immutable release manifest. Do not migrate generated artifacts out of Git or start material A2 expansion until it is proven.
 
 ## Required maintenance
 

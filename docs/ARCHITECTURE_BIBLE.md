@@ -1,5 +1,7 @@
 # Liens Architecture Bible
 
+> **Architecture Freeze v1.0:** This document describes the canonical data model and current system. [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md) defines the long-term layer boundaries, generated-artifact policy, release architecture, AI governance, and mandatory engineering gates. Read both before beginning architectural work.
+
 ## Constitutional principles
 
 1. **Knowledge-first; AI-assisted second.** Local structured knowledge is the first source of truth.
@@ -12,7 +14,7 @@
 
 ## System overview
 
-Liens is currently a dependency-free static browser application backed by a versioned SQLite knowledge database and a generated JSON browser index.
+Liens is currently a dependency-free static browser application backed by a versioned local SQLite knowledge database and a generated JSON browser index. SQLite is the authoritative runtime graph representation; the long-term repository source of truth is the deterministic recipe that builds it: schemas, migrations, pinned source manifests, importers, curation, validation, and release configuration.
 
 ```text
 SQLite Language Object Graph
@@ -26,7 +28,7 @@ Object / sentence learning surfaces
 Local learner preferences and saved-object state
 ```
 
-SQLite is the authoritative linguistic store. `wordbank-index.json` is a read-optimized browser projection, not a competing database. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge.
+SQLite is the authoritative runtime linguistic store. `wordbank-index.json` is a read-optimized browser projection, not a competing database. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge. SQLite and browser indexes are release artifacts once the deterministic build foundation described in the Architecture Freeze is complete.
 
 ## Language Object Graph
 

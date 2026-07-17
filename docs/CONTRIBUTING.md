@@ -4,11 +4,12 @@
 
 Before proposing or implementing a feature, every contributor—including an AI agent—must read:
 
-1. [Architecture Bible](ARCHITECTURE_BIBLE.md)
-2. [Product Bible](PRODUCT_BIBLE.md)
-3. [Roadmap](ROADMAP.md)
-4. [Current State](CURRENT_STATE.md)
-5. [Decision Log](DECISION_LOG.md)
+1. [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md)
+2. [Architecture Bible](ARCHITECTURE_BIBLE.md)
+3. [Product Bible](PRODUCT_BIBLE.md)
+4. [Roadmap](ROADMAP.md)
+5. [Current State](CURRENT_STATE.md)
+6. [Decision Log](DECISION_LOG.md)
 
 Then verify that the proposal is consistent with them. If it conflicts, explain the conflict and obtain a decision before editing implementation code.
 
@@ -35,7 +36,7 @@ No major milestone is complete without its documentation update and final archit
 - Architecture precedes implementation.
 - Prefer reusable objects, typed relationships, modular adapters, and data-driven behavior.
 - Do not duplicate grammar, pronunciation, conjugation, or lexical facts in a page-specific format.
-- Keep SQLite as the linguistic source of truth; browser projections are adapters.
+- Keep SQLite as the runtime linguistic source of truth; browser projections are adapters. The reproducible build recipe, not a checked-in database blob, is the long-term repository source of truth.
 - Preserve canonical French spelling while normalizing only lookup keys.
 - Protect backwards compatibility through additive migrations and explicit adapters whenever practical.
 - Keep AI output structured, provenance-bound, draft by default, and unable to overwrite curated content.
@@ -64,7 +65,7 @@ Perform a Documentation Audit before **every** Git commit. This is a targeted ac
 
 | If this changed | Update this document |
 | --- | --- |
-| System architecture or a cross-system contract | `ARCHITECTURE_BIBLE.md` and any affected subsystem contract |
+| System architecture or a cross-system contract | `ARCHITECTURE_FREEZE_V1.md`, `ARCHITECTURE_BIBLE.md`, and any affected subsystem contract |
 | Significant architectural decision | Append `DECISION_LOG.md` |
 | Product or learning philosophy | `PRODUCT_BIBLE.md` |
 | Verified project status or completed milestone | `CURRENT_STATE.md` |
