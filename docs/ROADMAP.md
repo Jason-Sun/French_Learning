@@ -14,7 +14,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Production lexical foundation:** source-independent canonical identity, fact/evidence provenance, the Learning Layer, and first-class Grammar Object infrastructure are established. The FLELex A1 lexical baseline is now reproducibly evidenced; next, extend the same release-bound process through A2–B1 and add source-backed morphology and learner content.
+**A1 Golden Slice:** complete the reference implementation of the source-backed Language Graph for one CEFR level: morphology, pronunciation representations, canonical lexical senses, grammar, expressions, example sentences, lexical relationships, and a final coverage audit. Only then extend the same release-bound process through A2–B1.
 
 ## Next capability themes
 

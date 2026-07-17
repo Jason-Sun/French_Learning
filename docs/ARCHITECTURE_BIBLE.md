@@ -38,11 +38,13 @@ Every fact is predicate-based: **Language Object → predicate → typed value �
 
 Typed `relationships` provide graph navigation. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
 
-Important object types include `word`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
+Important object types include `word`, `lexical_sense`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
 
 Grammar is first-class graph knowledge, not per-sentence AI output. `grammar_construction`, `conjugation_tense`, and `sentence_pattern` are grammar objects; `grammar_topic` provides broad navigation without duplicating those concepts. Their taxonomy lives in `grammar_metadata`, their identity and structural relationships are canonical, and their learner-facing explanations are revisioned Learning Resources.
 
-Relationships are directional and typed. Examples: `inflected_form_of`, `belongs_to_conjugation`, `member_of_paradigm`, `contains`, `realizes_tense`, `explains`, `illustrates`, and `has_pronunciation`.
+Relationships are directional and typed. Examples: `has_sense`, `inflected_form_of`, `belongs_to_conjugation`, `member_of_paradigm`, `contains`, `realizes_tense`, `explains`, `illustrates`, and `has_pronunciation`.
+
+Lexical meaning is graph-native. A `word` links to ordered `lexical_sense` objects through `has_sense`; each sense owns independently evidenced, predicate-based gloss facts. A browser may project a compact gloss, but it must not collapse distinct senses into one canonical definition.
 
 ## Browser and search architecture
 

@@ -17,6 +17,7 @@ Provide one stable, reusable identity for every durable learnable French element
 | Knowledge | Owner |
 | --- | --- |
 | Lemma spelling, CEFR, POS, frequency | `word` object |
+| A distinct lexical meaning and its evidenced translations | `lexical_sense` object + `english_gloss` facts |
 | Person/mood/tense of a surface form | `inflected_form` + `form_features` |
 | Pedagogical tense placement | `conjugation_tense` + learning group |
 | Grammar category and analysis priority | `grammar_metadata` on a canonical grammar object |

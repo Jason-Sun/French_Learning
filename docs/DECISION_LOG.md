@@ -50,6 +50,16 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Alternatives:** Lemma IPA fallback for forms; UI-owned audio logic; cloud speech API.  
 **Long-term impact:** Pronunciation is reusable across words, sentences, conjugation, and future listening features; drafts and regional variants can coexist without schema redesign.
 
+## ADR-007 — Lexical senses are first-class Language Objects
+
+**Decision:** Model each distinct meaning as a `lexical_sense` object linked from its word with `has_sense`; store translations as predicate facts with independent evidence.
+
+**Reason:** A text list of definitions cannot preserve separate sense identity, source provenance, navigation, or future review behavior.
+
+**Alternatives:** Keep senses in `object_definitions`; create a source-specific sense table; let AI split meanings dynamically.
+
+**Long-term impact:** Multiple lexical sources can map records to stable senses, senses can connect to examples, expressions, and relationships, and the browser can present ordered meanings without owning canonical data.
+
 ## ADR-007 — Documentation as a production boundary
 
 **Date:** 2026-07-17  
