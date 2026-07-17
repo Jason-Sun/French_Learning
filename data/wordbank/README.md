@@ -11,6 +11,8 @@
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
 - `learning_metadata`, `review_metadata`, and `media`: learning and delivery information kept distinct from linguistic facts.
 - `sources` and `ai_generated_content`: provenance and a hard boundary between curated facts and generated enrichment.
+- `sentence_analysis_instances`, `sentence_analysis_nodes`, and `sentence_analysis_edges`: reproducible, non-canonical graphs produced for a specific sentence input.
+- `sentence_learning_items`: review and learning opportunities extracted from an analysis without re-parsing the sentence later.
 
 ### Core object types
 
@@ -42,7 +44,16 @@ python3 scripts/migrate_to_knowledge_graph.py \
   --output data/wordbank/liens-knowledge.sqlite
 ```
 
+Add the Sentence Intelligence Layer persistence schema after migration:
+
+```bash
+python3 scripts/add_sentence_intelligence_schema.py \
+  --database data/wordbank/liens-knowledge.sqlite
+```
+
 Migration preserves every v1 word, definition, form, grammar pattern, and source record. It assigns deterministic stable IDs such as `fr:word:être:ver` and `fr:form:...`, so a rebuilt database does not create a new identity for the same object.
+
+Sentence analyses deliberately do **not** become global Language Objects automatically. They reference stable objects, retain `engine_version`, `provenance`, `confidence`, and `cache_status`, and can be replayed or discarded independently. Only reviewed reusable knowledge is promoted into the global graph.
 
 ## Enrichment rule
 
