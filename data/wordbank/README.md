@@ -25,7 +25,7 @@
 
 ### Pronunciation contract
 
-Pronunciation belongs to a Language Object, never to a UI component. `pronunciations.object_id` supports one or more regional or source variants per object. `ipa` is the current display-ready field; `syllables_json` and `stress_json` preserve structured learning data; `audio_source_uri` and `local_audio_path` reserve future media delivery without coupling the graph to playback. `provenance`, `confidence`, `source_id`, and `status` follow the same curated-versus-enriched policy as the rest of the graph.
+Pronunciation belongs to a Language Object, never to a UI component. `pronunciations.object_id` supports one or more regional or source variants per object. `ipa` is the current display-ready field; `syllables_json` and `stress_json` preserve structured learning data; `audio_source_uri` and `local_audio_path` reserve future media delivery without coupling the graph to playback. `provenance`, `confidence`, `source_id`, and `status` follow the same curated-versus-enriched policy as the rest of the graph. Pronunciation is never inherited across relationships: an `inflected_form` may link to its lemma with `inflected_form_of`, but it must have its own pronunciation record before IPA or playback is shown.
 
 The legacy `language_objects.ipa` column remains readable for compatibility. New pronunciation writes belong in `pronunciations`.
 
