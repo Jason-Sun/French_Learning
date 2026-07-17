@@ -28,7 +28,7 @@ function formsFor(lemma){return objects.filter(candidate=>candidate.type_code===
 function featureLabel(features){if(!features)return '';let person=features.person?`person ${features.person}${features.number?` · ${features.number}`:''}`:'';return [features.mood,features.tense,person].filter(Boolean).join(' · ')}
 function formOrder(form){let f=form.features||{},number=f.number==='singular'?0:f.number==='plural'?1:2;return [number,Number(f.person||9),form.display_form]}
 function compareForms(a,b){let aa=formOrder(a),bb=formOrder(b);return aa[0]-bb[0]||aa[1]-bb[1]||aa[2].localeCompare(bb[2])}
-function learnerSubject(form){let f=form.features||{},key=`${f.number||''}:${f.person||''}`;return {'singular:1':'je','singular:2':'tu','singular:3':'il / elle','plural:1':'nous','plural:2':'vous','plural:3':'ils / elles'}[key]||'form'}
+function learnerSubject(form){let f=form.features||{},key=`${f.number||''}:${f.person||''}`;return {'singular:1':'je','singular:2':'tu','singular:3':'il / elle / on','plural:1':'nous','plural:2':'vous','plural:3':'ils / elles'}[key]||'form'}
 function realizationOrder(realization){let r=realization.realization||{},number=r.number==='singular'?0:r.number==='plural'?1:2;return [number,Number(r.person||9),realization.display_form]}
 function compareRealizations(a,b){let aa=realizationOrder(a),bb=realizationOrder(b);return aa[0]-bb[0]||aa[1]-bb[1]||aa[2].localeCompare(bb[2])}
 function realizationSubject(realization){let r=realization.realization||{},key=`${r.number||''}:${r.person||''}`;return {'singular:1':'je','singular:2':'tu','singular:3':'il / elle / on','plural:1':'nous','plural:2':'vous','plural:3':'ils / elles'}[key]||'form'}
