@@ -62,6 +62,24 @@ CREATE TABLE conjugation_tense_metadata (
   featured_example_id TEXT REFERENCES language_objects(id), source_id TEXT REFERENCES sources(id),
   confidence REAL, review_status TEXT NOT NULL DEFAULT 'metadata_ready', UNIQUE(learning_group_id, display_order)
 );
+CREATE TABLE conjugation_realizations (
+  object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE,
+  paradigm_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE,
+  realization_type TEXT NOT NULL CHECK(realization_type IN ('simple','compound','periphrastic')),
+  person TEXT, number TEXT, source_id TEXT REFERENCES sources(id), confidence REAL,
+  review_status TEXT NOT NULL DEFAULT 'draft', UNIQUE(paradigm_id, person, number)
+);
+CREATE TABLE conjugation_realization_components (
+  realization_id TEXT NOT NULL REFERENCES conjugation_realizations(object_id) ON DELETE CASCADE,
+  position INTEGER NOT NULL, role_code TEXT NOT NULL,
+  object_id TEXT NOT NULL REFERENCES language_objects(id), PRIMARY KEY(realization_id, position)
+);
+CREATE TABLE teaching_guidance (
+  resource_object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE,
+  why_en TEXT, formation_en TEXT, common_mistakes_json TEXT NOT NULL DEFAULT '[]',
+  related_object_ids_json TEXT NOT NULL DEFAULT '[]', source_id TEXT REFERENCES sources(id),
+  confidence REAL, review_status TEXT NOT NULL DEFAULT 'draft'
+);
 CREATE TABLE pronunciations (
   id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE,
   ipa TEXT, syllables_json TEXT NOT NULL DEFAULT '[]', stress_json TEXT NOT NULL DEFAULT '[]',
@@ -92,7 +110,7 @@ OBJECT_TYPES = [
     ('expression', 'Multi-word expression', 'A fixed or semi-fixed multi-word unit.'), ('idiom', 'Idiom', 'A non-literal conventional expression.'),
     ('collocation', 'Collocation', 'Words that conventionally occur together.'), ('grammar_construction', 'Grammar construction', 'A learnable grammatical structure.'),
     ('sentence_pattern', 'Sentence pattern', 'A reusable syntactic pattern.'), ('conjugation_paradigm', 'Conjugation paradigm', 'A verb and its organized forms.'),
-    ('pronunciation', 'Pronunciation', 'A pronunciation learning object.'), ('cefr_concept', 'CEFR concept', 'A level or learning concept.'), ('spelling_exception', 'Spelling exception', 'A non-regular spelling rule or exception.'), ('learning_group', 'Learning group', 'A pedagogical sequence of learning objects.'), ('conjugation_tense', 'Conjugation tense', 'A reusable conjugation target.'),
+    ('pronunciation', 'Pronunciation', 'A pronunciation learning object.'), ('cefr_concept', 'CEFR concept', 'A level or learning concept.'), ('spelling_exception', 'Spelling exception', 'A non-regular spelling rule or exception.'), ('learning_group', 'Learning group', 'A pedagogical sequence of learning objects.'), ('conjugation_tense', 'Conjugation tense', 'A reusable conjugation target.'), ('conjugation_realization', 'Conjugation realization', 'A person-specific realization built from Language Objects.'),
     ('sentence', 'Sentence', 'A complete example sentence.'), ('learning_resource', 'Learning resource', 'An extensible lesson, quiz, passage, or exercise.')
 ]
 RELATIONSHIP_TYPES = [
@@ -100,7 +118,7 @@ RELATIONSHIP_TYPES = [
     ('member_of_paradigm', 'Member of paradigm', 'Links an inflected form to a paradigm.'), ('contains', 'Contains', 'Links a multiword object to its component object.'),
     ('commonly_used_with', 'Commonly used with', 'A high-value usage connection.'), ('governs_preposition', 'Governs preposition', 'Links a word or construction to a required preposition.'),
     ('expresses', 'Expresses', 'Links an object to a grammatical or semantic concept.'), ('illustrates', 'Illustrates', 'Links an example to the object it illustrates.'),
-    ('has_pronunciation', 'Has pronunciation', 'Links an object to pronunciation content.'), ('related_to', 'Related to', 'A safe typed fallback for curated related content.'), ('realizes_tense', 'Realizes tense', 'Links a verb-specific paradigm to a reusable tense object.'), ('explains_conjugation', 'Explains conjugation', 'Links a verb to a structured conjugation explanation object.')
+    ('has_pronunciation', 'Has pronunciation', 'Links an object to pronunciation content.'), ('related_to', 'Related to', 'A safe typed fallback for curated related content.'), ('realizes_tense', 'Realizes tense', 'Links a verb-specific paradigm to a reusable tense object.'), ('explains_conjugation', 'Explains conjugation', 'Links a verb to a structured conjugation explanation object.'), ('explains', 'Explains', 'Links a structured learning resource to the Language Object it explains.')
 ]
 
 

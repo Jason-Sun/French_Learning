@@ -108,6 +108,12 @@ python3 scripts/seed_conjugation_learning_catalog.py \
   --catalog data/wordbank/conjugation-paradigm-catalog.json
 ```
 
+### Verb realizations and teaching resources
+
+`conjugation_realization` is a first-class Language Object for a person-specific construction. `conjugation_realizations` identifies its paradigm, person, number, and realization type; `conjugation_realization_components` stores ordered component Language Objects and roles. Thus `j'ai eu` is composed from the `ai` auxiliary form and the `eu` past participle, while `je vais avoir` is composed from the `vais` carrier verb form and the `avoir` infinitive.
+
+Structured teacher guidance is a `learning_resource` object linked to the shared tense or grammar object through `explains`. `teaching_guidance` stores why it is used, how it is formed, common mistakes, related objects, provenance, confidence, and review status. Future AI may create only draft resources and draft realizations using these same tables.
+
 `verb_metadata` is lemma-owned data: verb group, irregularity, future stem, auxiliary lemma, explanations, provenance, confidence, and status. It is intentionally separate from `form_features`, which belong only to an inflected form.
 
 ## Local lookup contract
