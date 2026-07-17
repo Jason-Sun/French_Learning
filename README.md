@@ -23,10 +23,10 @@ Then visit `http://localhost:8000`.
 
 IPA and audio references live in the Language Object graph. The playback layer is separate from that metadata: it first uses a local cached recording when `local_audio_path` is present, otherwise the browser's local `SpeechSynthesis` provider speaks the object's canonical French form. Neither path uses a server, cloud API, or AI service. Later local-TTS providers can be added without changing the button or pronunciation metadata.
 
-## Hackathon status
+## Project documentation
 
-This runnable prototype demonstrates the core product loop: Learn → Explore → Save → Review. The next implementation increment adds a server-side GPT-5.6 analysis layer for arbitrary French input while keeping structured lexical facts and API credentials outside the browser.
+The long-term product and engineering source of truth lives in [docs/](docs/README.md). Start with the Product Bible and Architecture Bible before proposing a feature; use Current State for the verified implementation snapshot and the Decision Log for established architectural choices.
 
-## Built with Codex and GPT-5.6
+## Current status
 
-Codex was used to turn the product architecture into the runnable interaction model, connected learning object UI, navigation history, and local review state. GPT-5.6 will be used server-side as an invisible explanation engine: it will return structured, teacher-style context for an input sentence, rather than behave as a visible chatbot.
+This runnable local prototype demonstrates the core loop: **Learn → Explore → Save → Review**. It uses a SQLite Language Object Graph as the linguistic source of truth, a generated browser index for static local lookup, deterministic Sentence Intelligence, graph-native conjugation, and graph-native pronunciation. AI enrichment is intentionally not connected yet; when introduced, it will add structured draft knowledge rather than replace local facts or become a visible chatbot.
