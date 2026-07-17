@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-07-17  
 **Canonical product branch:** `Liens_dev`
-**Current milestone:** A1 Golden Slice — source-backed graph enrichment
+**Current milestone:** A1 Golden Slice — completed source-backed reference implementation
 
 ## Implemented
 
@@ -31,6 +31,7 @@
 - The same Lexique release adds source-backed gender/number inflection analyses for A1 nouns and adjectives; all imported form objects have canonical IDs and lemma links.
 - Lexique now also evidences gender/number facts for 33 existing A1 pronoun, article, and possessive-determiner objects. It does not provide the paradigm links needed to connect variants such as `mon` and `ma`, so no relationship has been invented.
 - Lexique pronunciation coverage is imported as 11,680 source-labelled phonological-code and syllabification pairs for linked A1 objects. These representations have row-level evidence, are not IPA, and never appear as IPA in the browser.
+- The A1 Golden Slice audit passes with zero foreign-key, orphaned mapping/alignment/component, duplicate-identity, canonical-fact-evidence, or scoped source-edge-evidence failures. It verifies all 1,247 FLELex A1 baseline rows map to canonical objects.
 
 ## Pending
 
@@ -49,10 +50,11 @@
 - Search relies on the browser JSON projection; it does not yet query SQLite directly in-browser.
 - Pronunciation has verified IPA only for the initial curated/core set. Lexique's broader A1 code and syllable coverage remains source-labelled until a separately validated IPA conversion or source is available.
 - Some imported learning content is explicitly draft/enriched and should not be represented as fully curated.
+- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; Kaikki has no matched sense entry for 25 FLELex A1 word/POS identities; 434 Kaikki phrase senses have an unresolved local A1 component and are excluded from expression import.
 
 ## Recommended next milestone
 
-Complete the **A1 Golden Slice** with a reproducibility, coverage, provenance, and graph-integrity audit. Record source coverage gaps rather than inventing content to fill them.
+Select the next frozen, attributable source set for **A2** and replay the validated import/audit pipeline. Do not treat the A1 coverage gaps as invitations to fabricate canonical data.
 
 ## Required maintenance
 

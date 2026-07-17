@@ -11,10 +11,11 @@ The roadmap is organized by product capability. It is not a promise of implement
 - **Pronunciation foundation:** graph-native pronunciation objects, independent core-form IPA, local-first provider architecture, and lightweight source display.
 - **Project governance:** durable documentation system and architecture decision record.
 - **Experience refinement:** consistent focus, hover, active, motion, responsive, and accessibility behavior across the existing learning surfaces.
+- **A1 Golden Slice:** source-backed reference implementation complete: FLELex baseline coverage, Lexique morphology and pronunciation representations, Kaikki senses/expressions/examples/lexical relations, Tex grammar topology, browser projection, and a passing provenance/integrity audit. Explicit source coverage gaps remain recorded rather than generated.
 
 ## Current milestone
 
-**A1 Golden Slice:** complete the reference implementation of the source-backed Language Graph for one CEFR level: morphology, pronunciation representations, canonical lexical senses, grammar, expressions, example sentences, lexical relationships, and a final coverage audit. Only then extend the same release-bound process through A2–B1.
+**A2 source-backed expansion:** select frozen, licensed source releases and replay the established canonical import, provenance, browser-export, and coverage-audit pipeline. Preserve the A1 reference slice and resolve gaps only through attributable sources or reviewed curation.
 
 ## Next capability themes
 

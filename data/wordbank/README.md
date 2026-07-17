@@ -275,4 +275,17 @@ WHERE form.normalized_form = :normalized_input;
 
 The v2 database also provides read-only compatibility views named `lexemes`, `senses`, `forms`, `collocations`, and `grammar_patterns`; existing v1 lookup SQL remains semantically valid while the app adopts graph traversal.
 
+## A1 Golden Slice audit
+
+Run the reproducible A1 audit after its source imports and browser export:
+
+```bash
+python3 scripts/audit_a1_golden_slice.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --reports-dir data/wordbank/import-reports \
+  --output data/wordbank/import-reports/a1-golden-slice-audit.json
+```
+
+The audit checks frozen-source coverage reports, foreign keys, canonical identity uniqueness, facts and source-backed edges, sentence alignments, and ordered multi-word components. It reports frozen-source coverage gaps separately from integrity failures; it never fills a gap with generated canonical content.
+
 For the present static prototype, add a SQLite-WASM adapter when the wordbank is connected to the browser UI. A future server can use the same file directly. Neither path changes the database schema or requires AI to resolve a core entry.
