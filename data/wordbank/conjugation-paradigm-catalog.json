@@ -1,13 +1,19 @@
-[
-  {"mood":"infinitive","tense":"present","label":"Infinitif","display_order":10,"formation":"simple"},
-  {"mood":"indicative","tense":"present","label":"Présent","display_order":20,"formation":"simple"},
-  {"mood":"compound","tense":"passe_compose","label":"Passé composé","display_order":30,"formation":"compound"},
-  {"mood":"indicative","tense":"imperfect","label":"Imparfait","display_order":40,"formation":"simple"},
-  {"mood":"indicative","tense":"future","label":"Futur simple","display_order":50,"formation":"simple"},
-  {"mood":"periphrastic","tense":"futur_proche","label":"Futur proche","display_order":60,"formation":"periphrastic"},
-  {"mood":"conditional","tense":"present","label":"Conditionnel présent","display_order":70,"formation":"simple"},
-  {"mood":"subjunctive","tense":"present","label":"Subjonctif présent","display_order":80,"formation":"simple"},
-  {"mood":"imperative","tense":"present","label":"Impératif","display_order":90,"formation":"simple"},
-  {"mood":"participle","tense":"present","label":"Participe présent","display_order":100,"formation":"simple"},
-  {"mood":"participle","tense":"past","label":"Participe passé","display_order":110,"formation":"simple"}
-]
+{
+  "groups": [
+    {"code":"core","label":"Core (A1–A2)","display_order":10,"cefr_recommendation":"A1–A2"},
+    {"code":"advanced","label":"Advanced (B1+)","display_order":20,"cefr_recommendation":"B1+"}
+  ],
+  "tenses": [
+    {"code":"indicative_present","group":"core","mood":"indicative","tense":"present","label":"Présent","display_order":10,"formation":"simple","cefr_recommendation":"A1"},
+    {"code":"periphrastic_futur_proche","group":"core","mood":"periphrastic","tense":"futur_proche","label":"Futur proche","display_order":20,"formation":"periphrastic","cefr_recommendation":"A1"},
+    {"code":"compound_passe_compose","group":"core","mood":"compound","tense":"passe_compose","label":"Passé composé","display_order":30,"formation":"compound","cefr_recommendation":"A2"},
+    {"code":"indicative_imperfect","group":"core","mood":"indicative","tense":"imperfect","label":"Imparfait","display_order":40,"formation":"simple","cefr_recommendation":"A2"},
+    {"code":"indicative_future","group":"core","mood":"indicative","tense":"future","label":"Futur simple","display_order":50,"formation":"simple","cefr_recommendation":"A2"},
+    {"code":"conditional_present","group":"advanced","mood":"conditional","tense":"present","label":"Conditionnel présent","display_order":10,"formation":"simple","cefr_recommendation":"B1"},
+    {"code":"subjunctive_present","group":"advanced","mood":"subjunctive","tense":"present","label":"Subjonctif présent","display_order":20,"formation":"simple","cefr_recommendation":"B1"},
+    {"code":"imperative_present","group":"advanced","mood":"imperative","tense":"present","label":"Impératif","display_order":30,"formation":"simple","cefr_recommendation":"B1"},
+    {"code":"infinitive_present","group":"advanced","mood":"infinitive","tense":"present","label":"Infinitif","display_order":40,"formation":"simple","cefr_recommendation":"B1"},
+    {"code":"participle_present","group":"advanced","mood":"participle","tense":"present","label":"Participe présent","display_order":50,"formation":"simple","cefr_recommendation":"B1"},
+    {"code":"participle_past","group":"advanced","mood":"participle","tense":"past","label":"Participe passé","display_order":60,"formation":"simple","cefr_recommendation":"B1"}
+  ]
+}

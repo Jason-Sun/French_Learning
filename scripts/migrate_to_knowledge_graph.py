@@ -49,9 +49,18 @@ CREATE TABLE verb_metadata (
   object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE,
   verb_group_code TEXT, is_irregular INTEGER NOT NULL DEFAULT 0,
   future_stem TEXT, auxiliary_lemma_id TEXT REFERENCES language_objects(id),
-  note_en TEXT, note_zh TEXT, source_id TEXT REFERENCES sources(id),
+  note_en TEXT, note_zh TEXT, explanation_object_id TEXT REFERENCES language_objects(id),
+  usage_notes_object_id TEXT REFERENCES language_objects(id), source_id TEXT REFERENCES sources(id),
   provenance TEXT NOT NULL DEFAULT 'curated', confidence REAL,
   status TEXT NOT NULL DEFAULT 'metadata_ready', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE conjugation_tense_metadata (
+  object_id TEXT PRIMARY KEY REFERENCES language_objects(id) ON DELETE CASCADE,
+  learning_group_id TEXT NOT NULL REFERENCES language_objects(id), mood TEXT NOT NULL, tense TEXT NOT NULL,
+  display_order INTEGER NOT NULL, cefr_recommendation TEXT, formation TEXT NOT NULL DEFAULT 'simple',
+  explanation_object_id TEXT REFERENCES language_objects(id), usage_notes_object_id TEXT REFERENCES language_objects(id),
+  featured_example_id TEXT REFERENCES language_objects(id), source_id TEXT REFERENCES sources(id),
+  confidence REAL, review_status TEXT NOT NULL DEFAULT 'metadata_ready', UNIQUE(learning_group_id, display_order)
 );
 CREATE TABLE pronunciations (
   id TEXT PRIMARY KEY, object_id TEXT NOT NULL REFERENCES language_objects(id) ON DELETE CASCADE,
@@ -83,7 +92,7 @@ OBJECT_TYPES = [
     ('expression', 'Multi-word expression', 'A fixed or semi-fixed multi-word unit.'), ('idiom', 'Idiom', 'A non-literal conventional expression.'),
     ('collocation', 'Collocation', 'Words that conventionally occur together.'), ('grammar_construction', 'Grammar construction', 'A learnable grammatical structure.'),
     ('sentence_pattern', 'Sentence pattern', 'A reusable syntactic pattern.'), ('conjugation_paradigm', 'Conjugation paradigm', 'A verb and its organized forms.'),
-    ('pronunciation', 'Pronunciation', 'A pronunciation learning object.'), ('cefr_concept', 'CEFR concept', 'A level or learning concept.'), ('spelling_exception', 'Spelling exception', 'A non-regular spelling rule or exception.'),
+    ('pronunciation', 'Pronunciation', 'A pronunciation learning object.'), ('cefr_concept', 'CEFR concept', 'A level or learning concept.'), ('spelling_exception', 'Spelling exception', 'A non-regular spelling rule or exception.'), ('learning_group', 'Learning group', 'A pedagogical sequence of learning objects.'), ('conjugation_tense', 'Conjugation tense', 'A reusable conjugation target.'),
     ('sentence', 'Sentence', 'A complete example sentence.'), ('learning_resource', 'Learning resource', 'An extensible lesson, quiz, passage, or exercise.')
 ]
 RELATIONSHIP_TYPES = [
@@ -91,7 +100,7 @@ RELATIONSHIP_TYPES = [
     ('member_of_paradigm', 'Member of paradigm', 'Links an inflected form to a paradigm.'), ('contains', 'Contains', 'Links a multiword object to its component object.'),
     ('commonly_used_with', 'Commonly used with', 'A high-value usage connection.'), ('governs_preposition', 'Governs preposition', 'Links a word or construction to a required preposition.'),
     ('expresses', 'Expresses', 'Links an object to a grammatical or semantic concept.'), ('illustrates', 'Illustrates', 'Links an example to the object it illustrates.'),
-    ('has_pronunciation', 'Has pronunciation', 'Links an object to pronunciation content.'), ('related_to', 'Related to', 'A safe typed fallback for curated related content.')
+    ('has_pronunciation', 'Has pronunciation', 'Links an object to pronunciation content.'), ('related_to', 'Related to', 'A safe typed fallback for curated related content.'), ('realizes_tense', 'Realizes tense', 'Links a verb-specific paradigm to a reusable tense object.'), ('explains_conjugation', 'Explains conjugation', 'Links a verb to a structured conjugation explanation object.')
 ]
 
 
