@@ -1,0 +1,5 @@
+{
+  "catalog": {"id": "lexique383", "name": "Lexique 3.83 via OpenLexicon", "homepage_url": "https://github.com/chrplr/openlexicon", "license": "CC BY-SA 4.0", "attribution_text": "New, B., Pallier, C., Brysbaert, M., and Ferrand, L. (2004). Lexique 2: A new French lexical database."},
+  "release": {"id": "lexique383-a742a88c", "label": "Lexique 3.83 TSV", "artifact_uri": "http://www.lexique.org/databases/Lexique383/Lexique383.tsv", "sha256": "637ba37a767a66679c48371d673ece50cbf541b49a4e40e598963d4f3fbce52b", "md5": "a742a88cb00759c1ebed34995aed9904"},
+  "import": {"adapter": "lexique383_a1_morphology", "adapter_version": "1"}
+}

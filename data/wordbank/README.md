@@ -100,6 +100,20 @@ python3 scripts/import_flelex_beacco.py \
 
 The adapter resolves existing canonical UUIDs, records immutable source rows and mappings, and adds evidence only to matching CEFR, part-of-speech, and frequency facts. It aborts rather than silently changing a canonical object or fact.
 
+### Source-backed Lexique A1 morphology import
+
+Lexique 3.83 provides inflected forms, lemma links, grammatical features, IPA, and syllabification. Its hash-locked manifest currently drives the A1 verb-form import:
+
+```bash
+python3 scripts/import_lexique_a1_morphology.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/Lexique383.tsv \
+  --manifest data/wordbank/import-manifests/lexique383-a1-morphology.json \
+  --report data/wordbank/import-reports/lexique383-a1-morphology.json
+```
+
+Conflicting source rows are written to `import_exclusions`; they are never silently treated as canonical forms.
+
 ### Graph-native pronunciation and core forms
 
 After any importer that creates legacy pronunciation records, synchronize their graph representation:

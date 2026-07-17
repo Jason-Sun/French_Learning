@@ -31,3 +31,7 @@ Coverage targets come from a frozen source release, never hard-coded application
 The first production provenance import uses the official TreeTagger / Beacco TSV artifact. Its URL and SHA-256 are frozen in `data/wordbank/import-manifests/flelex-beacco-tree-tagger-a1.json`; the raw artifact is downloaded at import time rather than treated as Liens-authored data. The adapter maps source rows through canonical identity keys and never mints Language Object UUIDs.
 
 The A1 selection is defined by the release’s `level = A1` rows. Its report must account for every selected row as a canonical mapping or explicit exclusion, and must evidence the source-supported part of speech, CEFR level, and total frequency facts independently.
+
+## Lexique 3.83 A1 morphology baseline
+
+Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, IPA, and syllabification. The morphology adapter currently imports only validated verb-form analyses for FLELex A1 verbs. It records each selected source row, maps it to a first-class inflected-form object, and evidences its form facts. Rows that conflict with another verb lemma are recorded in `import_exclusions` rather than silently discarded.
