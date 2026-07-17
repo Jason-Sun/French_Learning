@@ -9,7 +9,7 @@ This directory is the durable source of truth for Liens. It records the product 
 3. Read [CURRENT_STATE.md](CURRENT_STATE.md) before beginning work in the repository.
 4. Read [ROADMAP.md](ROADMAP.md) to place a proposed milestone in the larger product.
 5. Read [DECISION_LOG.md](DECISION_LOG.md) before revisiting an established architectural choice.
-6. Follow [CONTRIBUTING.md](CONTRIBUTING.md) for the required development protocol.
+6. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) for the required development protocol.
 
 ## Documents and update rules
 
@@ -21,6 +21,7 @@ This directory is the durable source of truth for Liens. It records the product 
 | [Current State](CURRENT_STATE.md) | Concise snapshot of the branch and implemented systems. | Every completed milestone and any meaningful limitation change. |
 | [Decision Log](DECISION_LOG.md) | Append-only architectural decision record. | A consequential decision is approved. |
 | [Contributing](CONTRIBUTING.md) | Required working agreement for people and AI agents. | Development standards or review protocol change. |
+| [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) | Required workflow for AI-assisted project work. | AI development or commit-audit workflow changes. |
 | [architecture/](architecture/) | Focused subsystem contracts. | The relevant subsystem’s data or interface changes. |
 
 ## Scope hierarchy

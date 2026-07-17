@@ -58,6 +58,32 @@ No major milestone is complete without its documentation update and final archit
 - Keep commits small, cohesive, and reviewable. When the product workflow requires user testing after each commit, stop after committing.
 - Record limitations honestly; do not claim coverage or curation that has not been verified.
 
+## Documentation Audit before commit
+
+Perform a Documentation Audit before **every** Git commit. This is a targeted accuracy check, not a requirement to touch every document.
+
+| If this changed | Update this document |
+| --- | --- |
+| System architecture or a cross-system contract | `ARCHITECTURE_BIBLE.md` and any affected subsystem contract |
+| Significant architectural decision | Append `DECISION_LOG.md` |
+| Product or learning philosophy | `PRODUCT_BIBLE.md` |
+| Verified project status or completed milestone | `CURRENT_STATE.md` |
+| Roadmap scope or sequencing | `ROADMAP.md` |
+| Development or AI-agent workflow | This file and `AI_DEVELOPMENT_PROTOCOL.md` |
+
+The commit handoff must include a short summary. For example:
+
+```text
+Documentation Audit
+
+✓ CURRENT_STATE.md updated
+✓ ROADMAP.md unchanged
+✓ ARCHITECTURE_BIBLE.md unchanged
+✓ DECISION_LOG.md updated
+```
+
+If all documents remain accurate, state exactly: **“No documentation updates are required for this milestone.”** Do not edit documentation merely because a commit exists.
+
 ## AI agent protocol
 
-An AI agent must state which architectural documents informed its work, identify conflicts before acting, avoid inventing product requirements, and update the appropriate state/decision/subsystem documents before declaring a milestone complete.
+An AI agent must follow [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md). It must state which architectural documents informed its work, identify conflicts before acting, avoid inventing product requirements, perform the Documentation Audit before committing, and update only the documents that became inaccurate.
