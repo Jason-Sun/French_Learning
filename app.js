@@ -19,7 +19,7 @@ function home(){view={type:'home'};shell(`<section class="home"><div class="eyeb
 function resolve(input){let q=norm(input),hits=byForm.get(q)||[],lookup=hits.filter(o=>o.type_code!=='sentence');if(lookup.length){let form=lookup.find(o=>o.type_code==='inflected_form'),words=lookup.filter(o=>o.type_code==='word').sort((a,b)=>(b.frequency_per_million||0)-(a.frequency_per_million||0));return routeForObject(form||words[0]||lookup[0])}return q.split(/\s+/).length>1?{type:'sentence',text:input}:{type:'missing',query:input,message:'No local object found. AI enrichment is intentionally disabled in this milestone.'}}
 function isSaved(key){return saved.some(x=>x.key===key)}function toggle(item){let i=saved.findIndex(x=>x.key===item.key);if(i>-1)saved.splice(i,1);else saved.unshift(item);persist();render()}
 function related(o){return (o.relationships||[]).map(r=>({type:r.type,target:byId.get(r.target)})).filter(x=>x.target)}
-function englishGlosses(o){return [...new Set((o.facts||[]).filter(f=>f.predicate_code==='english_gloss'&&f.language_code==='en'&&f.value_text).map(f=>f.value_text))]}
+function englishGlosses(o){return [...new Set((o.facts||[]).filter(f=>['english_gloss','english_translation'].includes(f.predicate_code)&&f.language_code==='en'&&f.value_text).map(f=>f.value_text))]}
 function primaryEnglishGloss(o){return (o.definitions||[])[0]?.english_gloss||englishGlosses(o)[0]||''}
 function senseObjects(o){return (o.senses||[]).map(id=>byId.get(id)).filter(Boolean)}
 function routeForObject(object){return object?{type:'object',id:object.id}:{type:'home'}}

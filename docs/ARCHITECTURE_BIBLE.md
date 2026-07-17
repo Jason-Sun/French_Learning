@@ -102,6 +102,8 @@ Learning Resource content is revisioned and immutable. A resource has ordered re
 
 Future sentence parsing may be deterministic, AI-assisted, or hybrid, but its output remains non-canonical. It may resolve spans to canonical UUIDs, including lemmas, inflected forms, contraction components, expressions, collocations, grammar constructions, and sentence targets. It may attach a Learning Resource revision for an explanation. It must never directly create or overwrite canonical objects, facts, or relationships.
 
+Canonical example sentences are separate `sentence` Language Objects. `sentence_source_alignments` preserves the source-backed link from a sentence span to the canonical sense it illustrates; `illustrates` remains an independently evidenced graph edge.
+
 The analysis role is `grammar_object`, not a specific tense or construction type. It identifies existing grammar nodes and their typed graph paths; AI may explain why a matched node applies but cannot invent or redefine it.
 
 ## Scalability and extension rule

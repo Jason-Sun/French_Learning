@@ -21,6 +21,7 @@
 - The browser export projects ordered lexical senses and renders them on the existing Word Learning page without changing the core navigation model.
 - New canonical graph relationship imports now support independent source evidence; legacy edges are retained as compatibility data and will be audited separately.
 - The CC-BY Tex grammar index now supplies an evidenced A1 grammar network of eight topics, twelve constructions/patterns, and 31 typed graph links.
+- Kaikki now contributes 1,903 attributable translated example-sentence objects, 1,911 evidenced `illustrates` links, and 205 source-backed synonym/antonym links for the A1 graph.
 - First-class Grammar Language Object taxonomy, semantic grammar relationships, and generic grammar-object analysis matches are established; no new grammar inventory has been imported.
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.

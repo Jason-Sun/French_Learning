@@ -142,6 +142,17 @@ python3 scripts/import_kaikki_a1_senses.py \
   --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-senses.json
 ```
 
+Use the same frozen release for its attributable translated examples and explicit lexical relations:
+
+```bash
+python3 scripts/add_sentence_alignment_schema.py --database data/wordbank/liens-knowledge.sqlite
+python3 scripts/import_kaikki_a1_connections.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/kaikki.org-dictionary-French.jsonl \
+  --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-a1-senses.json \
+  --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-connections.json
+```
+
 ### Source-backed Tex A1 grammar network
 
 The Tex's French Grammar CC-BY index is frozen as a source release for a reviewed A1 grammar taxonomy. The catalog contains only source-indexed topics, constructions, and component links; every imported relationship receives `relationship_evidence`.

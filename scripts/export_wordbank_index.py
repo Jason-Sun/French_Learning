@@ -73,7 +73,7 @@ try:
 except sqlite3.OperationalError:
     # Pre-sense-schema databases remain exportable during an additive migration.
     pass
-base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','lexical_sense','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','sentence','learning_group','conjugation_tense','learning_resource','pronunciation')"))
+base_rows = list(db.execute("SELECT * FROM language_objects WHERE type_code IN ('word','lexical_sense','inflected_form','conjugation_realization','expression','idiom','collocation','grammar_construction','grammar_topic','sentence_pattern','sentence','learning_group','conjugation_tense','learning_resource','pronunciation')"))
 paradigm_ids = {
     relation['target_object_id'] for relation in db.execute(
         "SELECT target_object_id FROM relationships WHERE relationship_type_code='member_of_paradigm'"

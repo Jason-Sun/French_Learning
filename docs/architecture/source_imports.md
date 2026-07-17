@@ -48,6 +48,8 @@ Kaikki's French dictionary is a structured extraction from English Wiktionary. T
 
 The adapter matches a source entry only when its French headword and mapped part of speech unambiguously identify an existing FLELex A1 word. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
 
+The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
+
 ## Tex A1 grammar baseline
 
 Tex's French Grammar is a CC-BY educational grammar published by COERLL. Its frozen grammar-index artifact supplies a reviewed, bounded A1 topology: grammar topics, indexed constructions, and directly named components. The importer creates first-class Grammar Objects and records evidence for every new topic, component, and relationship. It does not import unbounded prose explanations as canonical facts.

@@ -70,6 +70,14 @@ This is an append-only record. Amend historical entries only to correct factual 
 
 **Long-term impact:** Grammar, lexical relations, expressions, and sentence links can retain complete provenance and future conflicts can be represented without graph redesign.
 
+## ADR-009 — Example sentences retain source alignment
+
+**Decision:** Keep an imported example as its own `sentence` object and record source-backed alignment to the illustrated canonical sense.
+
+**Reason:** A sentence linked only to a word loses which meaning it demonstrates and cannot support reliable learner navigation or future analysis.
+
+**Long-term impact:** The graph can connect a word, a sense, a sentence, and later a sentence-analysis instance without conflating their identities.
+
 ## ADR-007 — Documentation as a production boundary
 
 **Date:** 2026-07-17  
