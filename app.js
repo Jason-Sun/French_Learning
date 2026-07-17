@@ -20,7 +20,7 @@ function resolve(input){let q=norm(input),hits=byForm.get(q)||[],lookup=hits.fil
 function isSaved(key){return saved.some(x=>x.key===key)}function toggle(item){let i=saved.findIndex(x=>x.key===item.key);if(i>-1)saved.splice(i,1);else saved.unshift(item);persist();render()}
 function related(o){return (o.relationships||[]).map(r=>({type:r.type,target:byId.get(r.target)})).filter(x=>x.target)}
 function englishGlosses(o){return [...new Set((o.facts||[]).filter(f=>['english_gloss','english_translation'].includes(f.predicate_code)&&f.language_code==='en'&&f.value_text).map(f=>f.value_text))]}
-function primaryEnglishGloss(o){return (o.definitions||[])[0]?.english_gloss||englishGlosses(o)[0]||''}
+function primaryEnglishGloss(o){return (o?.definitions||[])[0]?.english_gloss||englishGlosses(o||{})[0]||''}
 function senseObjects(o){return (o.senses||[]).map(id=>byId.get(id)).filter(Boolean)}
 function senseOwner(sense){return sense&&sense.type_code==='lexical_sense'?byId.get(senseOwners.get(sense.id)):null}
 function routeForObject(object){let owner=senseOwner(object);return owner?{type:'object',id:owner.id,selectedSenseId:object.id}:object?{type:'object',id:object.id}:{type:'home'}}
