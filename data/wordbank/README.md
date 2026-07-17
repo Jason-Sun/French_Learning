@@ -192,7 +192,7 @@ python3 scripts/import_lexique_a1_pronunciation.py \
   --report data/wordbank/import-reports/lexique383-a1-pronunciation.json
 ```
 
-The report records coverage and every exclusion reason. Each representation is linked to the exact immutable Lexique source row through `pronunciation_representation_evidence`.
+The report records coverage and every exclusion reason. Each representation is linked to the exact immutable Lexique source row through `pronunciation_representation_evidence`; the `has_pronunciation` graph edge is independently evidenced by that same row. Every Kaikki `has_sense` edge likewise retains the immutable source sense that supports it, in addition to the sense's English-gloss facts.
 
 ### Graph-native pronunciation and core forms
 

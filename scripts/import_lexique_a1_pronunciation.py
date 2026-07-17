@@ -208,6 +208,18 @@ def main() -> None:
                             pronunciation_object_id,
                         ),
                     )
+                    pronunciation_relationship = database.execute(
+                        """SELECT id FROM relationships
+                           WHERE source_object_id = ? AND target_object_id = ?
+                             AND relationship_type_code = 'has_pronunciation'""",
+                        (owner_id, pronunciation_object_id),
+                    ).fetchone()["id"]
+                    database.execute(
+                        """INSERT OR IGNORE INTO relationship_evidence
+                           (relationship_id, source_record_id, confidence)
+                           VALUES (?, ?, 1)""",
+                        (pronunciation_relationship, record_id),
+                    )
                     owner_ids.add(owner_id)
 
                     representations = (

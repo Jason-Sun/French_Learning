@@ -256,6 +256,18 @@ def main() -> None:
                             sense_object_id,
                         ),
                     )
+                    has_sense_relationship = database.execute(
+                        """SELECT id FROM relationships
+                           WHERE source_object_id = ? AND target_object_id = ?
+                             AND relationship_type_code = 'has_sense'""",
+                        (owner_id, sense_object_id),
+                    ).fetchone()["id"]
+                    database.execute(
+                        """INSERT OR IGNORE INTO relationship_evidence
+                           (relationship_id, source_record_id, confidence)
+                           VALUES (?, ?, 1)""",
+                        (has_sense_relationship, record_id),
+                    )
                     database.execute(
                         """INSERT OR IGNORE INTO learning_metadata(object_id)
                            VALUES (?)""",

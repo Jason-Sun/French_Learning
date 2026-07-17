@@ -42,6 +42,8 @@ Every Lexique-created `inflected_form_of` edge has direct row-level relationship
 
 The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
 
+Each Lexique `has_pronunciation` edge is evidenced by the same source row that evidences its representations. The graph link is therefore attributable without treating the source phonological code as IPA.
+
 The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.
 
 ## Kaikki / English Wiktionary A1 sense baseline
@@ -49,6 +51,8 @@ The pronunciation report accounts for every eligible source row as a mapped targ
 Kaikki's French dictionary is a structured extraction from English Wiktionary. The frozen A1 sense release and its checksum live in `kaikki-enwiktionary-french-a1-senses.json`; it carries the upstream CC BY-SA/GFDL attribution obligations. It is used for English glosses, not as a CEFR classifier.
 
 The adapter matches a source entry only when its French headword and mapped part of speech unambiguously identify an existing FLELex A1 word. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
+
+The `has_sense` edge is also source-evidenced from the exact source sense record. A source-backed sense therefore retains both the relationship to its word and the evidence for its English glosses independently.
 
 The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
 
