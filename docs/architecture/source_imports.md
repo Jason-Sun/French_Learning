@@ -36,6 +36,8 @@ The A1 selection is defined by the release’s `level = A1` rows. Its report mus
 
 Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, a Lexique-specific phonological code, and syllabification. Its phonological code is a source representation, not verified IPA.
 
-The morphology adapters import validated A1 verb, noun, and adjective analyses. The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
+The morphology adapters import validated A1 verb, noun, adjective, and function-word analyses. For pronouns, articles, and possessive determiners, the adapter adds only gender/number facts asserted for an existing canonical object. Lexique does not establish paradigm links between variants such as `mon` and `ma`, so the importer never manufactures a form relationship from its rows alone.
+
+The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
 
 The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.

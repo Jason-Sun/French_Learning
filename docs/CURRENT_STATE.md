@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-07-17  
 **Canonical product branch:** `Liens_dev`
-**Current milestone:** Source-independent production lexical foundation
+**Current milestone:** A1 Golden Slice — source-backed graph enrichment
 
 ## Implemented
 
@@ -21,6 +21,7 @@
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.
 - The same Lexique release adds source-backed gender/number inflection analyses for A1 nouns and adjectives; all imported form objects have canonical IDs and lemma links.
+- Lexique now also evidences gender/number facts for 33 existing A1 pronoun, article, and possessive-determiner objects. It does not provide the paradigm links needed to connect variants such as `mon` and `ma`, so no relationship has been invented.
 - Lexique pronunciation coverage is imported as 11,680 source-labelled phonological-code and syllabification pairs for linked A1 objects. These representations have row-level evidence, are not IPA, and never appear as IPA in the browser.
 
 ## Pending
@@ -43,7 +44,7 @@
 
 ## Recommended next milestone
 
-Define the **review and collections architecture**: stable learner-state model, collection boundaries (Vocabulary, Example Sentences, Collocations), and an offline-first review scheduling contract. Do not implement it before an architecture review and approval.
+Continue the **A1 Golden Slice** with source-backed grammar-network enrichment: canonical grammar objects, prerequisite/contrast links, triggers, and realization through existing forms. Do not introduce unevidenced grammar claims or new lexical data during that milestone.
 
 ## Required maintenance
 
