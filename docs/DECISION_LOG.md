@@ -109,3 +109,14 @@ This is an append-only record. Amend historical entries only to correct factual 
 **Reason:** A sentence should lead learners into a durable grammar network rather than generate a one-off grammar answer. Keeping identity and relationships canonical preserves exploration, reuse, and review.
 **Alternatives:** AI-generated grammar labels per sentence; a parallel grammar database; duplicating each tense or construction as a generic grammar object.
 **Long-term impact:** Grammar pages, examples, comparisons, prerequisites, and future review can grow as graph data without changing the sentence-analysis contract.
+
+## ADR-011 — Ordered multi-word components are canonical graph structure
+
+**Date:** 2026-07-17
+**Decision:** Store the sequence of an expression, idiom, collocation, or other multi-word object in `multiword_components`, with source-specific support in `multiword_component_evidence`. Keep `contains` as the graph traversal edge, not as the sole representation of composition.
+
+**Reason:** A simple edge cannot distinguish repeated components or preserve word order. Component sequence is structural linguistic knowledge and must remain source-backed rather than be reconstructed from UI text.
+
+**Alternatives:** Encode components in JSON; rely on `contains` edge order; store only the display string.
+
+**Long-term impact:** Multi-word objects can support reliable navigation, matching, source comparison, and future sentence analysis without special cases or schema redesign.

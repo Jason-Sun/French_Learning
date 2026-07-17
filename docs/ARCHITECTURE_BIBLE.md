@@ -38,6 +38,8 @@ Every fact is predicate-based: **Language Object → predicate → typed value �
 
 Typed `relationships` provide graph navigation. New canonical relationship imports carry independent `relationship_evidence`, so an edge can be supported, disputed, or superseded without changing either endpoint identity. Flexible structured data is held in focused tables such as definitions, attributes, form features, verb metadata, tense metadata, realizations, teaching guidance, and pronunciation details.
 
+Multi-word objects preserve their actual sequence in `multiword_components`: each ordered position points to a component Language Object. `multiword_component_evidence` records the source surface for that position. A deduplicated `contains` relationship remains the graph-navigation projection, while the component tables retain repeated words and order without encoding either inside a text blob.
+
 Important object types include `word`, `lexical_sense`, `inflected_form`, `expression`, `grammar_construction`, `sentence`, `conjugation_paradigm`, `conjugation_tense`, `conjugation_realization`, `learning_group`, `learning_resource`, and `pronunciation`.
 
 Grammar is first-class graph knowledge, not per-sentence AI output. `grammar_construction`, `conjugation_tense`, and `sentence_pattern` are grammar objects; `grammar_topic` provides broad navigation without duplicating those concepts. Their taxonomy lives in `grammar_metadata`, their identity and structural relationships are canonical, and their learner-facing explanations are revisioned Learning Resources.

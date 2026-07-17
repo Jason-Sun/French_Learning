@@ -10,6 +10,7 @@
 - `canonical_objects`: permanent source-independent UUID identities. Legacy `language_objects.id` remains a browser compatibility key during migration.
 - `canonical_facts`, typed fact-value tables, and `fact_evidence`: predicate-based linguistic claims with independently evidenced values.
 - `relationships` and `relationship_evidence`: directed, typed graph edges plus independent source evidence. Navigation is a graph traversal, not a page hierarchy.
+- `multiword_components` and `multiword_component_evidence`: ordered, source-evidenced Language Object components for expressions, idioms, collocations, and other multi-word objects. `contains` remains the traversal edge but does not replace sequence data.
 - `object_definitions`, `object_attributes`, and `form_features`: structured object content without creating a new core table for each future type.
 - `pronunciations`: the retained import-compatible record table.
 - `pronunciation_object_details` and `pronunciation_representations`: browser-compatible detail projection plus evidence-backed source, IPA, syllable, variant, audio, and future-TTS representations owned by first-class `pronunciation` Language Objects.
@@ -151,6 +152,17 @@ python3 scripts/import_kaikki_a1_connections.py \
   --source /path/to/kaikki.org-dictionary-French.jsonl \
   --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-a1-senses.json \
   --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-connections.json
+```
+
+The same source can provide first-class multi-word expressions only where every token resolves to the A1 graph. This importer does not assign CEFR, idiom, or collocation classifications that the source does not assert:
+
+```bash
+python3 scripts/add_multiword_component_schema.py --database data/wordbank/liens-knowledge.sqlite
+python3 scripts/import_kaikki_a1_expressions.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/kaikki.org-dictionary-French.jsonl \
+  --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-a1-expressions.json \
+  --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-expressions.json
 ```
 
 ### Source-backed Tex A1 grammar network
