@@ -1,0 +1,23 @@
+{
+  "catalog": {
+    "id": "flelex-beacco",
+    "name": "FLELex / Beacco",
+    "homepage_url": "https://cental.uclouvain.be/cefrlex/flelex/download/",
+    "license": "CC BY-NC-SA 4.0",
+    "attribution_text": "Pintard, A. and François, T. (2020). Combining expert knowledge with frequency information to infer CEFR levels for words."
+  },
+  "release": {
+    "id": "flelex-beacco-tree-tagger-2026-07-17-e0cbdb67",
+    "label": "TreeTagger / Beacco artifact downloaded 2026-07-17",
+    "artifact_uri": "https://cental.uclouvain.be/cefrlex/static/resources/fr/FleLex_TT_Beacco.tsv",
+    "sha256": "e0cbdb672fa4f83155acec4c8f01f179b30be08cb3d2d6cf0d9f25042b01e3d4",
+    "scope_description": "FLELex / Beacco TreeTagger TSV. This Liens import selects source rows classified as CEFR A1."
+  },
+  "import": {
+    "adapter": "flelex_beacco_tree_tagger",
+    "adapter_version": "1",
+    "selection": {
+      "level": "A1"
+    }
+  }
+}

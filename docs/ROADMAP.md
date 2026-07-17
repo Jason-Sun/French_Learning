@@ -14,7 +14,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Production lexical foundation:** establish source-independent canonical identity, fact/evidence provenance, the Learning Layer, first-class Grammar Object infrastructure, and reproducible A1 source imports before enriching or expanding learner-facing content.
+**Production lexical foundation:** source-independent canonical identity, fact/evidence provenance, the Learning Layer, and first-class Grammar Object infrastructure are established. The FLELex A1 lexical baseline is now reproducibly evidenced; next, extend the same release-bound process through A2–B1 and add source-backed morphology and learner content.
 
 ## Next capability themes
 
