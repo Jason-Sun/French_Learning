@@ -32,6 +32,10 @@ The first production provenance import uses the official TreeTagger / Beacco TSV
 
 The A1 selection is defined by the release’s `level = A1` rows. Its report must account for every selected row as a canonical mapping or explicit exclusion, and must evidence the source-supported part of speech, CEFR level, and total frequency facts independently.
 
-## Lexique 3.83 A1 morphology baseline
+## Lexique 3.83 A1 morphology and pronunciation baseline
 
-Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, IPA, and syllabification. The morphology adapter currently imports only validated verb-form analyses for FLELex A1 verbs. It records each selected source row, maps it to a first-class inflected-form object, and evidences its form facts. Rows that conflict with another verb lemma are recorded in `import_exclusions` rather than silently discarded.
+Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, a Lexique-specific phonological code, and syllabification. Its phonological code is a source representation, not verified IPA.
+
+The morphology adapters import validated A1 verb, noun, and adjective analyses. The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
+
+The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.

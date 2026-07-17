@@ -10,6 +10,8 @@ An owner Language Object connects to one or more `pronunciation` objects via `ha
 
 `pronunciation_object_details` remains the browser-compatible detail projection for currently supported verified IPA and delivery metadata. `pronunciation_representation_evidence` independently links every representation to one or more immutable source records.
 
+The Lexique 3.83 importer stores `phonological_code` representations with `transcription_system = lexique383`, plus `syllabification` arrays. These are source-labelled data for future linguistic processing; the current browser deliberately does not show them as IPA or as a pronunciation substitute.
+
 The retained `pronunciations` table is an importer compatibility boundary. `scripts/add_graph_native_pronunciation_schema.py` materializes each compatible record as a graph object and relationship.
 
 ## Surface-form rule

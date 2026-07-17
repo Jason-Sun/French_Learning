@@ -116,6 +116,20 @@ Conflicting source rows are written to `import_exclusions`; they are never silen
 
 `scripts/import_lexique_a1_nominal_morphology.py` applies the same release to A1 noun and adjective gender/number forms and writes `lexique383-a1-nominal-morphology.json` as its audit report.
 
+### Source-backed Lexique A1 pronunciation representations
+
+The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. It does not convert the code to IPA and does not modify the browser's verified-IPA projection.
+
+```bash
+python3 scripts/import_lexique_a1_pronunciation.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/Lexique383.tsv \
+  --manifest data/wordbank/import-manifests/lexique383-a1-morphology.json \
+  --report data/wordbank/import-reports/lexique383-a1-pronunciation.json
+```
+
+The report records coverage and every exclusion reason. Each representation is linked to the exact immutable Lexique source row through `pronunciation_representation_evidence`.
+
 ### Graph-native pronunciation and core forms
 
 After any importer that creates legacy pronunciation records, synchronize their graph representation:
