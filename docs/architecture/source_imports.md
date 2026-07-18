@@ -52,6 +52,8 @@ Kaikki's French dictionary is a structured extraction from English Wiktionary. T
 
 The adapter matches a source entry only when its French headword and mapped part of speech unambiguously identify an existing FLELex A1 word. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
 
+When FLELex and Kaikki classify the same French surface differently, a manifest may contain an explicit reviewed POS reconciliation. It names the source POS, target POS, and surface; the import records `mapping_kind = reviewed_pos_reconciliation`. This supplements exact source matches without changing either source representation or canonical object identity. It is a reviewable data decision, never a hidden fallback.
+
 The `has_sense` edge is also source-evidenced from the exact source sense record. A source-backed sense therefore retains both the relationship to its word and the evidence for its English glosses independently.
 
 The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.

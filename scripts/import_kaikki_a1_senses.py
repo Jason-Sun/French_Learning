@@ -44,17 +44,28 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def target_pos(entry: dict, words: dict[tuple[str, str], tuple[str, str]]) -> str | None:
+def target_pos(entry: dict, words: dict[tuple[str, str], tuple[str, str]], reconciliations: dict[tuple[str, str], str]) -> tuple[str | None, str]:
     source_pos = entry.get("pos")
     if source_pos != "det":
-        return KAikki_TO_GRAPH_POS.get(source_pos)
+        reconciled = reconciliations.get((normalize(entry["word"]), source_pos))
+        if reconciled and (normalize(entry["word"]), reconciled) in words:
+            return reconciled, "reviewed_pos_reconciliation"
+        exact = KAikki_TO_GRAPH_POS.get(source_pos)
+        if exact and (normalize(entry["word"]), exact) in words:
+            return exact, "exact_pos_match"
+        return exact, "exact_pos_match"
 
     candidates = [
         part_of_speech
         for part_of_speech in ("DET:ART", "DET:POS")
         if (normalize(entry["word"]), part_of_speech) in words
     ]
-    return candidates[0] if len(candidates) == 1 else None
+    if len(candidates) == 1:
+        return candidates[0], "exact_pos_match"
+    reconciled = reconciliations.get((normalize(entry["word"]), source_pos))
+    if reconciled and (normalize(entry["word"]), reconciled) in words:
+        return reconciled, "reviewed_pos_reconciliation"
+    return None, "exact_pos_match"
 
 
 def glosses_for(sense: dict) -> list[str]:
@@ -140,6 +151,10 @@ def main() -> None:
                WHERE object.type_code = 'word' AND object.cefr_level = 'A1'"""
         )
     }
+    reconciliations = {
+        (normalize(item["word"]), item["source_part_of_speech"]): item["target_part_of_speech"]
+        for item in manifest["import"].get("pos_reconciliations", [])
+    }
     matched_word_keys: set[tuple[str, str]] = set()
     imported_sense_ids: set[str] = set()
     imported_gloss_fact_ids: set[str] = set()
@@ -156,7 +171,7 @@ def main() -> None:
                 entry = json.loads(line)
                 if entry.get("lang_code") != "fr" or not entry.get("word"):
                     continue
-                part_of_speech = target_pos(entry, words)
+                part_of_speech, mapping_kind = target_pos(entry, words, reconciliations)
                 key = (normalize(entry["word"]), part_of_speech)
                 if part_of_speech is None or key not in words:
                     continue
@@ -276,8 +291,8 @@ def main() -> None:
                     database.execute(
                         """INSERT OR IGNORE INTO import_record_mappings
                            (import_run_id, source_record_id, canonical_id, mapping_kind, confidence)
-                           VALUES (?, ?, ?, 'kaikki_sense_match', 1)""",
-                        (import_run_id, record_id, canonical_id),
+                           VALUES (?, ?, ?, ?, 1)""",
+                        (import_run_id, record_id, canonical_id, mapping_kind),
                     )
                     for gloss in glosses:
                         fact_id = stable_id("fact", f"{canonical_id}|english_gloss|{normalize(gloss)}")

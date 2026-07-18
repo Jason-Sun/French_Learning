@@ -16,6 +16,32 @@
   },
   "import": {
     "adapter": "kaikki_enwiktionary_a1_senses",
-    "adapter_version": "1"
+    "adapter_version": "2",
+    "pos_reconciliations": [
+      {"word":"ami","target_part_of_speech":"ADJ","source_part_of_speech":"noun"},
+      {"word":"après","target_part_of_speech":"KON","source_part_of_speech":"prep"},
+      {"word":"au","target_part_of_speech":"PRP:det","source_part_of_speech":"contraction"},
+      {"word":"ben","target_part_of_speech":"ADV","source_part_of_speech":"intj"},
+      {"word":"bonsoir","target_part_of_speech":"NOM","source_part_of_speech":"intj"},
+      {"word":"boulanger","target_part_of_speech":"ADJ","source_part_of_speech":"noun"},
+      {"word":"certain","target_part_of_speech":"PRO","source_part_of_speech":"adj"},
+      {"word":"chaque","target_part_of_speech":"PRO","source_part_of_speech":"adj"},
+      {"word":"comme","target_part_of_speech":"ADV","source_part_of_speech":"conj"},
+      {"word":"demain","target_part_of_speech":"NOM","source_part_of_speech":"adv"},
+      {"word":"du","target_part_of_speech":"PRP:det","source_part_of_speech":"contraction"},
+      {"word":"environ","target_part_of_speech":"PRP","source_part_of_speech":"adv"},
+      {"word":"million","target_part_of_speech":"NOM","source_part_of_speech":"num"},
+      {"word":"ne","target_part_of_speech":"ADV","source_part_of_speech":"particle"},
+      {"word":"où","target_part_of_speech":"PRO","source_part_of_speech":"adv"},
+      {"word":"parce","target_part_of_speech":"KON","source_part_of_speech":"prep"},
+      {"word":"personne","target_part_of_speech":"ADV","source_part_of_speech":"pron"},
+      {"word":"plusieurs","target_part_of_speech":"PRO","source_part_of_speech":"adj"},
+      {"word":"pour","target_part_of_speech":"KON","source_part_of_speech":"prep"},
+      {"word":"qu'","target_part_of_speech":"ADV","source_part_of_speech":"conj"},
+      {"word":"quelque","target_part_of_speech":"PRO","source_part_of_speech":"det"},
+      {"word":"rien","target_part_of_speech":"ADV","source_part_of_speech":"pron"},
+      {"word":"voici","target_part_of_speech":"ADV","source_part_of_speech":"verb"},
+      {"word":"voilà","target_part_of_speech":"ADV","source_part_of_speech":"verb"}
+    ]
   }
 }
