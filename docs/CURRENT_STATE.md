@@ -24,7 +24,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 
 - Static browser app with direct local Language Object search and sentence routing.
 - SQLite graph with stable IDs and typed relationships; a generated browser package projects it through a 9.3 MB lookup bootstrap and 64 integrity-hashed, lazy detail shards.
-- 8,767 A1–B2 word objects, 10,627 source-backed inflected-form objects, 96 graph-native conjugation realizations, learning groups/tenses, 41 example sentence objects, grammar structures, teacher resources, and 11,777 Pronunciation Objects.
+- 8,767 A1–B2 word objects, 42,801 source-backed inflected-form objects, 96 graph-native conjugation realizations, learning groups/tenses, 41 example sentence objects, grammar structures, teacher resources, and 19,223 Pronunciation Objects.
 - Accent-insensitive lookup that preserves canonical French spelling on pages.
 - Deterministic Sentence Intelligence for local token resolution, selected contractions/elisions, expressions, grammar patterns, and review candidates.
 - Pedagogical conjugation UI for every locally paradigm-linked verb; data-first support for unfilled future tenses.
@@ -47,6 +47,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - First-class Grammar Language Object taxonomy, semantic grammar relationships, and generic grammar-object analysis matches are established; no new grammar inventory has been imported.
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.
+- The same hash-locked Lexique release now covers A1–B2 morphology with 42,042 source-backed analyses and 42,745 linked Lexique form objects across the scoped vocabulary. Its four known conflicting source rows remain recorded as explicit exclusions; every imported form-to-lemma edge has relationship evidence.
 - The tense-paradigm projection now connects 8,262 supported Lexique form analyses to 1,984 verb-specific learning paradigms, enabling local conjugation tables such as `manger → Présent → mange / manges / mangeons` without hard-coded forms. Source tenses outside the learning catalog remain explicit exclusions from the selector.
 - All Lexique-created A1 inflection links now carry row-level relationship evidence. Paradigm membership is explicitly marked as a transparent derivation from an asserted form link, rather than represented as a direct source claim.
 - The same Lexique release adds source-backed gender/number inflection analyses for A1 nouns and adjectives; all imported form objects have canonical IDs and lemma links.

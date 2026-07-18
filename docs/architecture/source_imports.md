@@ -38,6 +38,8 @@ Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, g
 
 The morphology and pronunciation adapters select an explicit CEFR-level scope from their manifests and import validated verb, noun, adjective, and function-word analyses. The completed A1 Golden Slice is the reference scope; the same importer contract is parameterized for A2–B2 expansion. For pronouns, articles, and possessive determiners, the adapter adds only gender/number facts asserted for an existing canonical object. Lexique does not establish paradigm links between variants such as `mon` and `ma`, so the importer never manufactures a form relationship from its rows alone.
 
+The production A1–B2 verb morphology import uses the same hash-locked release and the manifest `lexique383-a1-b2-morphology.json`. It records 42,042 source analyses, with four conflicting source rows retained as explicit exclusions. The report is a coverage record, not a claim that every possible French form has been imported.
+
 Every Lexique-created `inflected_form_of` edge has direct row-level relationship evidence. A `member_of_paradigm` edge is a transparent graph derivation from that evidenced form link and an existing verb-paradigm link, so it retains the same source record with `evidence_role = derived_from_asserted_form`; it is never presented as a direct Lexique assertion.
 
 The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
