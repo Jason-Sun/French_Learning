@@ -35,8 +35,8 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
 - Canonical UUID registry, predicate-based fact/evidence provenance, immutable Learning Resource revisions, and non-canonical parser-analysis boundaries are established before any A1 source import.
-- Kaikki's hash-locked English Wiktionary extraction provides source-backed lexical senses and English-gloss facts for 1,246 of the 1,247 A1 words. Reviewed POS reconciliations preserve both source taxonomies while covering function-word mismatches; the one remaining true source absence stays explicit rather than generated.
-- The same hash-locked Kaikki release now provides 14,104 source-backed lexical-sense objects and 14,219 independently evidenced English-gloss facts for 7,261 exact A2–B2 word/POS matches. The remaining 259 source/POS gaps are retained in the A2–B2 import report for explicit reconciliation or a second attributable source.
+- The hash-locked Kaikki English Wiktionary release currently supplies source-backed senses for 8,506 of 8,767 A1–B2 word/POS objects (97.02%), represented by 17,459 lexical-sense objects and 17,657 independently evidenced English-gloss facts. All 8,767 lexical identities remain present and locally resolvable; 261 identities have no imported source-backed sense and are retained as explicit coverage gaps rather than filled with generated canonical content.
+- Importer reports retain the detailed source/POS mismatches (including the 259 reported for the A2–B2 pass), while `a1-b2-production-graph-audit.json` is the authoritative release-level measurement of the graph after all imports and reconciliations.
 - Imported Kaikki `has_sense` links and Lexique `has_pronunciation` links now retain their own source records, alongside the evidence held by their facts or pronunciation representations.
 - The browser export projects ordered lexical senses and renders them on the existing Word Learning page without changing the core navigation model.
 - Multi-sense words now use a progressive in-place Meaning explorer: the lemma remains the anchor, any source-backed sense can expand in place or all panels can be collapsed, only the first four senses appear initially, and a selected panel renders its source-aligned examples. Direct sense routes preserve canonical identity while opening the owner-word context.
@@ -74,7 +74,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - Pronunciation has verified IPA only for the initial curated/core set. Lexique's broader A1 code and syllable coverage remains source-labelled until a separately validated IPA conversion or source is available.
 - Some imported learning content is explicitly draft/enriched and should not be represented as fully curated.
 - Canonical grammar coverage remains limited to the attributed Tex A1 index (38 current grammar-related objects). No A2–B2 grammar content has been invented in the absence of an appropriate attributable source.
-- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; Kaikki has no matched sense entry for 25 FLELex A1 word/POS identities; 336 Kaikki phrase senses have an unresolved local A1–B2 component and are excluded from expression import.
+- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; 261 A1–B2 word/POS identities currently lack a Kaikki-backed lexical sense; and 336 Kaikki phrase senses have an unresolved local A1–B2 component and are excluded from expression import.
 
 ## Recommended next milestone
 
