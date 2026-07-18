@@ -9,7 +9,10 @@
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const MAX_DRAFTS = 48;
-  const SUPPORTED_KINDS = new Set(['explanation', 'usage_note', 'memory_tip', 'examples', 'sentence_guide', 'provisional_lookup']);
+  const SUPPORTED_KINDS = new Set([
+    'explanation', 'usage_note', 'memory_tip', 'examples', 'comparison',
+    'common_mistake', 'sentence_guide', 'provisional_lookup',
+  ]);
   const providerMethodFor = request => {
     if (request.kind === 'usage_note') return 'generateUsageNote';
     if (request.kind === 'memory_tip') return 'generateMemoryTip';
@@ -19,17 +22,6 @@
     return 'generateLearningResource';
   };
 
-  const readDrafts = () => {
-    try {
-      const value = JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]');
-      return Array.isArray(value) ? value : [];
-    } catch {
-      return [];
-    }
-  };
-
-  const writeDrafts = drafts => localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, MAX_DRAFTS)));
-  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
   const keyFor = request => [
     request.target?.id || `lookup:${plainText(request.query).toLocaleLowerCase('fr')}`,
     request.kind,
@@ -37,6 +29,24 @@
     request.context?.senseId || '',
     request.context?.sentence || '',
   ].join('|');
+
+  const normaliseDraft = draft => ({
+    ...draft,
+    resourceKey: draft.resourceKey || draft.key,
+    revisionNumber: Number.isInteger(draft.revisionNumber) ? draft.revisionNumber : 1,
+  });
+
+  const readDrafts = () => {
+    try {
+      const value = JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]');
+      return Array.isArray(value) ? value.map(normaliseDraft) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const writeDrafts = drafts => localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, MAX_DRAFTS)));
+  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
 
   const publicTarget = target => target ? {
     id: target.id,
@@ -47,13 +57,15 @@
     partOfSpeech: target.part_of_speech || null,
   } : null;
 
-  const sanitizeResponse = (response, request) => {
+  const sanitizeResponse = (response, request, revisionNumber) => {
     const body = plainText(response?.body || response?.content || '');
     if (!body || body.length > 1800) throw new Error('The provider returned an invalid learning draft.');
     const title = plainText(response?.title || request.title || 'Learning note').slice(0, 120);
     return {
       id: `ai-draft:${crypto.randomUUID()}`,
       key: keyFor(request),
+      resourceKey: keyFor(request),
+      revisionNumber,
       kind: request.kind,
       language: request.language || 'en',
       targetId: request.target?.id || null,
@@ -73,17 +85,20 @@
     return Boolean(candidate && (typeof candidate.isAvailable === 'function' ? candidate.isAvailable() : typeof candidate.generateLearningResource === 'function'));
   };
 
-  const get = request => readDrafts().find(draft => draft.key === keyFor(request)) || null;
+  const revisionsFor = request => readDrafts()
+    .filter(draft => draft.resourceKey === keyFor(request))
+    .sort((left, right) => right.revisionNumber - left.revisionNumber || String(right.createdAt).localeCompare(String(left.createdAt)));
+  const get = request => revisionsFor(request)[0] || null;
   const enabled = () => localStorage.getItem(ENABLED_KEY) === 'true';
   const setEnabled = value => localStorage.setItem(ENABLED_KEY, String(Boolean(value)));
 
-  async function generate(request) {
+  async function generate(request, { regenerate = false } = {}) {
     if (!SUPPORTED_KINDS.has(request?.kind)) throw new Error('Unsupported learning resource kind.');
     if (!enabled()) return { status: 'disabled' };
     if (!providerReady()) return { status: 'provider_unavailable' };
 
     const existing = get(request);
-    if (existing) return { status: 'cached', draft: existing };
+    if (existing && !regenerate) return { status: 'cached', draft: existing };
 
     const method = providerMethodFor(request);
     if (typeof provider()[method] !== 'function') throw new Error(`The configured provider cannot ${method}.`);
@@ -106,8 +121,8 @@
       }),
     }));
 
-    const draft = sanitizeResponse(response, request);
-    writeDrafts([draft, ...readDrafts().filter(item => item.key !== draft.key)]);
+    const draft = sanitizeResponse(response, request, (existing?.revisionNumber || 0) + 1);
+    writeDrafts([draft, ...readDrafts()]);
     return { status: 'generated', draft };
   }
 
@@ -120,6 +135,8 @@
       return typeof candidate?.refreshAvailability === 'function' ? candidate.refreshAvailability() : providerReady();
     },
     get,
+    getRevisions: revisionsFor,
+    keyFor,
     generate,
     clear: request => writeDrafts(readDrafts().filter(item => item.key !== keyFor(request))),
   });

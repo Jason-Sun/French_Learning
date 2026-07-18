@@ -40,6 +40,8 @@
     generateUsageNote: invoke('generateUsageNote'),
     generateMemoryTip: invoke('generateMemoryTip'),
     generateExamples: invoke('generateExamples'),
+    generateComparison: invoke('generateComparison'),
+    generateCommonMistake: invoke('generateCommonMistake'),
     explainGrammar: invoke('explainGrammar'),
     explainSentence: invoke('explainSentence'),
   });

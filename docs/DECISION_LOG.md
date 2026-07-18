@@ -2,6 +2,19 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-017 — AI learning help is explicit, contextual, and revision-preserving
+
+**Date:** 2026-07-18
+**Status:** Accepted
+
+### Decision
+
+AI Learning Resources are generated only when a learner selects a contextual action on a word, sense, grammar object, sentence, or unknown lookup. The first resource is compact and cached locally. Follow-up resources—examples, memory tips, comparisons, and common-mistake notes—are separately requested through progressive disclosure. Local generations retain revisions so future regeneration and history controls can be added without changing resource identity or the surrounding page.
+
+### Consequences
+
+Liens remains anchored to the current Language Object and never opens a chatbot surface. Cache reads cannot trigger an AI call. Unknown lookups produce explicitly provisional, unverified learning notes. Curated or source-backed Learning Resources can later replace the AI draft in the same contextual slot without changing canonical graph data or routes.
+
 ## ADR-016 — Gemini is the initial development provider behind typed Learning Resource methods
 
 **Date:** 2026-07-18

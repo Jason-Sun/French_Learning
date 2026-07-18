@@ -4,7 +4,7 @@
 
 AI Learning Assistance fills missing *teaching content* without changing the canonical Language Graph. It is an in-place learning layer, not a chatbot and not an importer.
 
-The browser may use it for a contextual explanation, usage note, sentence guide, or provisional unknown-lookup note. It never creates a canonical Language Object, Fact, Evidence record, relationship, search entry, or browser graph export.
+The browser may use it for a contextual explanation, usage note, memory tip, comparison, common-mistake note, examples, sentence guide, or provisional unknown-lookup note. It never creates a canonical Language Object, Fact, Evidence record, relationship, search entry, or browser graph export.
 
 ## Boundary
 
@@ -32,6 +32,8 @@ An AI draft is not a weaker canonical fact. It is a different class of content e
   generateUsageNote: async resource => ({ title, body, provider }),
   generateMemoryTip: async resource => ({ title, body, provider }),
   generateExamples: async resource => ({ title, body, provider }),
+  generateComparison: async resource => ({ title, body, provider }),
+  generateCommonMistake: async resource => ({ title, body, provider }),
   explainGrammar: async resource => ({ title, body, provider }),
   explainSentence: async resource => ({ title, body, provider })
 }
@@ -48,7 +50,7 @@ This is deliberate development infrastructure only. A future OpenAI, Claude, Ope
 The request is deliberately narrow:
 
 - target display metadata and canonical ID, if a target exists;
-- resource kind: `explanation`, `usage_note`, `sentence_guide`, or `provisional_lookup`;
+- resource kind: `explanation`, `usage_note`, `memory_tip`, `examples`, `comparison`, `common_mistake`, `sentence_guide`, or `provisional_lookup`;
 - a bounded graph summary and optional sentence context;
 - a constraint that canonical graph writes and relationship/object creation are prohibited.
 
@@ -61,12 +63,20 @@ AI appears only in existing learning-content spaces:
 - a meaning lacking an explanation;
 - a word/form lacking a contextual learning note;
 - a recognised grammar object lacking a teacher guide;
-- a sentence with locally unresolved material;
+- a sentence after deterministic local analysis, including actions for the sentence, a matched grammar object, a matched form, and another example;
 - an unknown single-item lookup.
 
-When no provider is connected, no AI prompt is shown on the learning page. Settings states this honestly. When a draft exists, it appears in place with `AI-generated` and `Learning draft` labels plus `Not yet verified in Liens.` It must never replace the page anchor or open a chat surface.
+Generation is always explicit. Liens never requests a draft merely because a learner opened a known object or sentence. A missing learning-content slot is a calm invitation such as `Generate explanation`; an unknown lookup offers `Create a provisional learning note`. When no provider is connected, the invitation remains an honest local-content state and exposes no broken cloud action.
+
+The first generated note is compact. It is cached locally, labelled `AI-generated` and `Learning draft` (or `Provisional learning note`), and does not behave like a conversation. The learner can then choose progressive follow-ups—examples, memory tips, comparisons, or a common mistake—inside that same contextual surface. It must never replace the page anchor or open a chat surface.
 
 Generation is opt-in through the learner's AI-assistance preference. The static application does not ship a secret, call a cloud service, or transmit learner text by default.
+
+## Local cache and future revisions
+
+Browser drafts are keyed by the target/sentence context, resource kind, and language. The active draft is the newest local revision; earlier generated revisions are retained in local storage rather than destructively replaced. A normal request returns the cached draft. The module already supports an explicit regeneration flag for a future `Regenerate` control, and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
+
+A reviewed or source-backed Learning Resource remains the preferred rendering for a slot. Replacing an AI draft with curated content therefore requires no object, route, or page redesign: the surrounding contextual surface stays the same while its resource provenance changes.
 
 ## Replacement policy
 

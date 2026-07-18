@@ -27,7 +27,7 @@ The learner should not feel that they are moving through disconnected pages. A w
 
 ## AI’s role
 
-AI is an invisible enrichment engine, never the product surface. Local curated knowledge resolves first. If AI later supplies an explanation, example, pronunciation note, or missing analysis, it must enter as structured draft knowledge with provenance and review state. It must not impersonate curated linguistic truth or replace learner understanding with a chat exchange.
+AI is an invisible enrichment engine, never the product surface. Local curated knowledge resolves first. If AI later supplies an explanation, example, pronunciation note, or missing analysis, it must enter as structured draft knowledge with provenance and review state. It must not impersonate curated linguistic truth or replace learner understanding with a chat exchange. AI help is always chosen in context, begins as one compact learning note, and expands only when the learner asks for more.
 
 ## Visual philosophy
 

@@ -31,6 +31,8 @@ ALLOWED_OPERATIONS = {
     "generateUsageNote",
     "generateMemoryTip",
     "generateExamples",
+    "generateComparison",
+    "generateCommonMistake",
     "explainGrammar",
     "explainSentence",
 }
@@ -49,6 +51,8 @@ OPERATION_GUIDANCE = {
     "generateUsageNote": "Explain how the requested object is normally used and give one reusable pattern when justified by the supplied context.",
     "generateMemoryTip": "Give one compact memory aid. Do not pretend it is a linguistic fact.",
     "generateExamples": "Give at most three short illustrative examples and concise English translations in plain text.",
+    "generateComparison": "Compare the requested object with the most relevant nearby pattern only when the supplied context supports it. Keep the contrast compact and learner-first.",
+    "generateCommonMistake": "Describe one common learner mistake or confusion cautiously. Do not claim a mistake is universal and do not invent a grammar rule.",
     "explainGrammar": "Explain why the supplied grammar object matters in this context. Do not define a new grammar rule or link.",
     "explainSentence": "Explain the supplied sentence, concentrating on the unresolved or requested parts without inventing a formal parse.",
 }
