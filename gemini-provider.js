@@ -7,6 +7,7 @@
 (() => {
   const endpoint = '/api/ai/learning-resource';
   const statusEndpoint = '/api/ai/status';
+  const REQUEST_TIMEOUT_MS = 35_000;
   let available = false;
 
   async function refreshAvailability() {
@@ -21,14 +22,24 @@
   }
 
   async function request(operation, learningResource) {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ operation, learningResource }),
-    });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload?.error || 'Gemini could not prepare this learning note.');
-    return payload;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ operation, learningResource }),
+        signal: controller.signal,
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload?.error || 'Gemini could not prepare this learning note.');
+      return payload;
+    } catch (error) {
+      if (error?.name === 'AbortError') throw new Error('Online learning assistance took too long.');
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   const invoke = operation => learningResource => request(operation, learningResource);
