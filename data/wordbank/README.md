@@ -87,16 +87,16 @@ python3 scripts/import_a1_foundation.py \
 
 The importer creates `ai_enriched` definitions, pronunciation records, first-class sentence objects, and `illustrates` graph edges. The browser exposes this provenance as **AI draft**, so no generated learning content is presented as curated data.
 
-### Source-backed FLELex A1 provenance import
+### Source-backed FLELex provenance import
 
-The canonical A1 lexical baseline is reconciled against the hash-locked FLELex / Beacco TreeTagger release. The raw TSV is not Liens-authored content; download the exact artifact named in `import-manifests/flelex-beacco-tree-tagger-a1.json`, then run:
+The canonical lexical baseline is reconciled against the hash-locked FLELex / Beacco TreeTagger release. The raw TSV is not Liens-authored content; download the exact artifact named in the appropriate manifest. To verify the complete A1–B2 baseline, run:
 
 ```bash
 python3 scripts/import_flelex_beacco.py \
   --database data/wordbank/liens-knowledge.sqlite \
   --source /path/to/FleLex_TT_Beacco.tsv \
-  --manifest data/wordbank/import-manifests/flelex-beacco-tree-tagger-a1.json \
-  --report data/wordbank/import-reports/flelex-beacco-tree-tagger-a1.json
+  --manifest data/wordbank/import-manifests/flelex-beacco-tree-tagger-a1-b2.json \
+  --report data/wordbank/import-reports/flelex-beacco-tree-tagger-a1-b2.json
 ```
 
 The adapter resolves existing canonical UUIDs, records immutable source rows and mappings, and adds evidence only to matching CEFR, part-of-speech, and frequency facts. It aborts rather than silently changing a canonical object or fact.

@@ -26,11 +26,11 @@ Canonical facts are atomic claims with typed values. Source records support thos
 
 Coverage targets come from a frozen source release, never hard-coded application counts. A successful import has complete eligible-record accounting, no duplicate canonical identities, valid evidence, zero orphaned references, and reproducible run metadata.
 
-## FLELex / Beacco A1 baseline
+## FLELex / Beacco lexical baseline
 
-The first production provenance import uses the official TreeTagger / Beacco TSV artifact. Its URL and SHA-256 are frozen in `data/wordbank/import-manifests/flelex-beacco-tree-tagger-a1.json`; the raw artifact is downloaded at import time rather than treated as Liens-authored data. The adapter maps source rows through canonical identity keys and never mints Language Object UUIDs.
+The production provenance import uses the official TreeTagger / Beacco TSV artifact. Its URL and SHA-256 are frozen in level-scoped manifests; the A1–B2 baseline manifest is `data/wordbank/import-manifests/flelex-beacco-tree-tagger-a1-b2.json`. The raw artifact is downloaded at import time rather than treated as Liens-authored data. The adapter maps source rows through canonical identity keys and never mints Language Object UUIDs.
 
-The A1 selection is defined by the release’s `level = A1` rows. Its report must account for every selected row as a canonical mapping or explicit exclusion, and must evidence the source-supported part of speech, CEFR level, and total frequency facts independently.
+Each selection is defined by the manifest’s explicit `level` or `levels` list. Its report accounts for every selected row by level as a canonical mapping or explicit exclusion, and evidences the source-supported part of speech, CEFR level, and total frequency facts independently. A multi-level import is one reproducible source release run, not a new identity system.
 
 ## Lexique 3.83 A1 morphology and pronunciation baseline
 

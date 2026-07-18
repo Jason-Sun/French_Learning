@@ -67,7 +67,7 @@ def hash_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def selected_rows(source: Path, level: str) -> list[SourceRow]:
+def selected_rows(source: Path, levels: set[str]) -> list[SourceRow]:
     rows: list[SourceRow] = []
     with source.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
@@ -75,14 +75,26 @@ def selected_rows(source: Path, level: str) -> list[SourceRow]:
         if not required.issubset(reader.fieldnames or set()):
             raise ValueError(f"Unexpected FLELex columns; required {sorted(required)}.")
         for line_number, row in enumerate(reader, start=2):
-            if row["level"].strip() != level:
+            source_level = row["level"].strip()
+            if source_level not in levels:
                 continue
             lemma = row["word"].strip()
             pos = row["tag"].strip()
             if not lemma or not pos:
                 raise ValueError(f"Selected row {line_number} has no lemma or part of speech.")
-            rows.append(SourceRow(line_number, lemma, pos, level, float(row["freq_total"] or 0), row))
+            rows.append(SourceRow(line_number, lemma, pos, source_level, float(row["freq_total"] or 0), row))
     return rows
+
+
+def selected_levels(manifest: dict) -> tuple[str, ...]:
+    selection = manifest["import"].get("selection", {})
+    raw_levels = selection.get("levels") or [selection.get("level")]
+    levels = tuple(sorted({str(level).strip() for level in raw_levels if str(level).strip()}))
+    if not levels:
+        raise ValueError("FLELex manifest must select at least one CEFR level.")
+    if any(level not in {"A1", "A2", "B1", "B2", "C1", "C2"} for level in levels):
+        raise ValueError(f"Unsupported FLELex CEFR level selection: {levels!r}")
+    return levels
 
 
 def fact_id_for_code(db: sqlite3.Connection, subject: str, predicate: str, value: str) -> str | None:
@@ -149,15 +161,16 @@ def main() -> None:
     if actual_sha != expected_sha:
         raise ValueError(f"Source SHA-256 mismatch: expected {expected_sha}, got {actual_sha}")
 
-    level = manifest["import"]["selection"]["level"]
-    rows = selected_rows(args.source, level)
+    levels = selected_levels(manifest)
+    rows = selected_rows(args.source, set(levels))
     db = sqlite3.connect(args.database)
     db.execute("PRAGMA foreign_keys=ON")
     resolved = validate_rows(db, rows)
 
     catalog = manifest["catalog"]
     release = manifest["release"]
-    run_id = f"import:{release['id']}:{level.casefold()}"
+    selection_id = "-".join(level.casefold() for level in levels)
+    run_id = f"import:{release['id']}:{selection_id}"
     db.execute("BEGIN")
     try:
         db.execute(
@@ -201,7 +214,11 @@ def main() -> None:
     report = {
         "release_id": release["id"],
         "release_sha256": actual_sha,
-        "selection": {"level": level},
+        "selection": {"levels": list(levels)},
+        "coverage_by_level": {
+            level: sum(row.cefr_level == level for row in rows)
+            for level in levels
+        },
         "source_rows_selected": len(rows),
         "canonical_objects_mapped": len(resolved),
         "facts_evidenced": len(resolved) * 3,
