@@ -35,7 +35,7 @@ Liens is a learning-first Language Graph. It is not a conventional dictionary, a
 | --- | --- | --- | --- |
 | Blocking | SQLite and browser JSON are committed as ordinary Git files. | Large graph releases bloat history, prevent normal GitHub pushes, and make collaboration expensive. | Treat them as generated, versioned release artifacts once the deterministic build is in place. |
 | Blocking | Data reconstruction still has manual steps. | A future import cannot be independently reproduced or audited reliably. | Create one pinned, deterministic data build and an immutable build manifest before expanding significantly beyond A1. |
-| High | The browser eagerly loads one large `wordbank-index.json`. | This does not scale to A2–C2, sentences, media, or mobile networks. | Keep a small lookup shell and lazy-load versioned object/relationship shards. |
+| Resolved baseline | The browser formerly eagerly loaded one large `wordbank-index.json`. | This would not scale to A2–C2, sentences, media, or mobile networks. | The v1 browser package now uses a compact lookup shell and integrity-hashed, lazy-loaded detail shards; future packages must preserve this contract. |
 | High | Learner state is currently local browser state. | Collections, review, accounts, and sync would otherwise duplicate or mutate the shared graph. | Establish a separate user-state domain with canonical UUID references only. |
 | High | The current UI is a compact prototype runtime. | Direct DOM rendering and data access in one application module become difficult to test, localize, and evolve. | Introduce view-model, navigation, data-access, and rendering boundaries before major UI growth. |
 | High | There is no formal release compatibility contract. | App versions, schema migrations, browser packages, and future clients can drift. | Publish data build IDs, schema/export versions, hashes, and compatibility rules. |
@@ -229,7 +229,7 @@ AI may not:
 
 ### Current state
 
-The static browser application loads a generated `wordbank-index.json`, resolves lookup locally, and uses a local SQLite-built graph as the upstream data source. This is appropriate for the A1 prototype but is not the final distribution pattern.
+The static browser application now loads a generated versioned data package: a compact normalized lookup bootstrap plus 64 deterministic, integrity-hashed Language Object detail shards. It resolves lookup and deterministic sentence analysis locally, then fetches and caches only the details required by the learner's current exploration. SQLite remains the upstream graph source.
 
 ### Frozen target
 

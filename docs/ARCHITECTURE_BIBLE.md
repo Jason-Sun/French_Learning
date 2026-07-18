@@ -14,21 +14,21 @@
 
 ## System overview
 
-Liens is currently a dependency-free static browser application backed by a versioned local SQLite knowledge database and a generated JSON browser index. SQLite is the authoritative runtime graph representation; the long-term repository source of truth is the deterministic recipe that builds it: schemas, migrations, pinned source manifests, importers, curation, validation, and release configuration.
+Liens is currently a dependency-free static browser application backed by a versioned local SQLite knowledge database and a generated browser data package. SQLite is the authoritative runtime graph representation; the long-term repository source of truth is the deterministic recipe that builds it: schemas, migrations, pinned source manifests, importers, curation, validation, and release configuration.
 
 ```text
 SQLite Language Object Graph
         ↓ export adapter
-wordbank-index.json
-        ↓ load once
-Browser object resolver + Sentence Intelligence
+browser/manifest.json + lookup.json
+        ↓ lazy detail shards
+Browser graph adapter + Sentence Intelligence
         ↓
 Object / sentence learning surfaces
         ↓
 Local learner preferences and saved-object state
 ```
 
-SQLite is the authoritative runtime linguistic store. `wordbank-index.json` is a read-optimized browser projection, not a competing database. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge. SQLite and browser indexes are release artifacts once the deterministic build foundation described in the Architecture Freeze is complete.
+SQLite is the authoritative runtime linguistic store. The versioned browser package is a read-optimized projection, not a competing database: a normalized lookup bootstrap resolves ordinary queries and deterministic sentence analysis, while full Language Object details load and cache by deterministic shard only when explored. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge. SQLite and browser packages are release artifacts once the deterministic build foundation described in the Architecture Freeze is complete.
 
 ## Language Object Graph
 
@@ -52,7 +52,7 @@ Lexical meaning is graph-native. A `word` links to ordered `lexical_sense` objec
 
 ## Browser and search architecture
 
-The browser loads the exported graph once, builds ID and normalized-form indexes, and resolves input in this order:
+The browser loads the compact lookup projection once, builds ID and normalized-form indexes, and resolves input in this order:
 
 ```text
 user input

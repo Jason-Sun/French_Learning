@@ -229,3 +229,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Attach `body_zh` or `translation_zh` to English resources; make Chinese-specific resource kinds; store multilingual teaching text as canonical graph facts.
 
 **Long-term impact:** New languages are configuration and content decisions, not schema or UI rewrites. Existing legacy Chinese display fields remain compatibility data only; new multilingual AI content stays in learner-scoped Learning Resources outside the canonical graph.
+
+## ADR-018 — Browser graph packages separate lookup from object detail
+
+**Date:** 2026-07-18
+
+**Decision:** Export SQLite into a versioned browser package with a normalized lookup bootstrap, a manifest containing byte sizes and SHA-256 checksums, and deterministic Language Object detail shards. The browser loads the lookup projection for local resolution and Sentence Intelligence, then fetches and caches full Object detail only when a learner explores it.
+
+**Reason:** A single eager JSON export became too large to scale across A2–B2 morphology, example sentences, and future media. Search and deterministic parsing need only a compact subset of the graph; definitions, provenance, neighbours, and other detail should not block the first learning interaction.
+
+**Alternatives:** Keep one growing JSON file; query SQLite directly from the static browser immediately; build endpoint-specific API payloads that bypass a shared graph package.
+
+**Long-term impact:** Web, desktop, and mobile clients can share a stable data-package contract. The UI remains graph-oriented while data transport can scale, cache, and move to release assets without changing canonical SQLite structure.

@@ -115,7 +115,22 @@ python3 scripts/import_lexique_a1_morphology.py \
   --report data/wordbank/import-reports/lexique383-a1-b2-morphology.json
 ```
 
-The expanded browser package must be sharded before this larger build is released to learners.
+The browser package is sharded before a larger build is released to learners. Rebuild its lookup bootstrap, manifest, and deterministic object detail shards with:
+
+```bash
+python3 scripts/export_wordbank_index.py \
+  --source data/wordbank/liens-knowledge.sqlite \
+  --output-dir data/wordbank/browser
+```
+
+The static app loads only the normalized lookup bootstrap at startup; it verifies package metadata and lazily caches full Language Object detail shards as the learner explores.
+
+Validate a generated package before release:
+
+```bash
+python3 scripts/test_browser_graph_package.py \
+  --package-dir data/wordbank/browser
+```
 
 ```bash
 python3 scripts/import_lexique_a1_morphology.py \

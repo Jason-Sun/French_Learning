@@ -14,7 +14,7 @@
 
 ### Current architecture gap
 
-The repository still contains generated SQLite and browser-index artifacts, and rebuilding currently requires manual source preparation. Before material A2 expansion or any history migration, Liens needs one deterministic end-to-end data build, immutable release manifests, and artifact distribution outside ordinary Git history.
+The repository still contains generated SQLite and browser-package artifacts, and rebuilding currently requires manual source preparation. Before material A2 expansion or any history migration, Liens needs one deterministic end-to-end data build, immutable release manifests, and artifact distribution outside ordinary Git history.
 
 ### Product constitution
 
@@ -23,7 +23,7 @@ The repository still contains generated SQLite and browser-index artifacts, and 
 ## Implemented
 
 - Static browser app with direct local Language Object search and sentence routing.
-- SQLite graph with stable IDs and typed relationships; browser index export is generated from it.
+- SQLite graph with stable IDs and typed relationships; a generated browser package projects it through a 9.3 MB lookup bootstrap and 64 integrity-hashed, lazy detail shards.
 - 8,767 A1–B2 word objects, 10,627 source-backed inflected-form objects, 96 graph-native conjugation realizations, learning groups/tenses, 41 example sentence objects, grammar structures, teacher resources, and 11,777 Pronunciation Objects.
 - Accent-insensitive lookup that preserves canonical French spelling on pages.
 - Deterministic Sentence Intelligence for local token resolution, selected contractions/elisions, expressions, grammar patterns, and review candidates.

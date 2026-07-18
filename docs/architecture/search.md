@@ -8,7 +8,7 @@ Turn learner input into the best local learning route while preserving canonical
 
 1. Preserve the original input for display and sentence analysis.
 2. Build a normalized key by case-folding, normalizing apostrophes, and removing French diacritics for lookup only.
-3. Search the exported Language Object index.
+3. Search the exported normalized lookup bootstrap.
 4. Prefer an exact `inflected_form` when one exists, then the relevant lemma or multi-word object.
 5. Route resolved objects directly to their own object page.
 6. Route unresolved multi-token input to Sentence Intelligence.
@@ -23,4 +23,4 @@ Turn learner input into the best local learning route while preserving canonical
 
 ## Boundaries
 
-The browser index is an adapter generated from SQLite. Search behavior must be implemented generically over types and relationships, never as a list of special-cased verbs.
+The browser data package is an adapter generated from SQLite. Its lookup bootstrap resolves local queries; full objects are loaded from integrity-hashed detail shards only when needed. Search behavior must be implemented generically over types and relationships, never as a list of special-cased verbs.

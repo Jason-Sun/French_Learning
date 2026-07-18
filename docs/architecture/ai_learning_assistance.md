@@ -54,7 +54,7 @@ The request is deliberately narrow:
 - a bounded graph summary and optional sentence context;
 - a constraint that canonical graph writes and relationship/object creation are prohibited.
 
-The returned text is validated as bounded plain-text learning content. It is stored only in browser local storage under a learner-scoped draft key. It is never inserted into SQLite or `wordbank-index.json`.
+The returned text is validated as bounded plain-text learning content. It is stored only in browser local storage under a learner-scoped draft key. It is never inserted into SQLite or the generated browser data package.
 
 ## UX contract
 

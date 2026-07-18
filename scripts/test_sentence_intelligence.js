@@ -4,13 +4,20 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const crypto = require('crypto');
 
 const root = path.resolve(__dirname, '..');
 const context = { window: {} };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(root, 'sentence-intelligence.js'), 'utf8'), context);
 
-const objects = JSON.parse(fs.readFileSync(path.join(root, 'data/wordbank/wordbank-index.json'), 'utf8')).objects;
+const packageRoot = path.join(root, 'data/wordbank/browser');
+const manifest = JSON.parse(fs.readFileSync(path.join(packageRoot, 'manifest.json'), 'utf8'));
+const lookupPayload = fs.readFileSync(path.join(packageRoot, manifest.lookup.path));
+if (crypto.createHash('sha256').update(lookupPayload).digest('hex') !== manifest.lookup.sha256) {
+  throw new Error('Browser lookup checksum does not match its manifest.');
+}
+const objects = JSON.parse(lookupPayload).objects;
 const engine = new context.window.SentenceIntelligence(objects);
 const cases = [
   ['Je vais au cinéma ce soir.', []],

@@ -15,7 +15,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Architecture Freeze v1.0 — completed.** The next implementation milestone is the **Data Build and Release Foundation**, before material A2 expansion.
+**Architecture Freeze v1.0 — completed.** The browser data-package/access-adapter portion of the Data Build and Release Foundation is complete; the remaining work is a single end-to-end build and release-manifest workflow.
 
 ## Near-term foundation milestone
 
@@ -27,7 +27,7 @@ Before expanding the graph substantially beyond A1:
 - emit immutable release manifests with source checksums, schema/importer versions, artifact hashes, coverage, attribution, and compatibility information;
 - treat SQLite and browser indexes as generated release artifacts rather than ordinary Git history;
 - define artifact distribution and rollback before rewriting the existing branch history;
-- establish browser data-package/access-adapter boundaries needed for sharded, lazy loading.
+- preserve the completed browser data-package/access-adapter boundary: a lookup bootstrap plus deterministic, integrity-hashed lazy detail shards.
 
 This foundation is specified in [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md).
 
