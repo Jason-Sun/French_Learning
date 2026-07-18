@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import Lexique pronunciation representations for the A1 graph.
+"""Import Lexique pronunciation representations for a CEFR-scoped graph.
 
 Lexique's ``phon`` field is retained as a source-specific phonological code. It
 is deliberately not converted to, or labelled as, IPA. Syllable boundaries are
@@ -19,7 +19,27 @@ from pathlib import Path
 from canonical_identity import NAMESPACE, canonical_uuid
 
 
-LEXIQUE_TO_GRAPH_POS = {"VER": "VER", "AUX": "VER", "NOM": "NOM", "ADJ": "ADJ"}
+LEXIQUE_TO_GRAPH_POS = {
+    "VER": "VER",
+    "AUX": "VER",
+    "NOM": "NOM",
+    "ADJ": "ADJ",
+    "PRE": "PRP",
+    "CON": "KON",
+    "ADV": "ADV",
+    "PRO:dem": "PRO",
+    "PRO:ind": "PRO",
+    "PRO:int": "PRO",
+    "PRO:per": "PRO",
+    "PRO:pos": "DET:POS",
+    "PRO:rel": "PRO",
+    "ART:def": "DET:ART",
+    "ART:ind": "DET:ART",
+    "ADJ:dem": "PRO",
+    "ADJ:ind": "PRO",
+    "ADJ:int": "PRO",
+    "ADJ:pos": "DET:POS",
+}
 
 
 def normalize(value: str) -> str:
@@ -42,6 +62,17 @@ def source_record_id(release_id: str, line_number: int) -> str:
     return stable_id("source-record", f"{release_id}|line:{line_number}|lexique_row")
 
 
+def selected_levels(manifest: dict) -> tuple[str, ...]:
+    selection = manifest["import"].get("selection", {})
+    raw = selection.get("levels") or [selection.get("level", "A1")]
+    levels = tuple(sorted({str(level).strip() for level in raw if str(level).strip()}))
+    if not levels or any(
+        level not in {"A1", "A2", "B1", "B2", "C1", "C2"} for level in levels
+    ):
+        raise ValueError(f"Invalid CEFR selection: {levels!r}")
+    return levels
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", type=Path, required=True)
@@ -59,25 +90,28 @@ def main() -> None:
     database.execute("PRAGMA foreign_keys=ON")
 
     release_id = manifest["release"]["id"]
-    import_run_id = f"import:{release_id}:a1-pronunciation"
+    levels = selected_levels(manifest)
+    import_run_id = f"import:{release_id}:{'-'.join(level.casefold() for level in levels)}-pronunciation"
     database.execute(
         """INSERT OR IGNORE INTO import_runs
            (id, release_id, importer_name, importer_version, status, completed_at)
            VALUES (?, ?, ?, ?, 'completed', CURRENT_TIMESTAMP)""",
-        (import_run_id, release_id, "lexique383_a1_pronunciation", "1"),
+        (import_run_id, release_id, "lexique383_pronunciation", "2"),
     )
 
-    a1_words = {
+    placeholders = ",".join("?" for _ in levels)
+    scoped_words = {
         (normalize(row["canonical_form"]), row["part_of_speech"]): row["id"]
         for row in database.execute(
-            """SELECT lo.id, lo.canonical_form, lo.part_of_speech
+            f"""SELECT lo.id, lo.canonical_form, lo.part_of_speech
                FROM language_objects lo
-               WHERE lo.type_code = 'word' AND lo.cefr_level = 'A1'"""
+               WHERE lo.type_code = 'word' AND lo.cefr_level IN ({placeholders})""",
+            levels,
         )
     }
-    eligible_a1_word_ids = {
+    eligible_word_ids = {
         object_id
-        for (lemma, part_of_speech), object_id in a1_words.items()
+        for (lemma, part_of_speech), object_id in scoped_words.items()
         if part_of_speech in set(LEXIQUE_TO_GRAPH_POS.values())
     }
 
@@ -96,7 +130,7 @@ def main() -> None:
             for line_number, row in enumerate(csv.DictReader(source, delimiter="\t"), start=2):
                 part_of_speech = LEXIQUE_TO_GRAPH_POS.get(row["cgram"])
                 key = (normalize(row["lemme"]), part_of_speech)
-                if part_of_speech is None or key not in a1_words:
+                if part_of_speech is None or key not in scoped_words:
                     continue
 
                 eligible_rows += 1
@@ -134,7 +168,7 @@ def main() -> None:
                 ).fetchall()
                 owners = [mapped["language_object_id"] for mapped in mapped_owners]
                 if not owners and normalize(row["ortho"]) == normalize(row["lemme"]):
-                    owners = [a1_words[key]]
+                    owners = [scoped_words[key]]
                 if not owners:
                     rows_without_target += 1
                     existing_surface = database.execute(
@@ -280,7 +314,7 @@ def main() -> None:
         "source_rows_mapped_to_targets": eligible_rows - rows_without_phonology - rows_without_target,
         "exclusions_by_reason": exclusions_by_reason,
         "language_objects_covered": len(owner_ids),
-        "eligible_a1_lemma_objects": len(eligible_a1_word_ids),
+        "eligible_lemma_objects": len(eligible_word_ids),
         "representation_values_total": sum(representation_counts.values()),
         "representation_counts": representation_counts,
     }

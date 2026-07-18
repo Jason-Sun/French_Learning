@@ -51,7 +51,7 @@ The repository still contains generated SQLite and browser-index artifacts, and 
 - All Lexique-created A1 inflection links now carry row-level relationship evidence. Paradigm membership is explicitly marked as a transparent derivation from an asserted form link, rather than represented as a direct source claim.
 - The same Lexique release adds source-backed gender/number inflection analyses for A1 nouns and adjectives; all imported form objects have canonical IDs and lemma links.
 - Lexique now also evidences gender/number facts for 33 existing A1 pronoun, article, and possessive-determiner objects. It does not provide the paradigm links needed to connect variants such as `mon` and `ma`, so no relationship has been invented.
-- Lexique pronunciation coverage is imported as 11,680 source-labelled phonological-code and syllabification pairs for linked A1 objects. These representations have row-level evidence, are not IPA, and never appear as IPA in the browser.
+- Lexique pronunciation coverage is imported as 38,252 source-labelled phonological-code and syllabification values for 19,126 linked A1–B2 objects, including 479 of 528 in-scope function words. These representations have row-level evidence, are not IPA, and never appear as IPA in the browser.
 - The A1 Golden Slice audit passes with zero foreign-key, orphaned mapping/alignment/component, duplicate-identity, canonical-fact-evidence, or scoped source-edge-evidence failures. It verifies all 1,247 FLELex A1 baseline rows map to canonical objects.
 
 ## Pending

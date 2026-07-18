@@ -202,7 +202,7 @@ python3 scripts/import_tex_a1_grammar.py \
   --report data/wordbank/import-reports/tex-french-grammar-a1.json
 ```
 
-### Source-backed Lexique A1 pronunciation representations
+### Source-backed Lexique A1–B2 pronunciation representations
 
 The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. It does not convert the code to IPA and does not modify the browser's verified-IPA projection.
 
@@ -210,8 +210,8 @@ The pronunciation importer reuses the frozen Lexique release and maps its source
 python3 scripts/import_lexique_a1_pronunciation.py \
   --database data/wordbank/liens-knowledge.sqlite \
   --source /path/to/Lexique383.tsv \
-  --manifest data/wordbank/import-manifests/lexique383-a1-morphology.json \
-  --report data/wordbank/import-reports/lexique383-a1-pronunciation.json
+  --manifest data/wordbank/import-manifests/lexique383-a1-b2-pronunciation.json \
+  --report data/wordbank/import-reports/lexique383-a1-b2-pronunciation.json
 ```
 
 The report records coverage and every exclusion reason. Each representation is linked to the exact immutable Lexique source row through `pronunciation_representation_evidence`; the `has_pronunciation` graph edge is independently evidenced by that same row. Every Kaikki `has_sense` edge likewise retains the immutable source sense that supports it, in addition to the sense's English-gloss facts.

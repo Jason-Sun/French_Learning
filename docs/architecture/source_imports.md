@@ -32,11 +32,11 @@ The production provenance import uses the official TreeTagger / Beacco TSV artif
 
 Each selection is defined by the manifest’s explicit `level` or `levels` list. Its report accounts for every selected row by level as a canonical mapping or explicit exclusion, and evidences the source-supported part of speech, CEFR level, and total frequency facts independently. A multi-level import is one reproducible source release run, not a new identity system.
 
-## Lexique 3.83 A1 morphology and pronunciation baseline
+## Lexique 3.83 CEFR-scoped morphology and pronunciation baseline
 
 Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, a Lexique-specific phonological code, and syllabification. Its phonological code is a source representation, not verified IPA.
 
-The morphology adapters select an explicit CEFR-level scope from their manifests and import validated verb, noun, adjective, and function-word analyses. The completed A1 Golden Slice is the reference scope; the same importer contract is parameterized for A2–B2 expansion. For pronouns, articles, and possessive determiners, the adapter adds only gender/number facts asserted for an existing canonical object. Lexique does not establish paradigm links between variants such as `mon` and `ma`, so the importer never manufactures a form relationship from its rows alone.
+The morphology and pronunciation adapters select an explicit CEFR-level scope from their manifests and import validated verb, noun, adjective, and function-word analyses. The completed A1 Golden Slice is the reference scope; the same importer contract is parameterized for A2–B2 expansion. For pronouns, articles, and possessive determiners, the adapter adds only gender/number facts asserted for an existing canonical object. Lexique does not establish paradigm links between variants such as `mon` and `ma`, so the importer never manufactures a form relationship from its rows alone.
 
 Every Lexique-created `inflected_form_of` edge has direct row-level relationship evidence. A `member_of_paradigm` edge is a transparent graph derivation from that evidenced form link and an existing verb-paradigm link, so it retains the same source record with `evidence_role = derived_from_asserted_form`; it is never presented as a direct Lexique assertion.
 
