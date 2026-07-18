@@ -38,10 +38,10 @@ ALLOWED_OPERATIONS = {
 }
 
 RESOURCE_SCHEMA = {
-    "type": "object",
+    "type": "OBJECT",
     "properties": {
-        "title": {"type": "string", "description": "A concise learner-facing title."},
-        "body": {"type": "string", "description": "A concise, helpful English learning explanation in plain text."},
+        "title": {"type": "STRING", "description": "A concise learner-facing title."},
+        "body": {"type": "STRING", "description": "A concise, helpful English learning explanation in plain text."},
     },
     "required": ["title", "body"],
 }
@@ -114,9 +114,11 @@ def call_gemini(operation: str, resource: dict[str, Any]) -> dict[str, str]:
     request_payload = {
         "contents": [{"parts": [{"text": prompt_for(operation, resource)}]}],
         "generationConfig": {
-            "responseFormat": {"text": {"mimeType": "application/json", "schema": RESOURCE_SCHEMA}},
+            "responseMimeType": "application/json",
+            "responseSchema": RESOURCE_SCHEMA,
             "temperature": 0.3,
-            "maxOutputTokens": 700,
+            "maxOutputTokens": 900,
+            "thinkingConfig": {"thinkingLevel": "MINIMAL"},
         },
     }
     endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{quote(model, safe='.-_')}:generateContent"
@@ -139,7 +141,8 @@ def call_gemini(operation: str, resource: dict[str, Any]) -> dict[str, str]:
         raise RuntimeError("Liens could not reach Gemini. Check your connection and try again.") from error
 
     try:
-        response_text = payload["candidates"][0]["content"]["parts"][0]["text"]
+        parts = payload["candidates"][0]["content"]["parts"]
+        response_text = "".join(part.get("text", "") for part in parts if isinstance(part, dict)).strip()
         generated = json.loads(response_text)
         title = clean_text(generated["title"], limit=120)
         body = clean_text(generated["body"], limit=MAX_BODY_LENGTH)
