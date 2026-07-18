@@ -60,9 +60,11 @@ The `has_sense` edge is also source-evidenced from the exact source sense record
 
 The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
 
+The connections importer resolves source-sense records through their canonical lexical-sense targets rather than assuming a particular CEFR import-run name. This keeps A1 and A2–B2 source mappings compatible under one reproducible contract.
+
 ## Kaikki / English Wiktionary A1-connected expression baseline
 
-The same hash-locked Kaikki release supplies source entries whose native part of speech is `phrase`. The expression adapter accepts a phrase only when it has an English gloss and every lexical token resolves locally to either an A1 lemma or a source-backed inflected form of an A1 lemma. This is a graph-connectivity rule, **not** a CEFR claim for the phrase itself.
+The same hash-locked Kaikki release supplies source entries whose native part of speech is `phrase`. The expression adapter accepts a phrase only when it has an English gloss and every lexical token resolves locally to either a selected-CEFR lemma or a source-backed inflected form of one. This is a graph-connectivity rule, **not** a CEFR claim for the phrase itself.
 
 Each accepted record becomes a first-class `expression` object using a source-independent surface identity. Its English translations are independently evidenced facts. Ordered components are stored in `multiword_components`, their source surfaces in `multiword_component_evidence`, and deduplicated `contains` edges carry independent relationship evidence for graph traversal. The importer does not call any Kaikki phrase an idiom or collocation: the source’s `phrase` label alone does not establish either classification.
 

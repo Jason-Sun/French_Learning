@@ -42,8 +42,8 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - Multi-sense words now use a progressive in-place Meaning explorer: the lemma remains the anchor, any source-backed sense can expand in place or all panels can be collapsed, only the first four senses appear initially, and a selected panel renders its source-aligned examples. Direct sense routes preserve canonical identity while opening the owner-word context.
 - New canonical graph relationship imports now support independent source evidence; legacy edges are retained as compatibility data and will be audited separately.
 - The CC-BY Tex grammar index now supplies an evidenced A1 grammar network of eight topics, twelve constructions/patterns, and 31 typed graph links.
-- Kaikki now contributes 1,903 attributable translated example-sentence objects, 1,911 evidenced `illustrates` links, and 205 source-backed synonym/antonym links for the A1 graph.
-- Kaikki phrase entries now contribute 159 source-backed, A1-connected `expression` objects, 177 independently evidenced English translations, and 569 ordered component records. The source calls them phrases, so Liens does not mislabel them as collocations or idioms.
+- Kaikki now contributes 4,286 attributable translated example-sentence objects, 4,318 evidenced `illustrates` links, and 1,693 source-backed synonym/antonym links for the A1–B2 graph.
+- Kaikki phrase entries now contribute 246 source-backed, A1–B2-connected `expression` objects, 275 independently evidenced English translations, and 913 ordered component records. The source calls them phrases, so Liens does not mislabel them as collocations or idioms; 336 phrase senses with unresolved local components remain explicit exclusions.
 - First-class Grammar Language Object taxonomy, semantic grammar relationships, and generic grammar-object analysis matches are established; no new grammar inventory has been imported.
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.
@@ -70,14 +70,15 @@ The repository still contains generated SQLite and browser-package artifacts, an
 
 - This is a static, dependency-free prototype; browser storage is per-device and not account-backed.
 - Sentence Intelligence is intentionally deterministic and covers a limited set of grammar patterns.
-- Search relies on the browser JSON projection; it does not yet query SQLite directly in-browser.
+- Search relies on the browser data-package projection; it does not yet query SQLite directly in-browser.
 - Pronunciation has verified IPA only for the initial curated/core set. Lexique's broader A1 code and syllable coverage remains source-labelled until a separately validated IPA conversion or source is available.
 - Some imported learning content is explicitly draft/enriched and should not be represented as fully curated.
-- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; Kaikki has no matched sense entry for 25 FLELex A1 word/POS identities; 434 Kaikki phrase senses have an unresolved local A1 component and are excluded from expression import.
+- Canonical grammar coverage remains limited to the attributed Tex A1 index (38 current grammar-related objects). No A2–B2 grammar content has been invented in the absence of an appropriate attributable source.
+- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; Kaikki has no matched sense entry for 25 FLELex A1 word/POS identities; 336 Kaikki phrase senses have an unresolved local A1–B2 component and are excluded from expression import.
 
 ## Recommended next milestone
 
-Build the **Data Build and Release Foundation**: one pinned, deterministic build through validation, export, audit, and immutable release manifest. Do not migrate generated artifacts out of Git or start material A2 expansion until it is proven.
+Complete the **Data Build and Release Foundation**: one pinned, deterministic build through validation, export, audit, and immutable release manifest. Do not migrate generated artifacts out of Git until it is proven.
 
 ## Required maintenance
 
