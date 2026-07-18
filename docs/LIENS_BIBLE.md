@@ -89,6 +89,8 @@ AI is an assistant, not Liens' authority and not Liens' personality. It should b
 
 The Language Graph guarantees trustworthy structure. The Learning Layer strives for completeness. When a source-backed teaching resource is absent, Liens may automatically create and locally cache a clearly labelled AI learning draft in that resource's place. A learner should receive useful guidance rather than an empty learning slot, while always being able to distinguish generated help from reviewed knowledge.
 
+Learning Resources are language-specific. A resource is identified by its target, kind, context, and language; it is never an English resource with an attached translation field for another language. English is the primary teaching language. Reference languages such as Chinese are optional parallel resources that help a learner confirm meaning without creating a separate product or teaching system.
+
 AI may:
 
 - explain known graph knowledge in different ways;

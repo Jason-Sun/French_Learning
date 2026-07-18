@@ -217,3 +217,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Require an explicit Generate button for every gap; allow AI to fill canonical fields; show silent generic placeholders.
 
 **Long-term impact:** Provider adapters remain replaceable and learner-facing content remains reviewable, while the canonical graph stays source-backed. The setting is a privacy/network control, not a feature switch; turning it off preserves local graph access and displays an honest availability state.
+
+## ADR-017 — Learning Resource language is an identity dimension
+
+**Date:** 2026-07-18
+
+**Decision:** Identify every Learning Resource by target, kind, context, and BCP-47 language tag. English and reference-language resources are independent resources with separate provenance, cache entries, revisions, and fallback resolution. The provider receives the requested language as typed resource data; prompts remain inside the provider adapter.
+
+**Reason:** A Chinese, Japanese, Korean, or Spanish learning explanation is not an attachment to an English explanation. Making language intrinsic avoids language-specific fields and allows reference-language support to grow without a second Learning Layer.
+
+**Alternatives:** Attach `body_zh` or `translation_zh` to English resources; make Chinese-specific resource kinds; store multilingual teaching text as canonical graph facts.
+
+**Long-term impact:** New languages are configuration and content decisions, not schema or UI rewrites. Existing legacy Chinese display fields remain compatibility data only; new multilingual AI content stays in learner-scoped Learning Resources outside the canonical graph.

@@ -10,6 +10,9 @@
   const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const MAX_DRAFTS = 48;
   const inFlight = new Map();
+  const generationQueue = [];
+  let activeGenerationCount = 0;
+  const MAX_CONCURRENT_GENERATIONS = 1;
   const SUPPORTED_KINDS = new Set([
     'explanation', 'usage_note', 'memory_tip', 'examples', 'comparison',
     'common_mistake', 'sentence_guide', 'provisional_lookup',
@@ -131,6 +134,19 @@
     return { status: 'generated', draft };
   }
 
+  function drainGenerationQueue() {
+    if (activeGenerationCount >= MAX_CONCURRENT_GENERATIONS || !generationQueue.length) return;
+    const next = generationQueue.shift();
+    activeGenerationCount += 1;
+    Promise.resolve()
+      .then(() => generate(next.request))
+      .then(next.resolve, next.reject)
+      .finally(() => {
+        activeGenerationCount -= 1;
+        drainGenerationQueue();
+      });
+  }
+
   async function ensure(request) {
     const existing = get(request);
     if (existing) return { status: 'cached', draft: existing };
@@ -139,7 +155,10 @@
 
     const key = keyFor(request);
     if (!inFlight.has(key)) {
-      const pending = generate(request).finally(() => inFlight.delete(key));
+      const pending = new Promise((resolve, reject) => {
+        generationQueue.push({ request, resolve, reject });
+        drainGenerationQueue();
+      }).finally(() => inFlight.delete(key));
       inFlight.set(key, pending);
     }
     return inFlight.get(key);
