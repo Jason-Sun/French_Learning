@@ -85,14 +85,16 @@ English is always available as a bridge. Chinese is an optional learner preferen
 
 ## 6. AI philosophy
 
-AI is an assistant, not Liens' authority and not Liens' personality.
+AI is an assistant, not Liens' authority and not Liens' personality. It should be felt as quiet teaching continuity, never as a chatbot destination or a feature the learner must learn to operate.
+
+The Language Graph guarantees trustworthy structure. The Learning Layer strives for completeness. When a source-backed teaching resource is absent, Liens may automatically create and locally cache a clearly labelled AI learning draft in that resource's place. A learner should receive useful guidance rather than an empty learning slot, while always being able to distinguish generated help from reviewed knowledge.
 
 AI may:
 
 - explain known graph knowledge in different ways;
 - personalize learning guidance using learner-authorized context;
 - analyze unfamiliar input and identify candidates for exploration;
-- create clearly labeled drafts, temporary assistance, or learning-resource revisions;
+- create clearly labeled, locally cached drafts, temporary assistance, or learning-resource revisions when a learning slot has no better resource;
 - surface gaps that need source-backed or editorial work.
 
 AI may not silently modify canonical linguistic knowledge, conceal uncertainty, or present generated content as curated truth. Approved knowledge retains provenance. A confident answer is never more valuable than an honest one.

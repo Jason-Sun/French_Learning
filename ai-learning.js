@@ -9,6 +9,7 @@
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const MAX_DRAFTS = 48;
+  const inFlight = new Map();
   const SUPPORTED_KINDS = new Set([
     'explanation', 'usage_note', 'memory_tip', 'examples', 'comparison',
     'common_mistake', 'sentence_guide', 'provisional_lookup',
@@ -25,6 +26,7 @@
   const keyFor = request => [
     request.target?.id || `lookup:${plainText(request.query).toLocaleLowerCase('fr')}`,
     request.kind,
+    request.kind === 'sentence_guide' ? 'translation-v2' : '',
     request.language || 'en',
     request.context?.senseId || '',
     request.context?.sentence || '',
@@ -72,6 +74,7 @@
       query: plainText(request.query) || null,
       title,
       body,
+      translation: plainText(response?.translation || '').slice(0, 360) || null,
       origin: 'ai_generated',
       lifecycle: 'draft',
       createdAt: new Date().toISOString(),
@@ -89,7 +92,9 @@
     .filter(draft => draft.resourceKey === keyFor(request))
     .sort((left, right) => right.revisionNumber - left.revisionNumber || String(right.createdAt).localeCompare(String(left.createdAt)));
   const get = request => revisionsFor(request)[0] || null;
-  const enabled = () => localStorage.getItem(ENABLED_KEY) === 'true';
+  // Online learning assistance is the default completion path. A learner can
+  // explicitly turn it off when they do not want network-backed drafts.
+  const enabled = () => localStorage.getItem(ENABLED_KEY) !== 'false';
   const setEnabled = value => localStorage.setItem(ENABLED_KEY, String(Boolean(value)));
 
   async function generate(request, { regenerate = false } = {}) {
@@ -126,6 +131,20 @@
     return { status: 'generated', draft };
   }
 
+  async function ensure(request) {
+    const existing = get(request);
+    if (existing) return { status: 'cached', draft: existing };
+    if (!enabled()) return { status: 'disabled' };
+    if (!providerReady()) return { status: 'provider_unavailable' };
+
+    const key = keyFor(request);
+    if (!inFlight.has(key)) {
+      const pending = generate(request).finally(() => inFlight.delete(key));
+      inFlight.set(key, pending);
+    }
+    return inFlight.get(key);
+  }
+
   globalThis.LiensLearningAssist = Object.freeze({
     enabled,
     setEnabled,
@@ -138,6 +157,7 @@
     getRevisions: revisionsFor,
     keyFor,
     generate,
+    ensure,
     clear: request => writeDrafts(readDrafts().filter(item => item.key !== keyFor(request))),
   });
 })();

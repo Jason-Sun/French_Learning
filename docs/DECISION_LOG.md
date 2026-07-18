@@ -205,3 +205,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Filter all lemma forms in the browser; copy conjugation tables into JSON; attach every source tense to a learner selector; create only a special `manger` repair.
 
 **Long-term impact:** Any source-backed form can appear in its correct learning table after a reproducible data projection, while unsupported source tenses remain present in the graph without being falsely advertised as an available learning module.
+
+## ADR-016 — The Learning Layer completes missing teaching slots
+
+**Date:** 2026-07-18
+
+**Decision:** Treat source-backed Learning Resources as the preferred content for a page, then locally cached AI drafts as the next option. When neither exists and online assistance is permitted, the Learning Resource Resolver generates a compact, clearly labelled draft automatically. Secondary resources remain progressively disclosed, but no visible primary learning slot should require the learner to operate an AI feature before receiving help.
+
+**Reason:** Liens should not leave a learner with an empty explanation, example, or sentence-teaching surface simply because the canonical graph has not yet imported a resource. The graph supplies reliable identity, structure, and relationships; the Learning Layer supplies teaching completeness.
+
+**Alternatives:** Require an explicit Generate button for every gap; allow AI to fill canonical fields; show silent generic placeholders.
+
+**Long-term impact:** Provider adapters remain replaceable and learner-facing content remains reviewable, while the canonical graph stays source-backed. The setting is a privacy/network control, not a feature switch; turning it off preserves local graph access and displays an honest availability state.

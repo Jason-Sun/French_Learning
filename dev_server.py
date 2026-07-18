@@ -42,6 +42,7 @@ RESOURCE_SCHEMA = {
     "properties": {
         "title": {"type": "STRING", "description": "A concise learner-facing title."},
         "body": {"type": "STRING", "description": "A concise, helpful English learning explanation in plain text."},
+        "translation": {"type": "STRING", "description": "For a sentence guide only: a concise English translation of the supplied sentence."},
     },
     "required": ["title", "body"],
 }
@@ -54,7 +55,7 @@ OPERATION_GUIDANCE = {
     "generateComparison": "Compare the requested object with the most relevant nearby pattern only when the supplied context supports it. Keep the contrast compact and learner-first.",
     "generateCommonMistake": "Describe one common learner mistake or confusion cautiously. Do not claim a mistake is universal and do not invent a grammar rule.",
     "explainGrammar": "Explain why the supplied grammar object matters in this context. Do not define a new grammar rule or link.",
-    "explainSentence": "Explain the supplied sentence, concentrating on the unresolved or requested parts without inventing a formal parse.",
+    "explainSentence": "Return a concise English translation in the translation field, then explain the supplied sentence through the resolved forms, expressions, and grammar context in the body. Do not invent a formal parse.",
 }
 
 
@@ -150,7 +151,8 @@ def call_gemini(operation: str, resource: dict[str, Any]) -> dict[str, str]:
         raise RuntimeError("Gemini returned an unreadable learning resource.") from error
     if not title or not body:
         raise RuntimeError("Gemini returned an incomplete learning resource.")
-    return {"title": title, "body": body, "provider": f"gemini:{model}"}
+    translation = clean_text(generated.get("translation"), limit=360)
+    return {"title": title, "body": body, "translation": translation, "provider": f"gemini:{model}"}
 
 
 class LiensDevelopmentHandler(SimpleHTTPRequestHandler):

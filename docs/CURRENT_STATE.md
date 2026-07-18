@@ -1,6 +1,6 @@
 # Liens Current State
 
-**Snapshot date:** 2026-07-17  
+**Snapshot date:** 2026-07-18
 **Canonical product branch:** `Liens_dev`
 **Current milestone:** Architecture Freeze v1.0 — completed long-term architecture review
 
@@ -31,7 +31,7 @@ The repository still contains generated SQLite and browser-index artifacts, and 
 - A versioned, evidence-backed French verb-group derivation imports 1,630 canonical `verb_group` facts: 1,440 first-group, 5 second-group, and 185 third-group classifications. The 153 `-ir` verbs without the required present-participle evidence remain explicitly unclassified.
 - Graph-native IPA and independent pronunciation for all 56 seeded core forms; local recording → local cached TTS → browser synthesis provider chain.
 - Optional Chinese display; English always visible; local saved-object state.
-- Contextual AI Learning Assistance: a provider-neutral, opt-in browser adapter can render locally cached, clearly labelled AI learning drafts in existing explanation slots. Generation is explicit, sentence help is anchored after deterministic analysis, primary notes are compact, and local draft revisions are retained for future regeneration/history controls. Gemini is the first development adapter, served through a local environment-key server; it has no canonical graph write path.
+- Contextual AI Learning Assistance: the provider-neutral Learning Resource Resolver automatically completes visible missing learning slots with locally cached, clearly labelled AI drafts when online assistance is available. Local graph analysis always renders first; sentence guidance is anchored after deterministic analysis; expanded follow-up resources generate progressively; and drafts never have a canonical graph write path. Gemini is the first development adapter, served through a local environment-key server.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
 - Canonical UUID registry, predicate-based fact/evidence provenance, immutable Learning Resource revisions, and non-canonical parser-analysis boundaries are established before any A1 source import.
