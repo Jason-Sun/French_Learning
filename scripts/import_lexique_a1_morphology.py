@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import source-backed Lexique 3.83 A1 inflected forms; never invent forms."""
+"""Import source-backed Lexique 3.83 inflected forms; never invent forms."""
 from __future__ import annotations
 import argparse, csv, hashlib, json, sqlite3, uuid
 from pathlib import Path
@@ -24,18 +24,25 @@ def parse_spec(spec):
  person=number=None
  if len(p)>2 and len(p[2])==2 and p[2][0] in '123' and p[2][1] in 'sp': person=p[2][0]; number={'s':'singular','p':'plural'}[p[2][1]]
  return mood, tense, person, number
+def selected_levels(manifest):
+ selection=manifest.get('import',{}).get('selection',{})
+ raw=selection.get('levels') or [selection.get('level','A1')]
+ levels=tuple(sorted({str(level).strip() for level in raw if str(level).strip()}))
+ if not levels or any(level not in {'A1','A2','B1','B2','C1','C2'} for level in levels):raise ValueError(f'Invalid CEFR selection: {levels!r}')
+ return levels
 def main():
  p=argparse.ArgumentParser(); p.add_argument('--database',type=Path,required=True); p.add_argument('--source',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--report',type=Path,required=True); a=p.parse_args()
- m=json.loads(a.manifest.read_text());
+ m=json.loads(a.manifest.read_text());levels=selected_levels(m);selection_id='-'.join(level.casefold() for level in levels)
  if sha(a.source)!=m['release']['sha256']: raise ValueError('Lexique source SHA-256 mismatch')
  db=sqlite3.connect(a.database); db.row_factory=sqlite3.Row; db.execute('PRAGMA foreign_keys=ON')
- catalog,release=m['catalog'],m['release']; run=f"import:{release['id']}:a1-morphology"
+ catalog,release=m['catalog'],m['release']; run=f"import:{release['id']}:{selection_id}-morphology"
  db.execute("INSERT OR IGNORE INTO sources(id,name,url,license,citation) VALUES ('lexique383',?,?,?,?)",(catalog['name'],catalog['homepage_url'],catalog['license'],catalog['attribution_text']))
  db.execute("INSERT OR IGNORE INTO source_catalogs(id,name,homepage_url,license,attribution_text) VALUES (?,?,?,?,?)",(catalog['id'],catalog['name'],catalog['homepage_url'],catalog['license'],catalog['attribution_text']))
- db.execute("INSERT OR IGNORE INTO source_releases(id,catalog_id,release_label,artifact_uri,sha256,scope_description) VALUES (?,?,?,?,?,?)",(release['id'],catalog['id'],release['label'],release['artifact_uri'],release['sha256'],'Lexique 3.83 morphology, pronunciation, and syllabification for FLELex A1 lemmas.'))
+ db.execute("INSERT OR IGNORE INTO source_releases(id,catalog_id,release_label,artifact_uri,sha256,scope_description) VALUES (?,?,?,?,?,?)",(release['id'],catalog['id'],release['label'],release['artifact_uri'],release['sha256'],f"Lexique 3.83 morphology, pronunciation, and syllabification for FLELex {'–'.join(levels)} lemmas."))
  db.execute("INSERT OR IGNORE INTO import_runs(id,release_id,importer_name,importer_version,status,completed_at) VALUES (?,?,?,?, 'completed',CURRENT_TIMESTAMP)",(run,release['id'],m['import']['adapter'],m['import']['adapter_version']))
  for code,kind,label in [('inflected_form_of','object','Inflected form of'),('mood','code','Mood'),('tense','code','Tense'),('grammatical_person','code','Grammatical person'),('grammatical_number','code','Grammatical number'),('grammatical_gender','code','Grammatical gender')]: db.execute("INSERT OR IGNORE INTO fact_predicates(code,value_kind,label,description) VALUES (?,?,?,?)",(code,kind,label,'Imported Lexique morphology fact.'))
- lemmas={(norm(r['canonical_form']),r['part_of_speech']):(r['id'],r['canonical_id']) for r in db.execute("SELECT lo.id,lo.canonical_form,lo.part_of_speech,co.canonical_id FROM language_objects lo JOIN canonical_objects co ON co.language_object_id=lo.id WHERE lo.type_code='word' AND lo.cefr_level='A1'")}
+ placeholders=','.join('?' for _ in levels)
+ lemmas={(norm(r['canonical_form']),r['part_of_speech']):(r['id'],r['canonical_id']) for r in db.execute(f"SELECT lo.id,lo.canonical_form,lo.part_of_speech,co.canonical_id FROM language_objects lo JOIN canonical_objects co ON co.language_object_id=lo.id WHERE lo.type_code='word' AND lo.part_of_speech='VER' AND lo.cefr_level IN ({placeholders})",levels)}
  verb_surfaces={norm(r[0]) for r in db.execute("SELECT canonical_form FROM language_objects WHERE type_code='word' AND part_of_speech='VER'")}
  db.commit(); created=excluded=analyses=relation_evidence=derived_relation_evidence=0; db.execute('BEGIN')
  try:
@@ -76,12 +83,13 @@ def main():
      else: db.execute("INSERT OR IGNORE INTO fact_code_values(fact_id,value_code) VALUES (?,?)",(fid,value))
      db.execute("INSERT OR IGNORE INTO fact_evidence(fact_id,source_record_id,evidence_role,confidence) VALUES (?,?,'asserts',1.0)",(fid,record))
     analyses+=1; created+=db.execute('SELECT changes()').fetchone()[0]
-  for form in db.execute("""SELECT form.id AS form_id, canonical.canonical_id AS form_canonical_id, paradigm.target_object_id AS paradigm_id
+  for form in db.execute(f"""SELECT form.id AS form_id, canonical.canonical_id AS form_canonical_id, paradigm.target_object_id AS paradigm_id
       FROM language_objects form
       JOIN canonical_objects canonical ON canonical.language_object_id=form.id
       JOIN relationships lemma_link ON lemma_link.source_object_id=form.id AND lemma_link.relationship_type_code='inflected_form_of'
+      JOIN language_objects lemma ON lemma.id=lemma_link.target_object_id
       JOIN relationships paradigm ON paradigm.source_object_id=lemma_link.target_object_id AND paradigm.relationship_type_code='belongs_to_conjugation'
-      WHERE form.type_code='inflected_form' AND form.source_id='lexique383'"""):
+      WHERE form.type_code='inflected_form' AND form.source_id='lexique383' AND lemma.cefr_level IN ({placeholders})""",levels):
    existing_relation=db.execute("SELECT id FROM relationships WHERE source_object_id=? AND target_object_id=? AND relationship_type_code='member_of_paradigm'",(form['form_id'],form['paradigm_id'])).fetchone()
    if existing_relation: relation=existing_relation['id']
    else:
@@ -91,6 +99,6 @@ def main():
     db.execute("INSERT OR IGNORE INTO relationship_evidence(relationship_id,source_record_id,evidence_role,confidence) VALUES (?,?, 'derived_from_asserted_form',1.0)",(relation,mapping['source_record_id'])); derived_relation_evidence+=db.execute('SELECT changes()').fetchone()[0]
   db.commit()
  except: db.rollback(); raise
- report={'release_id':release['id'],'sha256':sha(a.source),'form_analyses_imported':analyses,'explicitly_excluded_source_rows':excluded,'a1_verb_lemmas_with_source_forms':261,'inflected_form_relationship_evidence_added':relation_evidence,'member_of_paradigm_derived_evidence_added':derived_relation_evidence}
+ report={'release_id':release['id'],'sha256':sha(a.source),'selection':{'levels':list(levels)},'selected_verb_lemmas':len(lemmas),'form_analyses_imported':analyses,'explicitly_excluded_source_rows':excluded,'inflected_form_relationship_evidence_added':relation_evidence,'member_of_paradigm_derived_evidence_added':derived_relation_evidence}
  a.report.parent.mkdir(parents=True,exist_ok=True); a.report.write_text(json.dumps(report,indent=2)+'\n'); print(json.dumps(report,indent=2))
 if __name__=='__main__': main()

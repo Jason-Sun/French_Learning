@@ -101,9 +101,21 @@ python3 scripts/import_flelex_beacco.py \
 
 The adapter resolves existing canonical UUIDs, records immutable source rows and mappings, and adds evidence only to matching CEFR, part-of-speech, and frequency facts. It aborts rather than silently changing a canonical object or fact.
 
-### Source-backed Lexique A1 morphology import
+### Source-backed Lexique morphology import
 
 Lexique 3.83 provides inflected forms, lemma links, grammatical features, a source-specific phonological code, and syllabification. Its code is not treated as IPA.
+
+For the completed A1 Golden Slice, use the A1 manifest. The importer also supports explicit multi-level manifests; for the prepared A1–B2 morphology scope, use:
+
+```bash
+python3 scripts/import_lexique_a1_morphology.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/Lexique383.tsv \
+  --manifest data/wordbank/import-manifests/lexique383-a1-b2-morphology.json \
+  --report data/wordbank/import-reports/lexique383-a1-b2-morphology.json
+```
+
+The expanded browser package must be sharded before this larger build is released to learners.
 
 ```bash
 python3 scripts/import_lexique_a1_morphology.py \
