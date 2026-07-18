@@ -46,11 +46,11 @@ Each Lexique `has_pronunciation` edge is evidenced by the same source row that e
 
 The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.
 
-## Kaikki / English Wiktionary A1 sense baseline
+## Kaikki / English Wiktionary lexical-sense baseline
 
-Kaikki's French dictionary is a structured extraction from English Wiktionary. The frozen A1 sense release and its checksum live in `kaikki-enwiktionary-french-a1-senses.json`; it carries the upstream CC BY-SA/GFDL attribution obligations. It is used for English glosses, not as a CEFR classifier.
+Kaikki's French dictionary is a structured extraction from English Wiktionary. Its frozen releases and CEFR-scoped manifests carry the upstream CC BY-SA/GFDL attribution obligations. It is used for English glosses, not as a CEFR classifier.
 
-The adapter matches a source entry only when its French headword and mapped part of speech unambiguously identify an existing FLELex A1 word. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
+The adapter selects explicit CEFR levels from its manifest and matches a source entry only when its French headword and mapped part of speech identify an existing FLELex word in that scope. Each source sense becomes a `lexical_sense` object with a source-neutral semantic key derived from its normalized English gloss set. The source-native sense ID remains solely an immutable source-record mapping. Every English gloss is an `english_gloss` fact with independent evidence; words not present in the frozen source are reported, not fabricated.
 
 When FLELex and Kaikki classify the same French surface differently, a manifest may contain an explicit reviewed POS reconciliation. It names the source POS, target POS, and surface; the import records `mapping_kind = reviewed_pos_reconciliation`. This supplements exact source matches without changing either source representation or canonical object identity. It is a reviewable data decision, never a hidden fallback.
 

@@ -79,6 +79,15 @@ def semantic_key(part_of_speech: str, glosses: list[str]) -> str:
     return f"{part_of_speech}|" + "\u241f".join(normalize(gloss) for gloss in glosses)
 
 
+def selected_levels(manifest: dict) -> tuple[str, ...]:
+    selection = manifest["import"].get("selection", {})
+    raw_levels = selection.get("levels") or [selection.get("level", "A1")]
+    levels = tuple(sorted({str(level).strip() for level in raw_levels if str(level).strip()}))
+    if not levels or any(level not in {"A1", "A2", "B1", "B2", "C1", "C2"} for level in levels):
+        raise ValueError(f"Invalid CEFR selection: {levels!r}")
+    return levels
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", type=Path, required=True)
@@ -97,7 +106,9 @@ def main() -> None:
     catalog = manifest["catalog"]
     release = manifest["release"]
     release_id = release["id"]
-    import_run_id = f"import:{release_id}:a1-senses"
+    levels = selected_levels(manifest)
+    selection_id = "-".join(level.casefold() for level in levels)
+    import_run_id = f"import:{release_id}:{selection_id}-senses"
 
     database.execute(
         """INSERT OR IGNORE INTO sources(id, name, url, license, citation)
@@ -136,6 +147,7 @@ def main() -> None:
         (import_run_id, release_id, manifest["import"]["adapter"], manifest["import"]["adapter_version"]),
     )
 
+    placeholders = ",".join("?" for _ in levels)
     words = {
         (normalize(row["canonical_form"]), row["part_of_speech"]): (
             row["id"],
@@ -144,11 +156,12 @@ def main() -> None:
             row["cefr_level"],
         )
         for row in database.execute(
-            """SELECT object.id, object.canonical_form, object.part_of_speech,
+            f"""SELECT object.id, object.canonical_form, object.part_of_speech,
                       object.cefr_level, canonical.canonical_id
                FROM language_objects object
                JOIN canonical_objects canonical ON canonical.language_object_id = object.id
-               WHERE object.type_code = 'word' AND object.cefr_level = 'A1'"""
+               WHERE object.type_code = 'word' AND object.cefr_level IN ({placeholders})""",
+            levels,
         )
     }
     reconciliations = {
@@ -328,10 +341,11 @@ def main() -> None:
     ]
     report = {
         "release_id": release_id,
-        "a1_word_objects": len(words),
-        "a1_word_objects_matched": len(matched_word_keys),
-        "a1_word_objects_without_source_entry": len(unmatched_words),
-        "unmatched_a1_word_objects": unmatched_words,
+        "selection": {"levels": list(levels)},
+        "word_objects": len(words),
+        "word_objects_matched": len(matched_word_keys),
+        "word_objects_without_source_entry": len(unmatched_words),
+        "unmatched_word_objects": unmatched_words,
         "matched_source_entries": source_entries,
         "lexical_sense_objects_imported": len(imported_sense_ids),
         "english_gloss_facts_imported": len(imported_gloss_fact_ids),
