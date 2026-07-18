@@ -106,7 +106,7 @@ The Learning Layer contains explanations, teacher notes, memory hints, usage adv
 
 Learning Resource content is revisioned and immutable. A resource has ordered revisions, with at most one published revision at a time; later authoring supersedes a revision rather than destructively changing it.
 
-The first browser AI-assistance adapter is learner-scoped and non-canonical: it can cache labelled AI drafts in contextual teaching slots, but it never writes SQLite or the browser graph export. See [AI Learning Assistance](architecture/ai_learning_assistance.md).
+The first browser AI-assistance adapter is learner-scoped and non-canonical: it can cache labelled AI drafts in contextual teaching slots, but it never writes SQLite or the browser graph export. Its development Gemini adapter is behind typed Language Object/Learning Resource methods, so prompts and Gemini-specific API details remain outside the browser application contract. See [AI Learning Assistance](architecture/ai_learning_assistance.md).
 
 ## Natural-language analysis boundary
 

@@ -23,14 +23,27 @@ An AI draft is not a weaker canonical fact. It is a different class of content e
 
 ## Browser contract
 
-`ai-learning.js` exposes `window.LiensLearningAssist`. It has no provider, key, endpoint, or network dependency of its own. A future secure integration supplies `window.LiensAIProvider` with:
+`ai-learning.js` exposes `window.LiensLearningAssist`. It has no provider, key, endpoint, or network dependency of its own. It dispatches each typed resource request to an injected `window.LiensAIProvider` method:
 
 ```js
 {
   id: 'provider-id',
-  generate: async request => ({ title, body, provider })
+  generateLearningResource: async resource => ({ title, body, provider }),
+  generateUsageNote: async resource => ({ title, body, provider }),
+  generateMemoryTip: async resource => ({ title, body, provider }),
+  generateExamples: async resource => ({ title, body, provider }),
+  explainGrammar: async resource => ({ title, body, provider }),
+  explainSentence: async resource => ({ title, body, provider })
 }
 ```
+
+The rest of Liens does not construct prompts or call a generic `generate(prompt)` method. It requests a Learning Resource for a Language Object or sentence context. A provider is responsible for translating that typed request into its own API call and prompt policy.
+
+### Gemini development adapter
+
+The first adapter is `gemini-provider.js` plus `dev_server.py`. The browser adapter forwards typed Learning Resource requests to a same-origin local endpoint. `dev_server.py` reads `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) from the development environment, constructs Gemini-specific prompts server-side, and uses Gemini structured JSON output. The API key is never embedded in browser assets or committed to Git.
+
+This is deliberate development infrastructure only. A future OpenAI, Claude, OpenRouter, or local-model provider implements the same typed methods; the UI, Learning Layer, and canonical graph do not change.
 
 The request is deliberately narrow:
 
@@ -63,7 +76,7 @@ AI-suggested collocations, examples, translations, and grammar connections remai
 
 ## Production requirements before live use
 
-- secure provider/credential transport; a static browser must never contain a shared provider secret;
+- replace the Gemini development server with secure provider/credential transport before deployment; a static browser must never contain a shared provider secret;
 - immutable generation-run provenance: provider, model/version, prompt/template version, context/input/output hashes, timestamp, and evaluation status;
 - learner privacy, consent, retention, and deletion policy;
 - moderation, output schema validation, error handling, and rate/cost controls;

@@ -2,6 +2,19 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-016 — Gemini is the initial development provider behind typed Learning Resource methods
+
+**Date:** 2026-07-18
+**Status:** Accepted
+
+### Decision
+
+Use Gemini as Liens' first live development provider. The browser and Learning Layer request typed, Language Object-oriented operations—such as `generateUsageNote`, `explainGrammar`, and `explainSentence`—rather than prompts or a generic provider call. Gemini prompt construction, model selection, and API-key handling stay inside a local development adapter/server.
+
+### Consequences
+
+`GEMINI_API_KEY` is read only from the local server environment and is never included in browser code. Gemini output remains a labelled, learner-scoped AI Learning Resource draft; it cannot mutate canonical objects, facts, relationships, SQLite, or browser graph exports. Replacing Gemini later requires a new provider adapter implementing the same typed methods, not UI or graph changes.
+
 ## ADR-015 — Architecture Freeze v1.0 and generated-artifact boundary
 
 **Date:** 2026-07-17

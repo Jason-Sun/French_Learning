@@ -9,7 +9,15 @@
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const MAX_DRAFTS = 48;
-  const SUPPORTED_KINDS = new Set(['explanation', 'usage_note', 'sentence_guide', 'provisional_lookup']);
+  const SUPPORTED_KINDS = new Set(['explanation', 'usage_note', 'memory_tip', 'examples', 'sentence_guide', 'provisional_lookup']);
+  const providerMethodFor = request => {
+    if (request.kind === 'usage_note') return 'generateUsageNote';
+    if (request.kind === 'memory_tip') return 'generateMemoryTip';
+    if (request.kind === 'examples') return 'generateExamples';
+    if (request.kind === 'sentence_guide') return 'explainSentence';
+    if (request.kind === 'explanation' && (request.target?.type_code || request.target?.type) === 'grammar_construction') return 'explainGrammar';
+    return 'generateLearningResource';
+  };
 
   const readDrafts = () => {
     try {
@@ -60,7 +68,10 @@
   };
 
   const provider = () => globalThis.LiensAIProvider;
-  const providerReady = () => Boolean(provider() && typeof provider().generate === 'function');
+  const providerReady = () => {
+    const candidate = provider();
+    return Boolean(candidate && (typeof candidate.isAvailable === 'function' ? candidate.isAvailable() : typeof candidate.generateLearningResource === 'function'));
+  };
 
   const get = request => readDrafts().find(draft => draft.key === keyFor(request)) || null;
   const enabled = () => localStorage.getItem(ENABLED_KEY) === 'true';
@@ -74,9 +85,10 @@
     const existing = get(request);
     if (existing) return { status: 'cached', draft: existing };
 
-    const response = await provider().generate(Object.freeze({
+    const method = providerMethodFor(request);
+    if (typeof provider()[method] !== 'function') throw new Error(`The configured provider cannot ${method}.`);
+    const response = await provider()[method](Object.freeze({
       schemaVersion: 1,
-      mode: 'learning_resource_draft',
       resourceKind: request.kind,
       language: request.language || 'en',
       target: publicTarget(request.target),
@@ -103,6 +115,10 @@
     enabled,
     setEnabled,
     providerReady,
+    refreshProviderAvailability: async () => {
+      const candidate = provider();
+      return typeof candidate?.refreshAvailability === 'function' ? candidate.refreshAvailability() : providerReady();
+    },
     get,
     generate,
     clear: request => writeDrafts(readDrafts().filter(item => item.key !== keyFor(request))),

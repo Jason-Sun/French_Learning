@@ -31,7 +31,7 @@ The repository still contains generated SQLite and browser-index artifacts, and 
 - A versioned, evidence-backed French verb-group derivation imports 1,630 canonical `verb_group` facts: 1,440 first-group, 5 second-group, and 185 third-group classifications. The 153 `-ir` verbs without the required present-participle evidence remain explicitly unclassified.
 - Graph-native IPA and independent pronunciation for all 56 seeded core forms; local recording → local cached TTS → browser synthesis provider chain.
 - Optional Chinese display; English always visible; local saved-object state.
-- Contextual AI Learning Assistance foundation: a provider-neutral, opt-in browser adapter can render locally cached, clearly labelled AI learning drafts in existing explanation slots. It has no configured provider, no network call, and no canonical graph write path.
+- Contextual AI Learning Assistance: a provider-neutral, opt-in browser adapter can render locally cached, clearly labelled AI learning drafts in existing explanation slots. Gemini is the first development adapter, served through a local environment-key server; it has no canonical graph write path.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
 - Canonical UUID registry, predicate-based fact/evidence provenance, immutable Learning Resource revisions, and non-canonical parser-analysis boundaries are established before any A1 source import.
@@ -61,7 +61,7 @@ The repository still contains generated SQLite and browser-index artifacts, and 
 - Reading, listening, writing, and exercise object types/surfaces.
 - Local audio assets or local TTS caching.
 - Structured AI draft ingestion and human review workflow.
-- Secure AI-provider transport, generation-run provenance, privacy/consent policy, and review/promotion workflow for live AI assistance.
+- Production AI-provider transport, generation-run provenance, privacy/consent policy, and review/promotion workflow for live AI assistance.
 - Production build, deployment, licensing, observability, and privacy policies.
 
 ## Known limitations

@@ -4,13 +4,26 @@ Liens is a learning-first French web app. It treats words, forms, collocations, 
 
 ## Run locally
 
-This first demo is dependency-free. From this folder, serve the files with any static web server, then open `index.html` in a browser. For example, with Python installed:
+For local graph-only development, serve the files with any static web server, then open `index.html` in a browser. For example, with Python installed:
 
 ```bash
 python -m http.server 8000
 ```
 
 Then visit `http://localhost:8000`.
+
+## Gemini development assistance
+
+Liens can optionally generate clearly labelled, non-canonical Learning Resource drafts through Gemini. The API key stays in your shell environment; it is never added to browser code or Git.
+
+```bash
+export GEMINI_API_KEY='your-key'
+python3 dev_server.py --port 4173
+```
+
+Open `http://127.0.0.1:4173`, enable **AI learning assistance** in Settings, then use an in-place learning action when Liens has no local teaching note. `GEMINI_MODEL` is optional and defaults to `gemini-3.5-flash`.
+
+This local server is for rapid development only. A backend or edge proxy replaces it before deployment.
 
 ## Demo path
 
@@ -29,4 +42,4 @@ The long-term product and engineering source of truth lives in [docs/](docs/READ
 
 ## Current status
 
-This runnable local prototype demonstrates the core loop: **Learn → Explore → Save → Review**. It uses a SQLite Language Object Graph as the linguistic source of truth, a generated browser index for static local lookup, deterministic Sentence Intelligence, graph-native conjugation, and graph-native pronunciation. AI enrichment is intentionally not connected yet; when introduced, it will add structured draft knowledge rather than replace local facts or become a visible chatbot.
+This runnable local prototype demonstrates the core loop: **Learn → Explore → Save → Review**. It uses a SQLite Language Object Graph as the linguistic source of truth, a generated browser index for static local lookup, deterministic Sentence Intelligence, graph-native conjugation, and graph-native pronunciation. Gemini can add structured, labelled Learning Resource drafts through the local development server; it never replaces local facts or becomes a visible chatbot.
