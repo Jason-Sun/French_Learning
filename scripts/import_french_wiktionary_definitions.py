@@ -109,20 +109,28 @@ def main() -> None:
     )
 
     placeholders = ",".join("?" for _ in levels)
-    unresolved_words = {
+    scoped_words = {
         (normalize(row["canonical_form"]), row["part_of_speech"]): dict(row)
         for row in database.execute(
             f"""SELECT word.id, word.canonical_form, word.part_of_speech, word.cefr_level,
                        canonical.canonical_id
                 FROM language_objects AS word
                 JOIN canonical_objects AS canonical ON canonical.language_object_id = word.id
-                WHERE word.type_code = 'word' AND word.cefr_level IN ({placeholders})
-                  AND NOT EXISTS (
-                    SELECT 1 FROM lexical_senses AS sense
-                    WHERE sense.owner_canonical_id = canonical.canonical_id
-                  )""",
+                WHERE word.type_code = 'word' AND word.cefr_level IN ({placeholders})""",
             levels,
         )
+    }
+    unresolved_words = {
+        key: owner
+        for key, owner in scoped_words.items()
+        if not database.execute(
+            "SELECT 1 FROM lexical_senses WHERE owner_canonical_id = ? LIMIT 1",
+            (owner["canonical_id"],),
+        ).fetchone()
+    }
+    orthographic_reconciliations = {
+        (normalize(item["source_form"]), item["source_part_of_speech"]): item
+        for item in manifest["import"].get("orthographic_reconciliations", [])
     }
 
     frame = pd.read_parquet(args.source, columns=["forme", "pos", "gloss", "def_index", "sub_index"])
@@ -137,6 +145,7 @@ def main() -> None:
     imported_definition_facts: set[str] = set()
     matched_source_records: set[str] = set()
     source_categories: Counter[str] = Counter()
+    mapping_kinds: Counter[str] = Counter()
 
     database.commit()
     database.execute("DELETE FROM import_exclusions WHERE import_run_id = ?", (import_run_id,))
@@ -146,6 +155,16 @@ def main() -> None:
         for row in frame.itertuples(index=False):
             key = (row.normalized_form, row.target_pos)
             owner = unresolved_words.get(key)
+            mapping_kind = "exact_pos_match"
+            mapping_confidence = 1.0
+            if owner is None:
+                reconciliation = orthographic_reconciliations.get((row.normalized_form, row.pos))
+                if reconciliation:
+                    owner = scoped_words.get(
+                        (normalize(reconciliation["target_word"]), reconciliation["target_part_of_speech"])
+                    )
+                    mapping_kind = "orthographic_reconciliation"
+                    mapping_confidence = float(reconciliation.get("confidence", 1.0))
             if not owner:
                 continue
             gloss = str(row.gloss).strip()
@@ -196,21 +215,21 @@ def main() -> None:
             database.execute(
                 """INSERT OR IGNORE INTO relationships
                    (id, source_object_id, target_object_id, relationship_type_code, source_kind, confidence)
-                   VALUES (?, ?, ?, 'has_sense', 'curated', 1)""",
-                (relation_id, owner["id"], sense_object_id),
+                   VALUES (?, ?, ?, 'has_sense', 'curated', ?)""",
+                (relation_id, owner["id"], sense_object_id, mapping_confidence),
             )
             database.execute(
                 """INSERT OR IGNORE INTO relationship_evidence
                    (relationship_id, source_record_id, confidence)
-                   VALUES (?, ?, 1)""",
-                (relation_id, record_id),
+                   VALUES (?, ?, ?)""",
+                (relation_id, record_id, mapping_confidence),
             )
             database.execute("INSERT OR IGNORE INTO learning_metadata(object_id) VALUES (?)", (sense_object_id,))
             database.execute(
                 """INSERT OR IGNORE INTO import_record_mappings
                    (import_run_id, source_record_id, canonical_id, mapping_kind, confidence)
-                   VALUES (?, ?, ?, 'exact_pos_match', 1)""",
-                (import_run_id, record_id, sense_canonical_id),
+                   VALUES (?, ?, ?, ?, ?)""",
+                (import_run_id, record_id, sense_canonical_id, mapping_kind, mapping_confidence),
             )
             fact_id = stable_id("fact", f"{sense_canonical_id}|french_definition|{normalize(gloss)}")
             database.execute(
@@ -225,14 +244,15 @@ def main() -> None:
             )
             database.execute(
                 """INSERT OR IGNORE INTO fact_evidence(fact_id, source_record_id, evidence_role, confidence)
-                   VALUES (?, ?, 'asserts', 1)""",
-                (fact_id, record_id),
+                   VALUES (?, ?, 'asserts', ?)""",
+                (fact_id, record_id, mapping_confidence),
             )
-            matched_keys.add(key)
+            matched_keys.add((normalize(owner["canonical_form"]), owner["part_of_speech"]))
             imported_senses.add(sense_object_id)
             imported_definition_facts.add(fact_id)
             matched_source_records.add(record_id)
             source_categories[str(row.pos)] += 1
+            mapping_kinds[mapping_kind] += 1
         database.commit()
     except Exception:
         database.rollback()
@@ -240,20 +260,24 @@ def main() -> None:
 
     unresolved = [
         {"lemma": data["canonical_form"], "part_of_speech": pos, "cefr_level": data["cefr_level"]}
-        for (form, pos), data in sorted(unresolved_words.items())
-        if (form, pos) not in matched_keys
+        for (form, pos), data in sorted(scoped_words.items())
+        if not database.execute(
+            "SELECT 1 FROM lexical_senses WHERE owner_canonical_id = ? LIMIT 1",
+            (data["canonical_id"],),
+        ).fetchone()
     ]
     report = {
         "release_id": release_id,
         "selection": {"levels": list(levels)},
         "unresolved_word_pos_objects_before_import": len(unresolved_words),
         "word_pos_objects_matched_exactly": len(matched_keys),
-        "word_pos_objects_without_exact_source_definition": len(unresolved),
+        "word_pos_objects_without_source_definition_after_import": len(unresolved),
         "unresolved_word_pos_objects": unresolved,
         "source_sense_records_matched": len(matched_source_records),
         "lexical_sense_objects_imported": len(imported_senses),
         "french_definition_facts_imported": len(imported_definition_facts),
         "source_categories": dict(sorted(source_categories.items())),
+        "mapping_kinds": dict(sorted(mapping_kinds.items())),
         "english_gloss_claimed": False,
         "automatic_pos_reconciliation_used": False,
     }

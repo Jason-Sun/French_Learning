@@ -190,11 +190,14 @@ English-Wiktionary extraction with French-language definitions where the latter
 has no exact word/POS sense. It does **not** claim to supply English
 translations.
 
-The importer accepts only exact normalized surface and POS matches; it never
-uses an automatic noun/adjective, form/lemma, or spelling reconciliation to
-increase coverage. It creates `french_definition` facts with independent source
-evidence, while English teaching content remains Kaikki-backed or a clearly
-labelled Learning Resource.
+The importer accepts exact normalized surface and POS matches. It never uses an
+automatic noun/adjective or form/lemma reconciliation. A small, explicit
+manifest list may map an orthographic variant (for example `manœuvre` to the
+canonical source-independent spelling `manoeuvre`); that mapping remains
+visible as `orthographic_reconciliation` with its original source record. It
+creates `french_definition` facts with independent source evidence, while
+English teaching content remains Kaikki-backed or a clearly labelled Learning
+Resource.
 
 The adapter requires `pandas` with a Parquet engine such as `pyarrow`:
 

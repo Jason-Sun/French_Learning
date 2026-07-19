@@ -16,6 +16,14 @@
   "import": {
     "adapter": "kartmaan_french_wiktionary_definitions",
     "adapter_version": "1",
-    "selection": {"levels": ["A1", "A2", "B1", "B2"]}
+    "selection": {"levels": ["A1", "A2", "B1", "B2"]},
+    "orthographic_reconciliations": [
+      {"source_form": "ci", "source_part_of_speech": "Adv", "target_word": "-ci", "target_part_of_speech": "ADV", "confidence": 1.0},
+      {"source_form": "flashback", "source_part_of_speech": "N", "target_word": "flash-back", "target_part_of_speech": "NOM", "confidence": 1.0},
+      {"source_form": "main-d’œuvre", "source_part_of_speech": "N", "target_word": "main-d'oeuvre", "target_part_of_speech": "NOM", "confidence": 1.0},
+      {"source_form": "manœuvre", "source_part_of_speech": "N", "target_word": "manoeuvre", "target_part_of_speech": "NOM", "confidence": 1.0},
+      {"source_form": "manœuvrer", "source_part_of_speech": "V", "target_word": "manoeuvrer", "target_part_of_speech": "VER", "confidence": 1.0},
+      {"source_form": "mœurs", "source_part_of_speech": "N", "target_word": "moeurs", "target_part_of_speech": "NOM", "confidence": 1.0}
+    ]
   }
 }
