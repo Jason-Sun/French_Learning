@@ -32,7 +32,7 @@
 
 ### Pronunciation contract
 
-Pronunciation belongs to the graph, never to a UI component. A learnable object links to one or more `pronunciation` Language Objects through `has_pronunciation`. Each Pronunciation Object can own multiple evidence-backed representations, including source phonological codes, verified IPA, syllabification, variants, audio, and future TTS metadata. The browser keeps its compatible `object.pronunciations` adapter field; it displays only verified IPA where available.
+Pronunciation belongs to the graph, never to a UI component. Each learnable object owns one source-independent `pronunciation` Language Object through `has_pronunciation`; it holds parallel, evidence-backed Lexique code/syllabification, Kaikki verified IPA and variant metadata, audio URLs, and future TTS metadata. The browser keeps its compatible `object.pronunciations` adapter field and prefers Kaikki IPA; a deterministic Lexique-derived IPA fallback is visibly labelled **Derived from Lexique** and is never canonical.
 
 Pronunciation is never inherited across relationships: an `inflected_form` may link to its lemma with `inflected_form_of`, but it must have its own Pronunciation Object before IPA or playback is shown. The legacy `language_objects.ipa` column and `pronunciations` table remain readable/importable; `scripts/add_graph_native_pronunciation_schema.py` synchronizes them into graph nodes.
 
@@ -283,7 +283,7 @@ python3 scripts/import_tex_a1_grammar.py \
 
 ### Source-backed Lexique A1–B2 pronunciation representations
 
-The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. It does not convert the code to IPA and does not modify the browser's verified-IPA projection.
+The pronunciation importer reuses the frozen Lexique release and maps its source-specific phonological code and syllabification to first-class Pronunciation Objects. A separate deterministic conversion can create an explicitly non-canonical `Derived from Lexique` IPA fallback; it never relabels the source code and is superseded by Kaikki IPA.
 
 ```bash
 python3 scripts/import_lexique_a1_pronunciation.py \
@@ -294,6 +294,18 @@ python3 scripts/import_lexique_a1_pronunciation.py \
 ```
 
 The report records coverage and every exclusion reason. Each representation is linked to the exact immutable Lexique source row through `pronunciation_representation_evidence`; the `has_pronunciation` graph edge is independently evidenced by that same row. Every Kaikki `has_sense` edge likewise retains the immutable source sense that supports it, in addition to the sense's English-gloss facts.
+
+### Source-backed Kaikki pronunciation import
+
+The pinned Kaikki French release supplies canonical IPA, variant/note metadata, and audio URLs for matching lemma and inflected-form objects. It is additive: Lexique representations remain on the same source-independent Pronunciation Object, while audio URLs are stored as metadata only.
+
+```bash
+python3 scripts/import_kaikki_pronunciations.py \
+  --database /path/to/release/liens-knowledge.sqlite \
+  --source /path/to/kaikki.org-dictionary-French.jsonl \
+  --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-a1-c2-pronunciation.json \
+  --report /path/to/reports/kaikki-pronunciation.json
+```
 
 ### Graph-native pronunciation and core forms
 

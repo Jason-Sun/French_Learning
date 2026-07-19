@@ -24,7 +24,7 @@ The deterministic release pipeline and external-artifact workflow are now proven
 
 - Static browser app with direct local Language Object search and sentence routing.
 - SQLite graph with stable IDs and typed relationships; a generated browser package projects it through a 9.3 MB lookup bootstrap and 64 integrity-hashed, lazy detail shards.
-- 8,767 A1–B2 word objects, 42,801 source-backed inflected-form objects, 96 graph-native conjugation realizations, learning groups/tenses, 41 example sentence objects, grammar structures, teacher resources, and 19,223 Pronunciation Objects.
+- The active A1–C2 release contains 138,734 active source-independent Pronunciation Objects. Kaikki contributes 247,285 verified IPA representations and 41,223 audio URLs retained as metadata; 4,387 clearly labelled Lexique-derived IPA fallbacks remain active only where Kaikki IPA is unavailable. Lexique phonological code and syllabification remain parallel source representations.
 - Accent-insensitive lookup that preserves canonical French spelling on pages.
 - Deterministic Sentence Intelligence for local token resolution, explicit form analyses, selected contractions/elisions, two-to-five-component expressions, grammar patterns, and review candidates. The sentence first screen separates exact local form observations from matched Grammar Objects; AI receives that deterministic result and may not add a named grammar construction.
 - Pedagogical conjugation UI for every locally paradigm-linked verb; data-first support for unfilled future tenses.
@@ -61,7 +61,7 @@ The deterministic release pipeline and external-artifact workflow are now proven
 
 ## Pending
 
-- Broader curated word/form definitions, examples, collocations, and verified-IPA coverage.
+- Broader curated word/form definitions, examples, and collocations.
 - Source-backed compound conjugation realizations and reviewed tense teaching resources. The current complete morphology release covers source-attested simple forms; it does not fabricate multi-word compound forms.
 - Production review scheduling, richer collection modes, account persistence, and synchronization.
 - Reading, listening, writing, and exercise object types/surfaces.
@@ -75,7 +75,7 @@ The deterministic release pipeline and external-artifact workflow are now proven
 - This is a static, dependency-free prototype; browser storage is per-device and not account-backed.
 - Sentence Intelligence is intentionally deterministic and covers a limited set of grammar patterns.
 - Search relies on the browser data-package projection; it does not yet query SQLite directly in-browser.
-- Pronunciation has verified IPA only for the initial curated/core set. Lexique's broader A1 code and syllable coverage remains source-labelled until a separately validated IPA conversion or source is available.
+- Kaikki does not cover every local object with IPA. When a deterministic Lexique conversion is available, the UI labels it **Derived from Lexique** rather than verified; browser TTS remains playback-only. Kaikki audio URLs are stored as metadata and no remote audio playback is enabled.
 - Some imported learning content is explicitly draft/enriched and should not be represented as fully curated.
 - Canonical grammar coverage remains limited to the attributed Tex A1 index (38 current grammar-related objects). No A2–B2 grammar content has been invented in the absence of an appropriate attributable source.
 - Source coverage gaps remain explicit rather than fabricated: five A1–C2 FLELex `VER` identities have no linked source-backed form; 626 A1–C2 word/POS identities currently lack an exact or explicitly reconciled source-backed lexical sense; and phrase-component exclusions remain recorded by their source-scope reports.

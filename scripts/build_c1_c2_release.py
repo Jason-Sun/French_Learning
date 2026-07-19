@@ -78,12 +78,18 @@ def main() -> None:
     morphalou_morphology = load_manifest("morphalou31-a1-c2-morphology.json")
     kaikki_connections = load_manifest("kaikki-enwiktionary-french-c1-c2-connections.json")
     kaikki_expressions = load_manifest("kaikki-enwiktionary-french-c1-c2-expressions.json")
+    kaikki_pronunciation = load_manifest("kaikki-enwiktionary-french-a1-c2-pronunciation.json")
 
     run("import_flelex_lexical_baseline.py", "--database", str(database), "--source", str(args.flelex_source), "--manifest", str(MANIFEST_DIR / "flelex-beacco-tree-tagger-c1-c2.json"), "--report", str(reports / "flelex-baseline.json"))
     run("audit_cefr_lexical_baseline.py", "--database", str(database), "--source", str(args.flelex_source), "--manifest", str(MANIFEST_DIR / "flelex-beacco-tree-tagger-c1-c2.json"), "--report", str(reports / "flelex-baseline-audit.json"))
     run("import_kaikki_a1_senses.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-senses.json"), "--report", str(reports / "kaikki-senses.json"))
     run("import_lexique_a1_morphology.py", "--database", str(database), "--source", str(args.lexique_source), "--manifest", str(MANIFEST_DIR / "lexique383-c1-c2-morphology.json"), "--report", str(reports / "lexique-morphology.json"))
     run("import_lexique_a1_pronunciation.py", "--database", str(database), "--source", str(args.lexique_source), "--manifest", str(MANIFEST_DIR / "lexique383-c1-c2-pronunciation.json"), "--report", str(reports / "lexique-pronunciation.json"))
+    run("migrate_pronunciation_objects.py", "--database", str(database), "--report", str(reports / "pronunciation-object-migration.json"))
+    run("import_kaikki_pronunciations.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-a1-c2-pronunciation.json"), "--report", str(reports / "kaikki-pronunciation.json"))
+    run("derive_lexique_ipa.py", "--database", str(database), "--report", str(reports / "lexique-derived-ipa.json"))
+    run("project_pronunciation_browser_details.py", "--database", str(database), "--report", str(reports / "pronunciation-browser-projection.json"))
+    run("audit_pronunciation_graph.py", "--database", str(database), "--report", str(reports / "pronunciation-graph-audit.json"))
     run("import_morphalou_morphology.py", "--database", str(database), "--source", str(args.morphalou_source), "--manifest", str(MANIFEST_DIR / "morphalou31-a1-c2-morphology.json"), "--report", str(reports / "morphalou-morphology.json"))
     run("import_kaikki_a1_connections.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-connections.json"), "--report", str(reports / "kaikki-connections.json"))
     run("import_kaikki_a1_expressions.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-expressions.json"), "--report", str(reports / "kaikki-expressions.json"))
@@ -105,6 +111,7 @@ def main() -> None:
         "source_releases": [
             flelex["release"],
             kaikki_senses["release"],
+            kaikki_pronunciation["release"],
             lexique_morphology["release"],
             morphalou_morphology["release"],
         ],
@@ -122,6 +129,7 @@ def main() -> None:
             "morphalou31-a1-c2-morphology.json",
             "kaikki-enwiktionary-french-c1-c2-connections.json",
             "kaikki-enwiktionary-french-c1-c2-expressions.json",
+            "kaikki-enwiktionary-french-a1-c2-pronunciation.json",
         ],
         "artifacts": [artifact(database, output), artifact(browser / "manifest.json", output), artifact(browser / "lookup.json", output)],
         "reports": [artifact(path, output) for path in sorted(reports.glob("*.json"))],

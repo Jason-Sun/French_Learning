@@ -7,6 +7,8 @@ import re
 import sqlite3
 from typing import Iterable
 
+from pronunciation_model import ensure_pronunciation_object, ensure_representation_schema, pronunciation_object_id
+
 
 DETAILS_SCHEMA = """
 CREATE TABLE IF NOT EXISTS pronunciation_object_details (
@@ -39,8 +41,12 @@ def _safe(value: str) -> str:
 
 
 def graph_object_id(legacy_id: str) -> str:
-    """Stable graph-object identity: one node for each legacy pronunciation record."""
-    return f"fr:pronunciation_object:{_safe(legacy_id.removeprefix('fr:'))}"
+    """Compatibility helper retained for external callers.
+
+    New identities are based on the owning language object, never on an import
+    record or source-specific legacy ID.
+    """
+    return f"fr:pronunciation:{_safe(legacy_id.removeprefix('fr:'))}"
 
 
 def relationship_id(owner_id: str, pronunciation_id: str) -> str:
@@ -56,6 +62,7 @@ def ensure_schema(db: sqlite3.Connection) -> None:
             "TEXT REFERENCES language_objects(id)"
         )
     db.executescript(DETAILS_SCHEMA)
+    ensure_representation_schema(db)
 
 
 def sync_graph(db: sqlite3.Connection) -> int:
@@ -76,31 +83,13 @@ def sync_graph(db: sqlite3.Connection) -> int:
     for row in rows:
         legacy_id = row[0]
         owner_id = row[1]
-        object_id = graph_object_id(legacy_id)
         variant = row[5] or "standard"
         source_id = row[8]
         provenance = row[9]
         confidence = row[10]
         review_status = row[11]
         display_form = row[-1]
-        db.execute(
-            "INSERT INTO language_objects "
-            "(id,type_code,canonical_form,display_form,normalized_form,source_id,content_status,provenance) "
-            "VALUES (?,?,?,?,?,?,?,?) "
-            "ON CONFLICT(id) DO UPDATE SET canonical_form=excluded.canonical_form, "
-            "display_form=excluded.display_form, source_id=excluded.source_id, "
-            "content_status=excluded.content_status, provenance=excluded.provenance",
-            (
-                object_id,
-                "pronunciation",
-                f"{display_form} pronunciation ({variant})",
-                f"{display_form} · pronunciation",
-                f"{display_form.casefold()} pronunciation {variant}",
-                source_id,
-                review_status,
-                provenance,
-            ),
-        )
+        object_id, _ = ensure_pronunciation_object(db, owner_id, display_form=display_form)
         db.execute(
             "INSERT INTO pronunciation_object_details "
             "(object_id,ipa,syllables_json,stress_json,variant_code,audio_source_uri,local_audio_path,source_id,provenance,confidence,review_status) "
@@ -121,11 +110,7 @@ def sync_graph(db: sqlite3.Connection) -> int:
             "UPDATE pronunciations SET pronunciation_object_id=? WHERE id=?",
             (object_id, legacy_id),
         )
-        db.execute(
-            "INSERT OR IGNORE INTO relationships "
-            "(id,source_object_id,target_object_id,relationship_type_code,position,source_kind,confidence) "
-            "VALUES (?,?,?,?,NULL,?,?)",
-            (relationship_id(owner_id, object_id), owner_id, object_id,
-             "has_pronunciation", provenance, confidence if confidence is not None else 1.0),
-        )
+        # The source-independent relationship is created by
+        # ``ensure_pronunciation_object``.  Legacy data remains available in the
+        # compatibility table until explicitly migrated into representations.
     return len(rows)

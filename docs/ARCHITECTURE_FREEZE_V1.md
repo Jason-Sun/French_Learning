@@ -98,7 +98,7 @@ Every canonical object has a UUID that is permanent across imports, releases, so
 | Grammar object | present indicative, futur proche, negation | Canonical learnable grammar concept, construction, pattern, or rule. |
 | Sentence | an example or curated sentence | Independent object with token/span alignment and graph links. |
 | Conjugation object | paradigm, tense, learning group, realization | Structured learning and morphology topology, not a text table. |
-| Pronunciation object | pronunciation representation, syllabification, future audio asset | A pronunciation container supporting multiple representations and evidence. Lexique codes are not silently labeled IPA. |
+| Pronunciation object | Lexique code/syllabification, Kaikki IPA and variants, audio URL metadata | One source-independent container per owner, supporting parallel evidence-backed representations. Lexique codes are not silently labelled IPA; derived IPA remains non-canonical. |
 | Media object | future recording, illustration, diagram | Referenced asset metadata; binary delivery is separate from graph identity. |
 | Learning resource | explanation, note, memory hint, exercise | Non-canonical teaching content with revisions and one published revision. |
 
@@ -193,9 +193,9 @@ The A1–C2 build command (`scripts/build_c1_c2_release.py`) verifies the pinned
 | Source class | Intended canonical contribution | Policy |
 | --- | --- | --- |
 | FLELex | CEFR, lexical category, frequency and related lexical metadata | Preserve release identity, license, source record, and transformations. |
-| Lexique | Forms, morphology, phonological-code and syllabification representations | Preserve representations exactly; do not relabel a phonological code as verified IPA. |
+| Lexique | Forms, morphology, phonological-code and syllabification representations | Preserve representations exactly; a deterministic derived IPA may be a visibly non-canonical fallback, never verified IPA. |
 | Morphalou | Complete simple verb-form analyses and morphological features | Resolve only against existing FLELex lexical identities; preserve row-level form evidence and never fabricate unsupported compound forms. |
-| Kaikki / Wiktionary-derived data | Source-backed senses, English glosses, selected examples, relations, and multi-word material where license permits | Preserve entry/sense identity, license and attribution; curate selection and ordering explicitly. |
+| Kaikki / Wiktionary-derived data | Source-backed senses, English glosses, selected examples, relations, multi-word material, IPA and audio URL metadata where license permits | Preserve entry/sense identity, licence and attribution; map pronunciation representations onto existing source-independent objects. |
 | Curated grammar sources | Grammar topology, relationships, prerequisites, contrasts, and teaching structure | Record editor, source/citation, review status, and evidence per claim. |
 | Manually curated data | Gaps or quality corrections supported by editorial review | Treat as a first-class versioned source release, never an anonymous database edit. |
 | AI-generated drafts | Proposed explanations, notes, analyses, candidate mappings, or candidate facts | Never canonical until reviewed and promoted through an explicit import/review action. |

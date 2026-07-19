@@ -48,9 +48,13 @@ The production A1–B2 verb morphology import uses the same hash-locked release 
 
 Every Lexique-created `inflected_form_of` edge has direct row-level relationship evidence. A `member_of_paradigm` edge is a transparent graph derivation from that evidenced form link and an existing verb-paradigm link, so it retains the same source record with `evidence_role = derived_from_asserted_form`; it is never presented as a direct Lexique assertion.
 
-The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. It never exports either representation through the browser's verified-IPA projection.
+The pronunciation adapter reuses the same immutable source-row identity and attaches two representations to each mapped Language Object: `phonological_code` with `transcription_system = lexique383`, and structured `syllabification`. A deterministic, versioned conversion may also create a clearly labelled non-canonical fallback IPA (`lexique383_derived_ipa_v1`); it is superseded whenever Kaikki supplies source-backed IPA.
 
 Each Lexique `has_pronunciation` edge is evidenced by the same source row that evidences its representations. The graph link is therefore attributable without treating the source phonological code as IPA.
+
+## Kaikki / English Wiktionary pronunciation representations
+
+The pinned Kaikki French release supplies source-backed IPA, regional/dialect and note metadata, and audio URLs. `scripts/import_kaikki_pronunciations.py` maps those records onto the existing source-independent Pronunciation Object for both matched lemmas and matched inflected forms. IPA is stored as a canonical `ipa` representation with row-level evidence; audio URLs are stored as `audio_url` metadata only and do not enable playback. Lexique representations remain untouched on the same object.
 
 The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.
 

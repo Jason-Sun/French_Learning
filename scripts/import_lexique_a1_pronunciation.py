@@ -17,6 +17,7 @@ import uuid
 from pathlib import Path
 
 from canonical_identity import NAMESPACE, canonical_uuid
+from pronunciation_model import ensure_pronunciation_object, ensure_representation_schema
 
 
 LEXIQUE_TO_GRAPH_POS = {
@@ -88,6 +89,7 @@ def main() -> None:
     database = sqlite3.connect(args.database)
     database.row_factory = sqlite3.Row
     database.execute("PRAGMA foreign_keys=ON")
+    ensure_representation_schema(database)
 
     release_id = manifest["release"]["id"]
     levels = selected_levels(manifest)
@@ -208,46 +210,9 @@ def main() -> None:
                     continue
 
                 for owner_id in set(owners):
-                    pronunciation_object_id = f"fr:pronunciation:lexique383:{owner_id.removeprefix('fr:')}"
-                    identity_key = f"fr|pronunciation||{owner_id}|lexique383"
-                    database.execute(
-                        """INSERT OR IGNORE INTO language_objects
-                           (id, type_code, canonical_form, display_form, normalized_form,
-                            source_id, content_status, provenance)
-                           VALUES (?, 'pronunciation', ?, 'Pronunciation', ?,
-                                   'lexique383', 'metadata_ready', 'curated')""",
-                        (
-                            pronunciation_object_id,
-                            f"{row['ortho']} pronunciation",
-                            f"{normalize(row['ortho'])} pronunciation",
-                        ),
+                    pronunciation_object_id, pronunciation_relationship = ensure_pronunciation_object(
+                        database, owner_id, display_form=row["ortho"]
                     )
-                    database.execute(
-                        """INSERT OR IGNORE INTO canonical_objects
-                           (canonical_id, language_object_id, object_type_code, identity_key)
-                           VALUES (?, ?, 'pronunciation', ?)""",
-                        (canonical_uuid(identity_key), pronunciation_object_id, identity_key),
-                    )
-                    database.execute(
-                        """INSERT OR IGNORE INTO relationships
-                           (id, source_object_id, target_object_id, relationship_type_code,
-                            source_kind, confidence)
-                           VALUES (?, ?, ?, 'has_pronunciation', 'curated', 1)""",
-                        (
-                            stable_id(
-                                "relationship",
-                                f"{owner_id}|has_pronunciation|{pronunciation_object_id}",
-                            ),
-                            owner_id,
-                            pronunciation_object_id,
-                        ),
-                    )
-                    pronunciation_relationship = database.execute(
-                        """SELECT id FROM relationships
-                           WHERE source_object_id = ? AND target_object_id = ?
-                             AND relationship_type_code = 'has_pronunciation'""",
-                        (owner_id, pronunciation_object_id),
-                    ).fetchone()["id"]
                     database.execute(
                         """INSERT OR IGNORE INTO relationship_evidence
                            (relationship_id, source_record_id, confidence)

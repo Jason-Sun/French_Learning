@@ -2,6 +2,19 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-022 — One source-independent Pronunciation Object with parallel representations
+
+**Date:** 2026-07-19
+**Status:** Accepted
+
+### Decision
+
+Every Language Object owns one stable, source-independent Pronunciation Object. Lexique phonological code and syllabification, Kaikki IPA, variant metadata, and audio URLs are separate evidence-backed representations on that object. Kaikki IPA is canonical source-backed data; a deterministic `lexique383_to_ipa_v1` fallback is lifecycle `derived`, visibly labelled **Derived from Lexique**, and automatically superseded once Kaikki IPA exists. Audio URLs remain metadata only. Browser TTS is a playback fallback, never pronunciation knowledge.
+
+### Consequences
+
+Replacing or adding pronunciation sources no longer changes graph identity. Learners receive the best available local representation without confusing source-backed IPA, deterministic fallback, and browser speech. Existing source-named pronunciation nodes remain inert compatibility identities where historical references prevent deletion; active edges and representations use only the source-independent node.
+
 ## ADR-021 — Ship bounded prebuilt AI Learning Packs for common learning slots
 
 **Date:** 2026-07-19
