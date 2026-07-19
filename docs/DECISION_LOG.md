@@ -305,3 +305,13 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Re-run the legacy A1–B2 builder with a wider constant; let senses or morphology importers mint missing words; commit a larger generated SQLite/browser package before proving the release pipeline.
 
 **Long-term impact:** Any later CEFR scope uses the same source-independent baseline contract. Senses, forms, pronunciation, examples, expressions, grammar, and learning resources can enrich the created objects independently without changing their identity or weakening provenance.
+
+## ADR-022 — Cross-level graph links are allowed without reclassifying source content
+
+**Decision:** A CEFR-scoped Kaikki import may resolve expression components and lexical-relation targets against a separately declared, wider local CEFR scope. The selected scope still determines the source entries and relation owners imported.
+
+**Reason:** Advanced expressions routinely contain basic words. Rejecting a C1/C2 phrase because it contains *de*, *à*, or another known A1 component would weaken graph connectivity for an artificial importer constraint. Conversely, treating the phrase as A1–C2 simply because of its components would fabricate a CEFR classification.
+
+**Alternatives:** Restrict every component and target to the selected CEFR scope; infer a CEFR level for phrases from their components; create duplicated phrase objects per level.
+
+**Long-term impact:** CEFR remains source-backed predicate data on canonical objects, while graph traversal can reflect real cross-level language structure. Manifests make the widened resolution scope explicit, reproducible, and auditable.

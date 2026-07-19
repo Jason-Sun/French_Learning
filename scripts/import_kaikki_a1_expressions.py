@@ -56,6 +56,24 @@ def selected_levels(manifest: dict) -> tuple[str, ...]:
     return levels
 
 
+def component_levels(manifest: dict, fallback: tuple[str, ...]) -> tuple[str, ...]:
+    """Return the CEFR scope permitted when resolving phrase components.
+
+    The selected scope determines which Kaikki phrase entries are imported.  A
+    phrase can still legitimately contain a known lower-level function word
+    (for example, ``de``), so its components may resolve against a wider local
+    graph.  This is connectivity metadata, never an asserted CEFR level for the
+    phrase itself.
+    """
+    raw = manifest.get("import", {}).get("component_selection", {}).get("levels")
+    if raw is None:
+        return fallback
+    levels = tuple(sorted({str(level).strip() for level in raw if str(level).strip()}))
+    if not levels or any(level not in {"A1", "A2", "B1", "B2", "C1", "C2"} for level in levels):
+        raise ValueError(f"Invalid component CEFR selection: {levels!r}")
+    return levels
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", type=Path, required=True)
@@ -73,6 +91,7 @@ def main() -> None:
     database.execute("PRAGMA foreign_keys=ON")
     release_id = manifest["release"]["id"]
     levels = selected_levels(manifest)
+    resolved_component_levels = component_levels(manifest, levels)
     selection_id = "-".join(level.casefold() for level in levels)
     import_run_id = f"import:{release_id}:{selection_id}-expressions"
     catalog = manifest["catalog"]
@@ -102,10 +121,10 @@ def main() -> None:
     )
 
     # A phrase is eligible only when every lexical component resolves locally to
-    # a selected-CEFR lemma or a source-backed form of such a lemma. This is a graph
-    # connectivity rule, not an unsupported CEFR classification for the phrase.
+    # the configured local graph scope. This is a graph connectivity rule, not an
+    # unsupported CEFR classification for the phrase.
     components_by_surface: dict[str, list[sqlite3.Row]] = {}
-    placeholders = ",".join("?" for _ in levels)
+    placeholders = ",".join("?" for _ in resolved_component_levels)
     component_rows = database.execute(
         f"""SELECT object.id, object.normalized_form, object.type_code,
                   object.frequency_per_million
@@ -120,7 +139,7 @@ def main() -> None:
             AND inflection.relationship_type_code='inflected_form_of'
            JOIN language_objects AS lemma ON lemma.id=inflection.target_object_id
            WHERE form.type_code='inflected_form' AND lemma.cefr_level IN ({placeholders})""",
-        (*levels, *levels),
+        (*resolved_component_levels, *resolved_component_levels),
     )
     for row in component_rows:
         components_by_surface.setdefault(normalize(row["normalized_form"]), []).append(row)
@@ -177,8 +196,8 @@ def main() -> None:
                         database.execute(
                             """INSERT OR IGNORE INTO import_exclusions
                                (import_run_id, source_record_id, reason_code, explanation)
-                               VALUES (?, ?, 'unresolved_a1_component', ?)""",
-                            (import_run_id, record_id, "A Kaikki phrase component has no local selected-CEFR lemma or linked inflected-form resolution."),
+                               VALUES (?, ?, 'unresolved_component', ?)""",
+                            (import_run_id, record_id, "A Kaikki phrase component has no local configured-scope lemma or linked inflected-form resolution."),
                         )
                         stats["excluded_unresolved_components"] += 1
                         continue
@@ -266,7 +285,8 @@ def main() -> None:
     report = {
         "release_id": release_id,
         "selection": {"levels": list(levels)},
-        "eligibility": "Kaikki phrase entry with an English gloss whose every token resolves to a selected-CEFR lemma or linked inflected form; this does not assign CEFR to the phrase.",
+        "component_selection": {"levels": list(resolved_component_levels)},
+        "eligibility": "Kaikki phrase entry with an English gloss whose every token resolves to a configured-scope lemma or linked inflected form; this does not assign CEFR to the phrase.",
         "expression_objects_imported": len(imported_objects),
         "english_translation_facts_imported": len(imported_fact_ids),
         "ordered_component_rows_imported": len(imported_component_rows),

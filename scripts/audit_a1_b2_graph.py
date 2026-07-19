@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit A1–B2 graph coverage and integrity without inventing missing content.
+"""Audit a CEFR graph scope and its integrity without inventing missing content.
 
 This is a release audit for the current production lexical scope.  It measures
 the graph as built, so importer-level POS reconciliation reports cannot be
@@ -15,8 +15,8 @@ import sqlite3
 from pathlib import Path
 
 
-LEVELS = ("A1", "A2", "B1", "B2")
-PLACEHOLDERS = ",".join("?" for _ in LEVELS)
+DEFAULT_LEVELS = ("A1", "A2", "B1", "B2")
+VALID_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
 
 
 def count(database: sqlite3.Connection, query: str, params: tuple = ()) -> int:
@@ -31,7 +31,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--levels", nargs="+", default=DEFAULT_LEVELS, choices=sorted(VALID_LEVELS))
     args = parser.parse_args()
+    levels = tuple(args.levels)
+    placeholders = ",".join("?" for _ in levels)
 
     database = sqlite3.connect(args.database)
     database.row_factory = sqlite3.Row
@@ -40,7 +43,7 @@ def main() -> None:
     scoped_words = f"""
         FROM language_objects AS word
         JOIN canonical_objects AS canonical ON canonical.language_object_id = word.id
-        WHERE word.type_code = 'word' AND word.cefr_level IN ({PLACEHOLDERS})
+        WHERE word.type_code = 'word' AND word.cefr_level IN ({placeholders})
     """
     words_with_senses = f"""
         SELECT COUNT(DISTINCT word.id) {scoped_words}
@@ -69,7 +72,7 @@ def main() -> None:
         JOIN language_objects AS lemma ON lemma.id = relation.target_object_id
         WHERE form.type_code = 'inflected_form'
           AND lemma.type_code = 'word'
-          AND lemma.cefr_level IN ({PLACEHOLDERS})
+          AND lemma.cefr_level IN ({placeholders})
     """
     source_edge_checks = {
         "lexique_inflected_form_edges": count(
@@ -147,23 +150,23 @@ def main() -> None:
         ),
         "source_backed_edges_without_evidence": source_edge_checks,
     }
-    missing_senses = rows(database, missing_sense_rows, LEVELS)
-    word_count = count(database, f"SELECT COUNT(*) {scoped_words}", LEVELS)
-    word_count_with_senses = count(database, words_with_senses, LEVELS)
+    missing_senses = rows(database, missing_sense_rows, levels)
+    word_count = count(database, f"SELECT COUNT(*) {scoped_words}", levels)
+    word_count_with_senses = count(database, words_with_senses, levels)
     scalar_integrity_failures = sum(
         value for key, value in integrity.items() if key != "source_backed_edges_without_evidence"
     )
     source_edge_failures = sum(source_edge_checks.values())
     report = {
-        "audit": "A1-B2 production graph coverage",
+        "audit": f"{'-'.join(levels)} production graph coverage",
         "database": str(args.database),
-        "scope": {"cefr_levels": list(LEVELS)},
+        "scope": {"cefr_levels": list(levels)},
         "coverage": {
             "word_pos_objects": word_count,
             "word_pos_objects_with_source_backed_senses": word_count_with_senses,
             "word_pos_objects_without_source_backed_senses": len(missing_senses),
             "source_backed_sense_coverage_percent": round(100 * word_count_with_senses / word_count, 2),
-            "source_backed_inflected_forms_linked_to_scope": count(database, linked_forms, LEVELS),
+            "source_backed_inflected_forms_linked_to_scope": count(database, linked_forms, levels),
             "missing_source_backed_sense_objects": missing_senses,
         },
         "integrity": integrity,

@@ -1,0 +1,22 @@
+{
+  "catalog": {
+    "id": "kaikki-enwiktionary",
+    "name": "Kaikki.org French dictionary extracted from English Wiktionary",
+    "homepage_url": "https://kaikki.org/dictionary/French/",
+    "license": "CC BY-SA 4.0 and GFDL",
+    "attribution_text": "Kaikki.org French dictionary, extracted from English Wiktionary with Wiktextract; preserve upstream CC BY-SA/GFDL attribution requirements."
+  },
+  "release": {
+    "id": "kaikki-enwiktionary-french-2026-06-25",
+    "label": "French dictionary extraction 2026-06-25",
+    "artifact_uri": "https://kaikki.org/dictionary/French/kaikki.org-dictionary-French.jsonl",
+    "sha256": "513fd5bb645ee4b71ed573f443ab2cc868921814863475e21f6b93afa5a40102",
+    "upstream_dump_date": "2026-06-01",
+    "scope": "French lexical senses and English glosses from English Wiktionary."
+  },
+  "import": {
+    "adapter": "kaikki_enwiktionary_senses",
+    "adapter_version": "3",
+    "selection": {"levels": ["C1", "C2"]}
+  }
+}

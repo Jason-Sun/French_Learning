@@ -121,6 +121,21 @@ python scripts/audit_cefr_lexical_baseline.py \
 
 The audit requires 100% selected-row mapping, matching stored CEFR/POS/frequency metadata, predicate-level source evidence, no duplicate canonical identities, and no relevant foreign-key or orphan failures. The generated graph and browser package are release artifacts, not ordinary source files.
 
+### C1/C2 source-backed enrichment recipes
+
+After creating the C1/C2 lexical baseline, apply the matching pinned manifests for senses, morphology, pronunciation, examples/relations, and multi-word expressions. Use a release copy of the database and store reports with that release, not in the source tree:
+
+```bash
+python3 scripts/import_kaikki_a1_senses.py --database /path/to/release/liens-knowledge.sqlite --source /path/to/kaikki.org-dictionary-French.jsonl --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-c1-c2-senses.json --report /path/to/reports/kaikki-c1-c2-senses.json
+python3 scripts/import_lexique_a1_morphology.py --database /path/to/release/liens-knowledge.sqlite --source /path/to/Lexique383.tsv --manifest data/wordbank/import-manifests/lexique383-c1-c2-morphology.json --report /path/to/reports/lexique-c1-c2-morphology.json
+python3 scripts/import_lexique_a1_pronunciation.py --database /path/to/release/liens-knowledge.sqlite --source /path/to/Lexique383.tsv --manifest data/wordbank/import-manifests/lexique383-c1-c2-pronunciation.json --report /path/to/reports/lexique-c1-c2-pronunciation.json
+python3 scripts/import_kaikki_a1_connections.py --database /path/to/release/liens-knowledge.sqlite --source /path/to/kaikki.org-dictionary-French.jsonl --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-c1-c2-connections.json --report /path/to/reports/kaikki-c1-c2-connections.json
+python3 scripts/import_kaikki_a1_expressions.py --database /path/to/release/liens-knowledge.sqlite --source /path/to/kaikki.org-dictionary-French.jsonl --manifest data/wordbank/import-manifests/kaikki-enwiktionary-french-c1-c2-expressions.json --report /path/to/reports/kaikki-c1-c2-expressions.json
+python3 scripts/audit_a1_b2_graph.py --database /path/to/release/liens-knowledge.sqlite --output /path/to/reports/c1-c2-graph-audit.json --levels C1 C2
+```
+
+The expression manifest may resolve components against the full existing A1–C2 graph. This permits a C1/C2 phrase to contain known lower-level words without assigning a CEFR level to the phrase. The connection manifest may likewise target any existing A1–C2 word while keeping the imported source relation owned by the selected C1/C2 word.
+
 ### Source-backed Lexique morphology import
 
 Lexique 3.83 provides inflected forms, lemma links, grammatical features, a source-specific phonological code, and syllabification. Its code is not treated as IPA.
@@ -242,7 +257,7 @@ python3 scripts/import_kaikki_a1_connections.py \
   --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-connections.json
 ```
 
-The same source can provide first-class multi-word expressions only where every token resolves to the A1 graph. This importer does not assign CEFR, idiom, or collocation classifications that the source does not assert:
+The same source can provide first-class multi-word expressions only where every token resolves to the manifest's configured local component scope. This importer does not assign CEFR, idiom, or collocation classifications that the source does not assert:
 
 ```bash
 python3 scripts/add_multiword_component_schema.py --database data/wordbank/liens-knowledge.sqlite

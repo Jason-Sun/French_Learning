@@ -18,13 +18,21 @@ def selected_levels(manifest):
  levels=tuple(sorted({str(level).strip() for level in raw if str(level).strip()}))
  if not levels or any(level not in {'A1','A2','B1','B2','C1','C2'} for level in levels):raise ValueError(f'Invalid CEFR selection: {levels!r}')
  return levels
+def relation_target_levels(manifest,fallback):
+ raw=manifest.get('import',{}).get('relation_target_selection',{}).get('levels')
+ if raw is None:return fallback
+ levels=tuple(sorted({str(level).strip() for level in raw if str(level).strip()}))
+ if not levels or any(level not in {'A1','A2','B1','B2','C1','C2'} for level in levels):raise ValueError(f'Invalid relation target CEFR selection: {levels!r}')
+ return levels
 def main():
  p=argparse.ArgumentParser();p.add_argument('--database',type=Path,required=True);p.add_argument('--source',type=Path,required=True);p.add_argument('--manifest',type=Path,required=True);p.add_argument('--report',type=Path,required=True);a=p.parse_args();m=json.loads(a.manifest.read_text())
  if digest(a.source)!=m['release']['sha256']:raise ValueError('Kaikki source SHA-256 mismatch')
- levels=selected_levels(m);selection_id='-'.join(level.casefold() for level in levels)
+ levels=selected_levels(m);target_levels=relation_target_levels(m,levels);selection_id='-'.join(level.casefold() for level in levels)
  db=sqlite3.connect(a.database);db.row_factory=sqlite3.Row;db.execute('PRAGMA foreign_keys=ON');rid=m['release']['id'];run=f'import:{rid}:{selection_id}-connections';db.execute("INSERT OR IGNORE INTO import_runs(id,release_id,importer_name,importer_version,status,completed_at) VALUES (?,?,?,?, 'completed',CURRENT_TIMESTAMP)",(run,rid,m['import']['adapter'],m['import']['adapter_version']))
  placeholders=','.join('?' for _ in levels)
+ target_placeholders=','.join('?' for _ in target_levels)
  words={(n(x['canonical_form']),x['part_of_speech']):(x['id'],x['canonical_id'],x['cefr_level']) for x in db.execute(f"SELECT o.id,o.canonical_form,o.part_of_speech,o.cefr_level,c.canonical_id FROM language_objects o JOIN canonical_objects c ON c.language_object_id=o.id WHERE o.type_code='word' AND o.cefr_level IN ({placeholders})",levels)}
+ relation_targets={(n(x['canonical_form']),x['part_of_speech']):x['id'] for x in db.execute(f"SELECT id,canonical_form,part_of_speech FROM language_objects WHERE type_code='word' AND cefr_level IN ({target_placeholders})",target_levels)}
  senses={(r['source_record_id']):r['canonical_id'] for r in db.execute("SELECT m.source_record_id,m.canonical_id FROM import_record_mappings m JOIN canonical_objects c ON c.canonical_id=m.canonical_id JOIN language_objects s ON s.id=c.language_object_id JOIN source_records r ON r.id=m.source_record_id WHERE s.type_code='lexical_sense' AND r.release_id=?",(rid,))}
  stats={'sentences':set(),'translations':set(),'illustrates':set(),'relations':set()};db.commit();db.execute('BEGIN')
  try:
@@ -44,9 +52,9 @@ def main():
      for kind,reltype in [('synonyms','synonym_of'),('antonyms','antonym_of')]:
       for target in s.get(kind,[]):
        word=target.get('word','') if isinstance(target,dict) else ''; tk=(n(word),pos)
-       if tk not in words:continue
-       toid=words[tk][0]; rel=sid('relationship',f'{owner}|{reltype}|{toid}');db.execute("INSERT OR IGNORE INTO relationships(id,source_object_id,target_object_id,relationship_type_code,source_kind,confidence) VALUES (?,?,?,?,'curated',1)",(rel,owner,toid,reltype));db.execute("INSERT OR IGNORE INTO relationship_evidence(relationship_id,source_record_id,confidence) VALUES (?,?,1)",(rel,sr));stats['relations'].add(rel)
+       if tk not in relation_targets:continue
+       toid=relation_targets[tk]; rel=sid('relationship',f'{owner}|{reltype}|{toid}');db.execute("INSERT OR IGNORE INTO relationships(id,source_object_id,target_object_id,relationship_type_code,source_kind,confidence) VALUES (?,?,?,?,'curated',1)",(rel,owner,toid,reltype));db.execute("INSERT OR IGNORE INTO relationship_evidence(relationship_id,source_record_id,confidence) VALUES (?,?,1)",(rel,sr));stats['relations'].add(rel)
   db.commit()
  except:db.rollback();raise
- out={'release_id':rid,'selection':{'levels':list(levels)},'sentence_objects_imported':len(stats['sentences']),'english_translation_facts_imported':len(stats['translations']),'illustrates_relationships_imported':len(stats['illustrates']),'synonym_or_antonym_relationships_imported':len(stats['relations'])};a.report.parent.mkdir(parents=True,exist_ok=True);a.report.write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out,indent=2))
+ out={'release_id':rid,'selection':{'levels':list(levels)},'relation_target_selection':{'levels':list(target_levels)},'sentence_objects_imported':len(stats['sentences']),'english_translation_facts_imported':len(stats['translations']),'illustrates_relationships_imported':len(stats['illustrates']),'synonym_or_antonym_relationships_imported':len(stats['relations'])};a.report.parent.mkdir(parents=True,exist_ok=True);a.report.write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out,indent=2))
 if __name__=='__main__':main()

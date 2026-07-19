@@ -34,7 +34,7 @@ Each selection is defined by the manifest’s explicit `level` or `levels` list.
 
 The canonical lexical-baseline adapter is the one importer allowed to create a new `word` Language Object from FLELex. It derives the source-independent identity `fr|word|POS|normalized lemma`, mints its UUID from that identity, and records three independently evidenced Facts: part of speech, CEFR level, and frequency per million. All other importers resolve that identity; they may not create a fallback word merely because a source mentions one.
 
-The prepared C1/C2 manifest selects 3,155 C1 and 2,314 C2 FLELex rows from the same hash-locked TreeTagger / Beacco release. The generated SQLite and browser package are intentionally not committed by this preparation step; a release build must apply the manifest, run the scope audit, export a package, and publish the generated artifacts outside ordinary Git history.
+The prepared C1/C2 manifest selects 3,155 C1 and 2,314 C2 FLELex rows from the same hash-locked TreeTagger / Beacco release. The generated SQLite and browser package are intentionally not committed by this preparation step; a release build must apply the manifest, run the scope audit, export a package, and publish the generated artifacts outside ordinary Git history. The matching C1/C2 Kaikki and Lexique manifests enrich this same baseline with senses, examples, lexical relations, expressions, morphology, and source-specific pronunciation representations; they never create a fallback lexical identity.
 
 ## Lexique 3.83 CEFR-scoped morphology and pronunciation baseline
 
@@ -76,13 +76,13 @@ explicit gaps unless a future manifest contains a separately reviewed,
 evidence-preserving reconciliation. This keeps source taxonomy intact and
 prevents a coverage percentage from introducing an incorrect canonical sense.
 
-The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
+The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. A manifest may widen only the *relation-target* scope, allowing (for example) a C1 word to point to an existing A1–C2 synonym; the relation owner remains in the selected import scope. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
 
 The connections importer resolves source-sense records through their canonical lexical-sense targets rather than assuming a particular CEFR import-run name. This keeps A1 and A2–B2 source mappings compatible under one reproducible contract.
 
 ## Kaikki / English Wiktionary A1-connected expression baseline
 
-The same hash-locked Kaikki release supplies source entries whose native part of speech is `phrase`. The expression adapter accepts a phrase only when it has an English gloss and every lexical token resolves locally to either a selected-CEFR lemma or a source-backed inflected form of one. This is a graph-connectivity rule, **not** a CEFR claim for the phrase itself.
+The same hash-locked Kaikki release supplies source entries whose native part of speech is `phrase`. The expression adapter accepts a phrase only when it has an English gloss and every lexical token resolves locally to either a configured-scope lemma or a source-backed inflected form of one. The source phrase selection and the component-resolution scope are independently configurable: a C1/C2 phrase may correctly contain known A1 function words such as *de* or *à*. This is a graph-connectivity rule, **not** a CEFR claim for the phrase itself.
 
 Each accepted record becomes a first-class `expression` object using a source-independent surface identity. Its English translations are independently evidenced facts. Ordered components are stored in `multiword_components`, their source surfaces in `multiword_component_evidence`, and deduplicated `contains` edges carry independent relationship evidence for graph traversal. The importer does not call any Kaikki phrase an idiom or collocation: the source’s `phrase` label alone does not establish either classification.
 
