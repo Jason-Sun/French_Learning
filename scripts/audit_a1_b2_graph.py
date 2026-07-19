@@ -74,6 +74,20 @@ def main() -> None:
           AND lemma.type_code = 'word'
           AND lemma.cefr_level IN ({placeholders})
     """
+    missing_verb_form_rows = f"""
+        SELECT lemma.canonical_form AS lemma, lemma.cefr_level
+        FROM language_objects AS lemma
+        WHERE lemma.type_code='word' AND lemma.part_of_speech='VER'
+          AND lemma.cefr_level IN ({placeholders})
+          AND NOT EXISTS (
+            SELECT 1 FROM relationships AS relation
+            JOIN language_objects AS form ON form.id=relation.source_object_id
+            WHERE relation.target_object_id=lemma.id
+              AND relation.relationship_type_code='inflected_form_of'
+              AND form.type_code='inflected_form'
+          )
+        ORDER BY lemma.cefr_level, lemma.canonical_form
+    """
     source_edge_checks = {
         "lexique_inflected_form_edges": count(
             database,
@@ -82,6 +96,17 @@ def main() -> None:
                  JOIN language_objects AS form ON form.id = relation.source_object_id
                  LEFT JOIN relationship_evidence AS evidence ON evidence.relationship_id = relation.id
                  WHERE form.source_id = 'lexique383'
+                   AND relation.relationship_type_code = 'inflected_form_of'
+                 GROUP BY relation.id HAVING COUNT(evidence.source_record_id) = 0
+               )""",
+        ),
+        "morphalou_inflected_form_edges": count(
+            database,
+            """SELECT COUNT(*) FROM (
+                 SELECT relation.id FROM relationships AS relation
+                 JOIN language_objects AS form ON form.id = relation.source_object_id
+                 LEFT JOIN relationship_evidence AS evidence ON evidence.relationship_id = relation.id
+                 WHERE form.source_id = 'morphalou31'
                    AND relation.relationship_type_code = 'inflected_form_of'
                  GROUP BY relation.id HAVING COUNT(evidence.source_record_id) = 0
                )""",
@@ -151,6 +176,7 @@ def main() -> None:
         "source_backed_edges_without_evidence": source_edge_checks,
     }
     missing_senses = rows(database, missing_sense_rows, levels)
+    missing_verb_forms = rows(database, missing_verb_form_rows, levels)
     word_count = count(database, f"SELECT COUNT(*) {scoped_words}", levels)
     word_count_with_senses = count(database, words_with_senses, levels)
     scalar_integrity_failures = sum(
@@ -167,6 +193,7 @@ def main() -> None:
             "word_pos_objects_without_source_backed_senses": len(missing_senses),
             "source_backed_sense_coverage_percent": round(100 * word_count_with_senses / word_count, 2),
             "source_backed_inflected_forms_linked_to_scope": count(database, linked_forms, levels),
+            "verbs_without_source_backed_forms": missing_verb_forms,
             "missing_source_backed_sense_objects": missing_senses,
         },
         "integrity": integrity,

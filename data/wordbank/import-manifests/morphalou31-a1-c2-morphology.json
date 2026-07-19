@@ -1,0 +1,24 @@
+{
+  "catalog": {
+    "id": "morphalou31",
+    "name": "Morphalou 3.1",
+    "homepage_url": "https://hdl.handle.net/11403/morphalou/v3.1",
+    "license": "LGPL-LR",
+    "attribution_text": "ATILF. Morphalou 3.1, 2023 distribution of the French morphological lexicon."
+  },
+  "release": {
+    "id": "morphalou31-csv-all-in-one-4fc815cb",
+    "label": "Morphalou 3.1 CSV all-in-one archive",
+    "artifact_uri": "https://huggingface.co/datasets/datasets-CNRS/Morphalou/resolve/main/Morphalou3.1_formatCSV_toutEnUn.zip",
+    "sha256": "4fc815cbf17aecdf1b47f6bbc263489a460fd8d11ae17e6b522336c72bd0e333",
+    "scope_description": "Morphalou 3.1 complete inflectional morphology for existing FLELex A1–C2 verb identities."
+  },
+  "import": {
+    "adapter": "morphalou31_morphology",
+    "adapter_version": "1",
+    "selection": {
+      "levels": ["A1", "A2", "B1", "B2", "C1", "C2"],
+      "part_of_speech": ["VER"]
+    }
+  }
+}

@@ -54,6 +54,7 @@ def main() -> None:
     parser.add_argument("--flelex-source", type=Path, required=True)
     parser.add_argument("--kaikki-source", type=Path, required=True)
     parser.add_argument("--lexique-source", type=Path, required=True)
+    parser.add_argument("--morphalou-source", type=Path, required=True, help="Pinned Morphalou3.1 CSV ZIP archive")
     parser.add_argument("--build-id", default="liens-c1-c2-source-release-v1")
     args = parser.parse_args()
 
@@ -74,6 +75,7 @@ def main() -> None:
     kaikki_senses = load_manifest("kaikki-enwiktionary-french-c1-c2-senses.json")
     lexique_morphology = load_manifest("lexique383-c1-c2-morphology.json")
     lexique_pronunciation = load_manifest("lexique383-c1-c2-pronunciation.json")
+    morphalou_morphology = load_manifest("morphalou31-a1-c2-morphology.json")
     kaikki_connections = load_manifest("kaikki-enwiktionary-french-c1-c2-connections.json")
     kaikki_expressions = load_manifest("kaikki-enwiktionary-french-c1-c2-expressions.json")
 
@@ -82,8 +84,10 @@ def main() -> None:
     run("import_kaikki_a1_senses.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-senses.json"), "--report", str(reports / "kaikki-senses.json"))
     run("import_lexique_a1_morphology.py", "--database", str(database), "--source", str(args.lexique_source), "--manifest", str(MANIFEST_DIR / "lexique383-c1-c2-morphology.json"), "--report", str(reports / "lexique-morphology.json"))
     run("import_lexique_a1_pronunciation.py", "--database", str(database), "--source", str(args.lexique_source), "--manifest", str(MANIFEST_DIR / "lexique383-c1-c2-pronunciation.json"), "--report", str(reports / "lexique-pronunciation.json"))
+    run("import_morphalou_morphology.py", "--database", str(database), "--source", str(args.morphalou_source), "--manifest", str(MANIFEST_DIR / "morphalou31-a1-c2-morphology.json"), "--report", str(reports / "morphalou-morphology.json"))
     run("import_kaikki_a1_connections.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-connections.json"), "--report", str(reports / "kaikki-connections.json"))
     run("import_kaikki_a1_expressions.py", "--database", str(database), "--source", str(args.kaikki_source), "--manifest", str(MANIFEST_DIR / "kaikki-enwiktionary-french-c1-c2-expressions.json"), "--report", str(reports / "kaikki-expressions.json"))
+    run("seed_conjugation_learning_catalog.py", "--database", str(database), "--catalog", str(ROOT / "data" / "wordbank" / "conjugation-paradigm-catalog.json"))
     run("derive_verb_groups.py", "--database", str(database), "--policy", str(ROOT / "data" / "wordbank" / "verb-group-policy.json"), "--report", str(reports / "verb-groups.json"))
     run("project_lexique_forms_to_tense_paradigms.py", "--database", str(database), "--report", str(reports / "tense-paradigm-projection.json"))
     run("audit_a1_b2_graph.py", "--database", str(database), "--output", str(reports / "c1-c2-graph-audit.json"), "--levels", "C1", "C2")
@@ -102,17 +106,20 @@ def main() -> None:
             flelex["release"],
             kaikki_senses["release"],
             lexique_morphology["release"],
+            morphalou_morphology["release"],
         ],
         "input_artifacts": {
             "flelex": artifact(args.flelex_source, args.flelex_source.parent),
             "kaikki": artifact(args.kaikki_source, args.kaikki_source.parent),
             "lexique": artifact(args.lexique_source, args.lexique_source.parent),
+            "morphalou": artifact(args.morphalou_source, args.morphalou_source.parent),
         },
         "import_manifests": [
             "flelex-beacco-tree-tagger-c1-c2.json",
             "kaikki-enwiktionary-french-c1-c2-senses.json",
             "lexique383-c1-c2-morphology.json",
             "lexique383-c1-c2-pronunciation.json",
+            "morphalou31-a1-c2-morphology.json",
             "kaikki-enwiktionary-french-c1-c2-connections.json",
             "kaikki-enwiktionary-french-c1-c2-expressions.json",
         ],

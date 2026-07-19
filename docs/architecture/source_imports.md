@@ -54,6 +54,23 @@ Each Lexique `has_pronunciation` edge is evidenced by the same source row that e
 
 The pronunciation report accounts for every eligible source row as a mapped target or an explicit exclusion. Rows that conflict with another lexical identity or lack the features required to create a canonical form remain in `import_exclusions`; they are never silently discarded.
 
+## Morphalou 3.1 complete morphology
+
+Morphalou 3.1 is the complete-paradigm morphology source for Liens' existing
+CEFR-scoped verbs. It is distributed under LGPL-LR and records 159,271 lemmas
+and 976,570 French inflected forms. The importer accepts only an exact,
+normalized Morphalou verb lemma that already resolves to a FLELex word/POS
+identity in the selected A1–C2 scope. Therefore it contributes neither new CEFR
+classifications nor fallback words.
+
+Every accepted Morphalou form is an `inflected_form` Language Object (or adds
+new evidence to the same existing canonical form), with source-backed mood,
+tense, person, number, and gender facts. Its `inflected_form_of` relationship
+has direct row-level evidence. The source’s full simple paradigms then flow
+through the existing deterministic tense-paradigm projection. Unsupported or
+unmatched source rows are reported explicitly; no rule-based or LLM-generated
+conjugation is substituted for them.
+
 ## Kaikki / English Wiktionary lexical-sense baseline
 
 Kaikki's French dictionary is a structured extraction from English Wiktionary. Its frozen releases and CEFR-scoped manifests carry the upstream CC BY-SA/GFDL attribution obligations. It is used for English glosses, not as a CEFR classifier.

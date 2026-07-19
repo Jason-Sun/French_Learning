@@ -137,7 +137,7 @@ def main() -> None:
              AND root.relationship_type_code='belongs_to_conjugation'
            JOIN canonical_objects AS form_canonical ON form_canonical.language_object_id=form.id
            JOIN canonical_objects AS lemma_canonical ON lemma_canonical.language_object_id=lemma.id
-           WHERE form.type_code='inflected_form' AND form.source_id='lexique383'
+           WHERE form.type_code='inflected_form'
            ORDER BY form.id"""
     ))
     # Avoid a source-record query for every form. A production release may
