@@ -285,6 +285,10 @@
     enabled,
     setEnabled,
     providerReady,
+    providerMessage: () => {
+      const candidate = provider();
+      return plainText(typeof candidate?.unavailabilityMessage === 'function' ? candidate.unavailabilityMessage() : '');
+    },
     currentPromptVersion,
     refreshProviderAvailability: async () => {
       const candidate = provider();
