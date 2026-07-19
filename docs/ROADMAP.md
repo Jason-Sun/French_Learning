@@ -4,7 +4,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Completed foundations
 
-- **Language knowledge graph:** SQLite Language Objects, typed relationships, stable IDs, browser export, accent-insensitive local lookup, and A1–B2 lexical coverage.
+- **Language knowledge graph:** SQLite Language Objects, typed relationships, stable IDs, browser export, accent-insensitive local lookup, and a source-backed A1–C2 lexical baseline.
 - **Learning loop MVP:** direct object routing, back/home navigation, bilingual support with optional Chinese, typed local saves, flexible collections, and a calm Today’s Review flow backed by learner-owned IndexedDB state.
 - **Sentence Intelligence:** deterministic local token resolution, grammar/expression recognition, sentence breakdown, and teacher-guidance links.
 - **Verb system:** graph-native forms, pedagogical learning groups, reusable tenses, component-based realizations, and structured teaching resources.
@@ -15,9 +15,9 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Architecture Freeze v1.0 — completed.** The browser data package, access adapter, deterministic C1/C2 release build, checksum manifest, and external-artifact workflow are in place. Future work is to automate source acquisition/attribution checks and publish immutable releases beyond local development.
+**Architecture Freeze v1.0 — completed.** The browser data package, access adapter, deterministic A1–C2 release build, checksum manifest, and external-artifact workflow are in place. Future work is to automate source acquisition/attribution checks and publish immutable releases beyond local development.
 
-**C1/C2 lexical baseline — release recipes validated.** The same hash-locked FLELex release has reproducible C1/C2 baseline, Kaikki sense/example/relation/expression, and Lexique morphology/pronunciation manifests. An isolated full enrichment build passes integrity checks; its generated package remains artifact-based until browser distribution is configured. C1/C2 grammar topology and pedagogical paradigm projection remain separate source-backed phases.
+**A1–C2 lexical and simple-morphology release — completed.** The active external release contains 14,236 FLELex word/POS identities and 140,698 distinct source-backed inflected forms. Morphalou 3.1 provides full simple-paradigm evidence for the existing verb scope; five unmatched/no-form FLELex `VER` identities remain explicit gaps. Compound forms, expanded grammar topology, and teaching resources remain separate source-backed phases.
 
 ## Near-term foundation milestone
 

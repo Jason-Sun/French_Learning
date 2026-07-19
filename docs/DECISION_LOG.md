@@ -315,3 +315,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Restrict every component and target to the selected CEFR scope; infer a CEFR level for phrases from their components; create duplicated phrase objects per level.
 
 **Long-term impact:** CEFR remains source-backed predicate data on canonical objects, while graph traversal can reflect real cross-level language structure. Manifests make the widened resolution scope explicit, reproducible, and auditable.
+
+## ADR-023 — Morphalou supplies complete simple verb morphology
+
+**Date:** 2026-07-19
+
+**Decision:** Use the pinned Morphalou 3.1 release as the complete simple-paradigm source for existing A1–C2 FLELex verb identities. The importer creates or evidences only form analyses whose normalized lemma resolves to an existing canonical verb, and the existing deterministic projection builds learner-facing tense paradigms from those asserted forms.
+
+**Reason:** Lexique is valuable for broad lexical morphology and pronunciation representations, but it is corpus-oriented and does not provide a complete conjugation inventory. Morphalou supplies source-backed mood, tense, person, number, and gender analyses at the scale required for full verb-form lookup.
+
+**Alternatives:** Generate paradigms with rules; use AI to fill tables; create unproven compound-form objects; embed conjugations in browser JSON; broaden the canonical lexical inventory from a morphology source.
+
+**Long-term impact:** Form lookup and simple-tense tables can grow with a reproducible, evidence-backed source while the canonical word inventory remains source-independent and CEFR-backed. Compound forms remain a separate, explicitly sourced future layer rather than an inferred claim.

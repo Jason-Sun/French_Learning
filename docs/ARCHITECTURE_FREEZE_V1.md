@@ -186,7 +186,7 @@ Each release manifest must identify at least:
 - licensing and attribution payload;
 - browser export contract version.
 
-The C1/C2 build command (`scripts/build_c1_c2_release.py`) now verifies the pinned inputs, copies a verified base graph, applies the scoped import recipes and deterministic derivations, runs graph/export checks, and emits SQLite, browser shards, reports, and a checksum manifest into a new external release directory. A validated local C1/C2 release has been produced with this command. Source acquisition is still deliberately explicit: callers provide locally cached, checksum-verified upstream artifacts rather than relying on an unpinned download step.
+The A1–C2 build command (`scripts/build_c1_c2_release.py`) verifies the pinned inputs, copies a verified base graph, applies the scoped import recipes and deterministic derivations, runs graph/export checks, and emits SQLite, browser shards, reports, and a checksum manifest into a new external release directory. A validated local A1–C2 release has been produced with this command. Source acquisition is still deliberately explicit: callers provide locally cached, checksum-verified upstream artifacts rather than relying on an unpinned download step.
 
 ## 5. Source provenance policy
 
@@ -194,6 +194,7 @@ The C1/C2 build command (`scripts/build_c1_c2_release.py`) now verifies the pinn
 | --- | --- | --- |
 | FLELex | CEFR, lexical category, frequency and related lexical metadata | Preserve release identity, license, source record, and transformations. |
 | Lexique | Forms, morphology, phonological-code and syllabification representations | Preserve representations exactly; do not relabel a phonological code as verified IPA. |
+| Morphalou | Complete simple verb-form analyses and morphological features | Resolve only against existing FLELex lexical identities; preserve row-level form evidence and never fabricate unsupported compound forms. |
 | Kaikki / Wiktionary-derived data | Source-backed senses, English glosses, selected examples, relations, and multi-word material where license permits | Preserve entry/sense identity, license and attribution; curate selection and ordering explicitly. |
 | Curated grammar sources | Grammar topology, relationships, prerequisites, contrasts, and teaching structure | Record editor, source/citation, review status, and evidence per claim. |
 | Manually curated data | Gaps or quality corrections supported by editorial review | Treat as a first-class versioned source release, never an anonymous database edit. |

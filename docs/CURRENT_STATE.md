@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-07-19
 **Canonical product branch:** `Liens_dev`
-**Current milestone:** Architecture Freeze v1.0 — completed long-term architecture review
+**Current milestone:** A1–C2 lexical and simple-morphology release — completed
 
 ## Architecture Freeze v1.0
 
@@ -14,7 +14,7 @@
 
 ### Current architecture gap
 
-The repository still contains generated SQLite and browser-package artifacts, and rebuilding currently requires manual source preparation. Before material A2 expansion or any history migration, Liens needs one deterministic end-to-end data build, immutable release manifests, and artifact distribution outside ordinary Git history.
+The deterministic release pipeline and external-artifact workflow are now proven. Source preparation remains explicit and local (each build receives checksum-verified upstream artifacts), and the next release concern is automated acquisition, attribution checks, and publishing rather than a redesign of the graph.
 
 ### Product constitution
 
@@ -47,9 +47,9 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - Kaikki phrase entries now contribute 246 source-backed, A1–B2-connected `expression` objects, 275 independently evidenced English translations, and 913 ordered component records. The source calls them phrases, so Liens does not mislabel them as collocations or idioms; 336 phrase senses with unresolved local components remain explicit exclusions.
 - First-class Grammar Language Object taxonomy, semantic grammar relationships, and generic grammar-object analysis matches are established; no new grammar inventory has been imported.
 - The official FLELex / Beacco TreeTagger artifact is hash-locked for the A1 baseline: all 1,247 A1 source rows map to canonical objects and evidence their CEFR, part-of-speech, and frequency facts.
-- C1/C2 lexical-baseline delivery is prepared as an artifact-safe release recipe: 5,469 selected rows (3,155 C1; 2,314 C2) from the same pinned FLELex release passed isolated idempotency, fact-evidence, mapping, foreign-key, and orphan checks. This branch does not yet ship the resulting generated C1/C2 database or browser package.
-- The C1/C2 release recipes have also passed an isolated enrichment build: 7,602 Kaikki lexical-sense objects with 7,640 English-gloss facts, 8,903 Lexique verb-form analyses, 65,838 non-IPA Lexique pronunciation representations, 479 attributable examples, 509 lexical-relation edges, and 260 source-backed expressions. The scope audit reports 90.44% source-backed sense coverage (523 explicit source gaps) and zero integrity failures.
-- `scripts/build_c1_c2_release.py` now materializes that scope as an external release package: SQLite, browser shards, reports, and a checksum manifest. A verified local A1–C2 package is available outside the repository at `../Liens-releases/liens-c1-c2`; the app can test it via `?graphRoot=releases/liens-c1-c2/browser` without changing its default development package.
+- The active external release is `liens-a1-c2-complete-v1`: 14,236 A1–C2 FLELex lexical identities, 160,147 browser lookup objects, 247,048 detail objects across 64 integrity-hashed shards, and a checksum manifest. The app reads it through `?graphRoot=releases/liens-c1-c2/browser`.
+- Morphalou 3.1 now supplies 131,431 directly evidenced verb-form analyses for the existing 2,598 A1–C2 FLELex verb identities. Combined with compatible source analyses already in the graph, 140,698 distinct inflected-form objects resolve through the local graph. The source-backed simple-form projection creates 23,859 verb-specific tense paradigms and 131,392 evidenced form-membership links.
+- The all-level release audit passes with zero foreign-key, orphan, or source-evidence failures. It reports 95.60% source-backed lexical-sense coverage (13,610 of 14,236 word/POS objects). Five FLELex `VER` identities have no linked source form—`bienvenir`, `hier`, `accroire`, `assavoir`, and `étranger`—and remain explicit source gaps rather than receiving fabricated conjugations.
 - The hash-locked Lexique 3.83 morphology import adds 9,639 distinct source-backed A1 verb-form objects, each connected to its lemma and conjugation paradigm; four conflicting source rows remain explicit exclusions pending review.
 - The same hash-locked Lexique release now covers A1–B2 morphology with 42,042 source-backed analyses and 42,745 linked Lexique form objects across the scoped vocabulary. Its four known conflicting source rows remain recorded as explicit exclusions; every imported form-to-lemma edge has relationship evidence.
 - The tense-paradigm projection now connects 8,262 supported Lexique form analyses to 1,984 verb-specific learning paradigms, enabling local conjugation tables such as `manger → Présent → mange / manges / mangeons` without hard-coded forms. Source tenses outside the learning catalog remain explicit exclusions from the selector.
@@ -62,7 +62,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 ## Pending
 
 - Broader curated word/form definitions, examples, collocations, and verified-IPA coverage.
-- Additional conjugation data and reviewed tense resources.
+- Source-backed compound conjugation realizations and reviewed tense teaching resources. The current complete morphology release covers source-attested simple forms; it does not fabricate multi-word compound forms.
 - Production review scheduling, richer collection modes, account persistence, and synchronization.
 - Reading, listening, writing, and exercise object types/surfaces.
 - Local audio assets or local TTS caching.
@@ -78,11 +78,11 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - Pronunciation has verified IPA only for the initial curated/core set. Lexique's broader A1 code and syllable coverage remains source-labelled until a separately validated IPA conversion or source is available.
 - Some imported learning content is explicitly draft/enriched and should not be represented as fully curated.
 - Canonical grammar coverage remains limited to the attributed Tex A1 index (38 current grammar-related objects). No A2–B2 grammar content has been invented in the absence of an appropriate attributable source.
-- Source coverage gaps remain explicit rather than fabricated: `bienvenir` has no Lexique form coverage; 103 A1–B2 word/POS identities currently lack an exact or explicitly reconciled source-backed lexical sense; and 336 Kaikki phrase senses have an unresolved local A1–B2 component and are excluded from expression import.
+- Source coverage gaps remain explicit rather than fabricated: five A1–C2 FLELex `VER` identities have no linked source-backed form; 626 A1–C2 word/POS identities currently lack an exact or explicitly reconciled source-backed lexical sense; and phrase-component exclusions remain recorded by their source-scope reports.
 
 ## Recommended next milestone
 
-Complete the **Data Build and Release Foundation**: one pinned, deterministic build through validation, export, audit, and immutable release manifest. Do not migrate generated artifacts out of Git until it is proven.
+Use the validated A1–C2 release as the baseline for learner-facing quality work: compound-form sourcing, curated teaching resources, sentence coverage, and review-loop evaluation. Keep generated artifacts outside ordinary Git history.
 
 ## Required maintenance
 
