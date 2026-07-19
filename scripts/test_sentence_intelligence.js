@@ -37,4 +37,9 @@ for (const [sentence, expected, expectedForm] of cases) {
   }
 }
 
+const contractionAnalysis = engine.analyze('Je vais au cinéma ce soir.');
+if (!contractionAnalysis.contractions.some(node => node.label === 'au = à + le')) {
+  throw new Error('Expected au to be exposed as the deterministic contraction à + le.');
+}
+
 console.log('Sentence Intelligence focused regression checks passed.');
