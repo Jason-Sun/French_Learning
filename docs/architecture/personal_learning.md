@@ -23,11 +23,12 @@ The browser MVP uses IndexedDB database `liens-personal-learning`:
 
 Legacy `liens-saved` localStorage records are imported once by target key, so repeated launches do not duplicate saves.
 
-## Vocabulary Notebook MVP
+## Notebook MVP
 
-The Vocabulary entry point is a calm reading notebook over the existing saved
-objects and collection memberships; it creates no cards, copied content, or new
-database records. A learner can switch between:
+The Notebook is a calm reading surface over the existing saved objects and
+collection memberships; it creates no cards, copied content, or new database
+records. It is distinct from the canonical Vocabulary Library, which browses
+all graph words by CEFR level. A learner can switch between:
 
 - **List view** for scanning saved connections in a collection;
 - **Card view** for reading one existing saved connection at a time, with
