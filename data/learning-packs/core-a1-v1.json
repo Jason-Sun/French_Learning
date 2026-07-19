@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "id": "liens-core-a1-v1",
+  "title": "Liens Core A1 Learning Pack",
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "provider": "OpenAI Codex",
+  "model": "GPT-5",
+  "prompt_version": "liens-core-a1-learning-pack-v1",
+  "resources": [
+    {
+      "id": "etre-en",
+      "targetId": "fr:word:être:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using être",
+      "body": "Être is the main verb for saying what someone or something is: identity, a state, a description, or often a location. Learn its present forms early because they appear everywhere. It also helps form some compound past tenses, but its basic job here is simply ‘to be’.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "etre-zh",
+      "targetId": "fr:word:être:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "être 的学习提示",
+      "body": "être 是最核心的“是／处于”动词：用来说明身份、状态、特征，也常用来表达所在地点。先熟悉它的现在时变化，因为它几乎无处不在。它以后还会帮助构成一些复合过去时，但这里先把它理解为“是、处于”即可。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "avoir-en",
+      "targetId": "fr:word:avoir:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using avoir",
+      "body": "Avoir usually means ‘to have’, but French also uses it for age, sensations, and many everyday expressions: j’ai faim, j’ai peur, j’ai vingt ans. Do not translate it word for word every time; notice the whole expression. Later, avoir also becomes an important auxiliary in past tenses.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "avoir-zh",
+      "targetId": "fr:word:avoir:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "avoir 的学习提示",
+      "body": "avoir 通常是“有”，但法语也用它表达年龄、感觉和许多固定说法：j’ai faim（我饿了）、j’ai peur（我害怕）、j’ai vingt ans（我二十岁）。不要每次都逐字翻译，要把整组表达一起记。以后 avoir 还会用来构成很多过去时。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "aller-en",
+      "targetId": "fr:word:aller:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using aller",
+      "body": "Aller means ‘to go’ when movement is the idea: aller à Paris, aller au travail. In aller + infinitive, it expresses the near future: je vais manger means ‘I am going to eat’. Keep the second verb in the infinitive; only aller is conjugated.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "aller-zh",
+      "targetId": "fr:word:aller:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "aller 的学习提示",
+      "body": "aller 表示“去”：aller à Paris、aller au travail。它后面接不定式时可以表达最近将来时：je vais manger 就是“我要去吃／我将要吃”。第二个动词保持不定式，只有 aller 要变位。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "faire-en",
+      "targetId": "fr:word:faire:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using faire",
+      "body": "Faire is a broad everyday verb: ‘to do’ or ‘to make’ is often a good start, but the surrounding words decide the natural English meaning. Learn frequent groups as complete units, such as faire attention, faire du sport, and il fait beau, rather than forcing one translation everywhere.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "faire-zh",
+      "targetId": "fr:word:faire:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "faire 的学习提示",
+      "body": "faire 是非常常用、意思很宽的动词，常可先理解为“做、制造”，但自然的中文或英文要看它后面的词。更有效的学法是把常见搭配整体记住，例如 faire attention、faire du sport、il fait beau，而不要强迫它永远对应同一个词。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "prendre-en",
+      "targetId": "fr:word:prendre:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using prendre",
+      "body": "Prendre begins with the idea of taking, but its meaning changes naturally with the noun that follows: prendre un café, prendre le bus, prendre une décision. Treat these as connected meanings of one verb and use the surrounding context to choose the right translation.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "prendre-zh",
+      "targetId": "fr:word:prendre:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "prendre 的学习提示",
+      "body": "prendre 的核心感觉是“拿、取”，但它后面的名词会让意思自然变化：prendre un café、prendre le bus、prendre une décision。把这些看成同一个动词延伸出来的不同用法；翻译时先看上下文，再选择最自然的意思。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "manger-en",
+      "targetId": "fr:word:manger:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using manger",
+      "body": "Manger means ‘to eat’ and normally takes the food as its direct object: manger une pomme. It is a regular -er verb, with one useful spelling detail: the nous form is mangeons, keeping the soft sound of g before -ons.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "manger-zh",
+      "targetId": "fr:word:manger:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "manger 的学习提示",
+      "body": "manger 是“吃”，通常直接接所吃的食物：manger une pomme。它是规则的 -er 动词，但 nous 形式写作 mangeons；这里保留 e 是为了让 g 继续读成柔和的音。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "parler-en",
+      "targetId": "fr:word:parler:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using parler",
+      "body": "Parler means ‘to speak’ or ‘to talk’. With de, it often introduces the topic: parler de quelque chose. With à, it points to the person addressed: parler à quelqu’un. Notice which relationship you want to express before choosing the preposition.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "parler-zh",
+      "targetId": "fr:word:parler:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "parler 的学习提示",
+      "body": "parler 表示“说话、谈论”。接 de 时，常引出谈论的主题：parler de quelque chose；接 à 时，常指说话的对象：parler à quelqu’un。先想清楚你是在说“谈什么”还是“和谁说”，再选介词。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "aimer-en",
+      "targetId": "fr:word:aimer:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using aimer",
+      "body": "Aimer can mean ‘to like’ or ‘to love’; the strength depends on context. With a noun, it often expresses a preference: j’aime le café. With an infinitive, it means liking an activity: j’aime lire. The object comes directly after the verb.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "aimer-zh",
+      "targetId": "fr:word:aimer:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "aimer 的学习提示",
+      "body": "aimer 可以是“喜欢”，也可以是“爱”，语气强弱要看上下文。后面接名词时常表达偏好：j’aime le café；后面接不定式时表示喜欢做某事：j’aime lire。宾语直接放在动词后面。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "pouvoir-en",
+      "targetId": "fr:word:pouvoir:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using pouvoir",
+      "body": "Pouvoir expresses ability, possibility, or permission: je peux venir. It is followed by an infinitive, so the action verb does not change form. In polite questions, it can soften a request: pouvez-vous… ?",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "pouvoir-zh",
+      "targetId": "fr:word:pouvoir:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "pouvoir 的学习提示",
+      "body": "pouvoir 表示“能、可以”，可以说能力、可能性或许可：je peux venir。它后面接不定式，因此表示动作的第二个动词不变位。用在礼貌提问里也能让请求更委婉：pouvez-vous… ?",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "vouloir-en",
+      "targetId": "fr:word:vouloir:ver",
+      "kind": "usage_note",
+      "language": "en",
+      "title": "Using vouloir",
+      "body": "Vouloir means ‘to want’. It can take a noun or an infinitive: je veux un café; je veux partir. The conditional form je voudrais is especially useful for a polite request, so learn it as a social pattern rather than only as a verb form.",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "vouloir-zh",
+      "targetId": "fr:word:vouloir:ver",
+      "kind": "usage_note",
+      "language": "zh-Hans",
+      "title": "vouloir 的学习提示",
+      "body": "vouloir 是“想要”。后面可以接名词，也可以接不定式：je veux un café；je veux partir。条件式 je voudrais 常用于礼貌请求，最好把它当作一个实用的社交表达来学习，而不只是一个动词形式。",
+      "createdAt": "2026-07-19T00:00:00.000Z"
+    }
+  ]
+}

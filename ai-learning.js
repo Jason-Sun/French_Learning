@@ -9,6 +9,7 @@
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const LEGACY_DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const LEGACY_RECENT_LOOKUPS_KEY = 'liens-ai-recent-lookups-v1';
+  const PREBUILT_PACK_URLS = Object.freeze(['data/learning-packs/core-a1-v1.json']);
   const inFlight = new Map();
   const generationQueue = [];
   let activeGenerationCount = 0;
@@ -92,17 +93,7 @@
     }
   };
 
-  const ready = Promise.resolve(store()?.ready?.())
-    .then(async () => {
-      hydrateMemory();
-      await migrateLegacyStorage();
-      globalThis.dispatchEvent?.(new Event('liens-ai-learning-ready'));
-    })
-    .catch(error => {
-      console.warn('Liens could not initialize the AI Learning Database.', error);
-    });
-
-  const replaceResource = async draft => {
+  const putDraft = async draft => {
     const normalized = normaliseDraft(draft);
     drafts.set(normalized.id, normalized);
     const database = store();
@@ -110,6 +101,91 @@
     else localStorage.setItem(LEGACY_DRAFTS_KEY, JSON.stringify([...drafts.values()]));
     return normalized;
   };
+
+  const packRequest = resource => ({
+    target: resource.targetId ? { id: resource.targetId } : null,
+    kind: resource.kind,
+    language: resource.language || 'en',
+    query: resource.query || '',
+    context: resource.context && typeof resource.context === 'object' ? resource.context : {},
+  });
+
+  const activeResourceForKey = resourceKey => [...drafts.values()]
+    .some(draft => draft.lifecycle === 'active' && draft.resourceKey === resourceKey);
+
+  async function importPrebuiltPack(pack) {
+    if (!pack || pack.schemaVersion !== 1 || typeof pack.id !== 'string' || !Array.isArray(pack.resources)) return 0;
+    let imported = 0;
+    for (const resource of pack.resources) {
+      if (!resource || typeof resource.id !== 'string' || typeof resource.targetId !== 'string'
+        || !SUPPORTED_KINDS.has(resource.kind) || typeof resource.title !== 'string' || typeof resource.body !== 'string') continue;
+      const request = packRequest(resource);
+      const resourceKey = keyFor(request);
+      // A learner's existing generated or imported draft always wins over a shipped default.
+      if (activeResourceForKey(resourceKey)) continue;
+      await putDraft({
+        id: `ai-pack:${pack.id}:${resource.id}`,
+        schemaVersion: 1,
+        key: resourceKey,
+        resourceKey,
+        revisionNumber: 1,
+        kind: resource.kind,
+        language: request.language,
+        targetId: resource.targetId,
+        query: plainText(resource.query) || null,
+        queryNormalized: normaliseLookup(resource.query),
+        title: plainText(resource.title).slice(0, 120),
+        body: plainText(resource.body),
+        translation: plainText(resource.translation).slice(0, 360) || null,
+        payload: null,
+        origin: 'prebuilt_ai_draft',
+        lifecycle: 'active',
+        createdAt: resource.createdAt || pack.createdAt || new Date().toISOString(),
+        provider: plainText(resource.provider || pack.provider || 'Liens prebuilt learning pack').slice(0, 80),
+        model: plainText(resource.model || pack.model || '').slice(0, 120) || null,
+        prompt_version: plainText(resource.prompt_version || pack.prompt_version || '').slice(0, 120) || null,
+        packId: pack.id,
+        generationContext: {
+          targetId: resource.targetId,
+          resourceKind: resource.kind,
+          language: request.language,
+          contextVersion: request.context?.resourceVersion || null,
+          promptVersion: plainText(resource.prompt_version || pack.prompt_version || '').slice(0, 120) || null,
+          source: 'prebuilt_learning_pack',
+        },
+      });
+      imported += 1;
+    }
+    return imported;
+  }
+
+  async function importPrebuiltPacks() {
+    if (typeof fetch !== 'function') return 0;
+    const results = await Promise.all(PREBUILT_PACK_URLS.map(async url => {
+      try {
+        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!response.ok) return 0;
+        return importPrebuiltPack(await response.json());
+      } catch {
+        // A pack is an optional offline enhancement; a missing asset must not block Liens.
+        return 0;
+      }
+    }));
+    return results.reduce((total, count) => total + count, 0);
+  }
+
+  const ready = Promise.resolve(store()?.ready?.())
+    .then(async () => {
+      hydrateMemory();
+      await migrateLegacyStorage();
+      await importPrebuiltPacks();
+      globalThis.dispatchEvent?.(new Event('liens-ai-learning-ready'));
+    })
+    .catch(error => {
+      console.warn('Liens could not initialize the AI Learning Database.', error);
+    });
+
+  const replaceResource = putDraft;
 
   const recordRecentLookup = query => {
     const displayQuery = plainText(query);
@@ -299,6 +375,7 @@
     getRevisions: revisionsFor,
     keyFor,
     findProvisionalLookup,
+    importPrebuiltPack,
     recentLookups: listRecentLookups,
     recordRecentLookup,
     generate,

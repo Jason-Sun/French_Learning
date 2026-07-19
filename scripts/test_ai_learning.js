@@ -13,6 +13,21 @@ const localStorage = {
 };
 const storedResources = new Map();
 const storedRecents = new Map();
+const shippedPack = {
+  schemaVersion: 1,
+  id: 'auto-loaded-pack',
+  provider: 'OpenAI Codex',
+  model: 'GPT-5',
+  prompt_version: 'auto-pack-v1',
+  resources: [{
+    id: 'aimer-en',
+    targetId: 'fr:word:aimer:ver',
+    kind: 'usage_note',
+    language: 'en',
+    title: 'Using aimer',
+    body: 'Aimer means to like or to love.',
+  }],
+};
 const learningStore = {
   ready: async () => {},
   mode: () => 'indexeddb',
@@ -43,6 +58,7 @@ const context = {
   Map,
   Event: class Event {},
   dispatchEvent: () => {},
+  fetch: async () => ({ ok: true, json: async () => shippedPack }),
   LiensAILearningStore: learningStore,
 };
 context.globalThis = context;
@@ -62,6 +78,8 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   const assist = context.LiensLearningAssist;
   await assist.ready();
   assert.equal(assist.storageMode(), 'indexeddb', 'the durable AI Learning Database is the active store');
+  assert.equal(storedResources.size, 1, 'the shipped learning pack loads into the durable AI Learning Database');
+  assert.equal([...storedResources.values()][0].origin, 'prebuilt_ai_draft', 'a shipped pack remains explicitly non-canonical');
   assist.recordRecentLookup(' Paris ');
   assist.recordRecentLookup('PARIS');
   const recent = assist.recentLookups();
@@ -78,8 +96,8 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   const first = await assist.ensure(request);
   assert.equal(first.status, 'generated');
   assert.equal(calls, 1, 'the initial lookup creates one draft');
-  assert.equal(storedResources.size, 1, 'the generated draft is written to the durable AI Learning Database');
-  assert.equal([...storedResources.values()][0].prompt_version, 'test-v3', 'each draft records the prompt version that generated it');
+  assert.equal(storedResources.size, 2, 'the generated draft is written to the durable AI Learning Database');
+  assert.equal([...storedResources.values()].find(resource => resource.origin === 'ai_generated').prompt_version, 'test-v3', 'each draft records the prompt version that generated it');
   assert.equal(values.has('liens-ai-learning-drafts-v1'), false, 'drafts are not written back to legacy localStorage');
   const cached = await assist.ensure(request);
   assert.equal(cached.status, 'cached');
@@ -87,9 +105,49 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   assert.equal(assist.get(request).body, 'A city and the capital of France.');
   assert.equal(assist.needsRegeneration(request), true, 'the resolver can detect a newer provider prompt without deleting the stored revision');
   assert.equal(assist.findProvisionalLookup('PARIS').title, 'Paris', 'AI lookups are searchable through normalized query');
+  const prebuiltRequest = {
+    target: { id: 'fr:word:aller:ver' },
+    kind: 'usage_note',
+    language: 'en',
+    title: 'Learning aller',
+    context: {},
+  };
+  const imported = await assist.importPrebuiltPack({
+    schemaVersion: 1,
+    id: 'test-core-pack',
+    provider: 'OpenAI Codex',
+    model: 'GPT-5',
+    prompt_version: 'test-pack-v1',
+    resources: [{
+      id: 'aller-en',
+      targetId: 'fr:word:aller:ver',
+      kind: 'usage_note',
+      language: 'en',
+      title: 'Using aller',
+      body: 'Aller means to go.',
+    }],
+  });
+  assert.equal(imported, 1, 'a valid prebuilt pack imports into the AI Learning Database');
+  assert.equal(assist.get(prebuiltRequest).origin, 'prebuilt_ai_draft', 'prebuilt resources remain explicitly non-canonical AI drafts');
+  const prebuiltCached = await assist.ensure(prebuiltRequest);
+  assert.equal(prebuiltCached.status, 'cached', 'a prebuilt learning resource prevents an unnecessary provider call');
+  assert.equal(calls, 1, 'the provider is not called for a matching prebuilt resource');
+  const duplicatePack = await assist.importPrebuiltPack({
+    schemaVersion: 1,
+    id: 'test-core-pack-v2',
+    resources: [{
+      id: 'aller-en',
+      targetId: 'fr:word:aller:ver',
+      kind: 'usage_note',
+      language: 'en',
+      title: 'A replacement',
+      body: 'This must not overwrite a learner resource.',
+    }],
+  });
+  assert.equal(duplicatePack, 0, 'a shipped pack never overwrites an active learner resource');
   await assist.supersede(request);
   assert.equal(assist.get(request), null, 'a canonical replacement hides the AI draft from normal resolution');
-  assert.equal([...storedResources.values()][0].lifecycle, 'superseded', 'the historical AI record remains stored as superseded');
+  assert.equal([...storedResources.values()].find(resource => resource.origin === 'ai_generated').lifecycle, 'superseded', 'the historical AI record remains stored as superseded');
   console.log('AI Learning cache regression checks passed.');
 })().catch(error => {
   console.error(error);

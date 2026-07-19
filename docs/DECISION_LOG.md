@@ -2,6 +2,29 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-021 — Ship bounded prebuilt AI Learning Packs for common learning slots
+
+**Date:** 2026-07-19
+**Status:** Accepted
+
+### Decision
+
+Ship a small, versioned Core A1 Learning Pack containing clearly labelled,
+non-canonical AI learning drafts for high-frequency learning slots. The browser
+imports pack records into the existing learner-scoped AI Learning Database only
+when no active learner resource already has the same target/kind/context/language
+identity. Every record preserves pack, provider, model, prompt-version, and
+timestamp provenance.
+
+### Consequences
+
+Common learning pages remain useful during provider outages and do not spend
+Gemini quota. The pack is still AI content—not a source-backed fact, graph
+relationship, SQLite record, or browser graph export—and canonical or curated
+coverage continues to take precedence. The approach is intentionally bounded:
+quality-reviewed packs can grow by priority without bulk-generating an entire
+dictionary.
+
 ## ADR-020 — Persist AI Learning Resources in a separate local database
 
 **Date:** 2026-07-19
