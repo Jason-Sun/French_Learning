@@ -23,6 +23,21 @@ The browser MVP uses IndexedDB database `liens-personal-learning`:
 
 Legacy `liens-saved` localStorage records are imported once by target key, so repeated launches do not duplicate saves.
 
+## Vocabulary Notebook MVP
+
+The Vocabulary entry point is a calm reading notebook over the existing saved
+objects and collection memberships; it creates no cards, copied content, or new
+database records. A learner can switch between:
+
+- **List view** for scanning saved connections in a collection;
+- **Card view** for reading one existing saved connection at a time, with
+  previous/next navigation and an optional local shuffle order.
+
+Both views can open the original Word, Form, Sentence, Grammar, or Expression
+page and remove the existing learner save. Shuffle affects only the current
+browser view order; it is not a review schedule, does not change collection
+membership, and is not persisted as a learning claim.
+
 ## Current review contract
 
 Today’s Review is intentionally a small learning loop, not a spaced-repetition claim. It offers each saved connection that has not been revisited today, records Again / Good / Easy as an event, and keeps the object navigable back into Liens. Prompts vary by saved type so a form reconnects to its lemma, a sense reconnects to its word, and a sentence reconnects to its local analysis.
