@@ -12,7 +12,7 @@ The browser may use it for a contextual explanation, usage note, memory tip, com
 canonical graph object / deterministic sentence analysis
 → contextual Learning Resource request
 → optional AI provider
-→ learner-scoped AI draft cache
+→ learner-scoped AI Learning Database
 → in-place, labelled learning note
 
 reviewed source or editorial workflow
@@ -54,7 +54,7 @@ The request is deliberately narrow:
 - a bounded deterministic graph summary and optional sentence context;
 - a constraint that canonical graph writes and relationship/object creation are prohibited.
 
-The returned text is validated as bounded plain-text learning content. A sentence request explicitly identifies its matched grammar objects, resolved form analyses, and matched expressions. Providers may explain those supplied matches, but must not infer or name an additional grammar construction. An inflected-form request identifies the exact morphology of the form page; a provider must not merge other homographic analyses into that page. Drafts are stored only in browser local storage under learner-scoped keys. They are never inserted into SQLite or the generated browser data package.
+The returned text is validated as bounded plain-text learning content. A sentence request explicitly identifies its matched grammar objects, resolved form analyses, and matched expressions. Providers may explain those supplied matches, but must not infer or name an additional grammar construction. An inflected-form request identifies the exact morphology of the form page; a provider must not merge other homographic analyses into that page. Drafts are never inserted into SQLite or the generated browser data package.
 
 ## UX contract
 
@@ -72,15 +72,27 @@ The first generated note is compact. It is cached locally, labelled `AI-generate
 
 Generation is controlled by the learner's AI-assistance preference. When enabled, visible primary teaching slots may be completed automatically; progressive follow-ups remain learner-requested. The static application does not ship a secret or transmit learner text when assistance is disabled.
 
-## Local cache and future revisions
+## AI Learning Database and revisions
 
-Browser drafts are keyed by the target/sentence context, resource kind, language, and resource-contract version where a stricter analysis contract supersedes earlier output. The active draft is the newest local revision; earlier generated revisions are retained in local storage rather than destructively replaced. Unknown lookup recents are stored separately as normalized query keys with their display text and most-recent-opened time; they are learner-local navigation history, not Language Objects or graph search entries. The browser also keeps the current-session recent list so that returning Home immediately is reliable while persistent storage remains the long-term source. A normal request returns the cached draft. The module already supports an explicit regeneration flag for a future `Regenerate` control, and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
+`ai-learning-store.js` owns a learner-scoped IndexedDB database named `liens-ai-learning`. It has two stores: `learning_resources` and `recent_lookups`. A resource records its resource key, target ID when one exists, normalized unknown-query key when applicable, kind, language, revision number, body/translation, optional structured payload, provider, model, timestamp, lifecycle, and bounded generation context. The generic resource model already accommodates future pronunciation notes and explicitly requested AI conjugation resources, although Liens does not yet render an AI-produced conjugation table. It is a durable local learning layer, not a graph database.
+
+Resolution is strict and cost-aware:
+
+```text
+canonical source-backed resource
+→ active AI Learning Database resource
+→ online provider generation
+```
+
+Browser drafts are keyed by target/sentence context, resource kind, language, and resource-contract version where a stricter analysis contract supersedes earlier output. The active draft is the newest local revision; earlier generated revisions remain in the AI Learning Database rather than being destructively replaced. Unknown lookup recents are separately indexed by normalized query with display text and most-recent-opened time. They are learner-local search history, not Language Objects or graph search entries. The former local-storage draft keys are migrated once into IndexedDB when available.
+
+A normal request returns the active stored draft without contacting a provider. `findProvisionalLookup` allows a normalized unknown query to reopen its stored first note even if it originated under an older cache-key version. The module already supports an explicit regeneration flag for a future `Regenerate` control and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
 
 A reviewed or source-backed Learning Resource remains the preferred rendering for a slot. Replacing an AI draft with curated content therefore requires no object, route, or page redesign: the surrounding contextual surface stays the same while its resource provenance changes.
 
 ## Replacement policy
 
-Source-backed and reviewed Learning Resources are the default whenever available. An AI draft is a fallback only. A future reviewed or source-backed resource uses the same contextual slot and replaces the draft in normal rendering; the draft remains provenance history, not canonical graph data.
+Source-backed and reviewed Learning Resources are the default whenever available. An AI draft is a fallback only. When a canonical learning resource occupies the same supported slot, the resolver renders it first and marks matching active AI revisions `superseded` in the AI Learning Database; they remain available as local provenance history rather than being deleted. A future reviewed or source-backed resource therefore replaces a draft without changing the object, route, or page architecture.
 
 AI-suggested collocations, examples, translations, and grammar connections remain learning drafts. They are not graph objects, canonical facts, sentence objects, or typed relationships until a separate reviewed source/import workflow promotes them.
 

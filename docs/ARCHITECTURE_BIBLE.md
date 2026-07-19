@@ -96,7 +96,7 @@ The legacy `pronunciations` table remains an import-compatible boundary and is s
 
 ## Learning and persistence
 
-Every saved or reviewable item is keyed by a stable Language Object ID. The current static prototype stores saved items and the Chinese-display preference in browser local storage. SQLite provides durable linguistic data; account-level review synchronization is a future persistence concern and must reference IDs rather than copy language content.
+Every saved or reviewable item is keyed by a stable Language Object ID. The current static prototype stores saved items and the Chinese-display preference in browser local storage. Learner-scoped AI Learning Resources and unknown-lookup history instead live in a separate IndexedDB AI Learning Database; it may reference canonical IDs but cannot mutate or become part of SQLite. SQLite provides durable linguistic data; account-level review synchronization is a future persistence concern and must reference IDs rather than copy language content.
 
 ## Source and Learning Layers
 
@@ -106,7 +106,7 @@ The Learning Layer contains explanations, teacher notes, memory hints, usage adv
 
 Learning Resource content is revisioned and immutable. A resource has ordered revisions, with at most one published revision at a time; later authoring supersedes a revision rather than destructively changing it.
 
-The first browser AI-assistance adapter is learner-scoped and non-canonical: it caches labelled AI drafts and local draft revisions in contextual teaching slots, but it never writes SQLite or the browser graph export. Generation is explicit; cache reads never invoke a provider. Its development Gemini adapter is behind typed Language Object/Learning Resource methods, so prompts and Gemini-specific API details remain outside the browser application contract. See [AI Learning Assistance](architecture/ai_learning_assistance.md).
+The first browser AI-assistance adapter is learner-scoped and non-canonical: it stores labelled AI drafts, revisions, provenance, lifecycle state, and normalized unknown-lookups in a dedicated IndexedDB AI Learning Database, but it never writes SQLite or the browser graph export. Canonical source-backed resources take precedence; an active stored draft is reused before an online provider is called, and is retained as `superseded` history when replaced by canonical content. Its development Gemini adapter is behind typed Language Object/Learning Resource methods, so prompts and Gemini-specific API details remain outside the browser application contract. See [AI Learning Assistance](architecture/ai_learning_assistance.md).
 
 ## Natural-language analysis boundary
 

@@ -125,6 +125,7 @@ Collections and review items are not shared Language Objects. They are user-stat
 | Review | review item, schedule/state, review event, answer/assessment metadata |
 | Progress | learner progress, goal, activity event, optional derived summary |
 | Sync | append-only client operation/outbox, server acknowledgement, conflict record |
+| AI Learning Database | learner-scoped AI Learning Resource revisions, provider/model provenance, lifecycle state, and normalized unknown-lookups; never canonical graph claims |
 
 User state may add personal notes, but it must never duplicate or mutate canonical facts. Sync conflicts need an explicit policy per record type; canonical content remains release-controlled and read-only to clients.
 
@@ -225,6 +226,8 @@ AI may not:
 - present generated assertions as curated facts;
 - silently promote a parser or model output into a source-backed release.
 - infer a named grammar construction in learner-facing guidance unless the deterministic analysis supplied that canonical Grammar Object as a match.
+
+The browser may retain AI Learning Resources in a separate learner-scoped IndexedDB database. That database is not a canonical store: canonical resources take precedence, active AI resources prevent duplicate provider calls, and later canonical coverage supersedes rather than deletes an AI record.
 
 ## 7. Browser and client architecture
 

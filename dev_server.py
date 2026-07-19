@@ -163,7 +163,13 @@ def call_gemini(operation: str, resource: dict[str, Any]) -> dict[str, str]:
     translation = clean_text(generated.get("translation"), limit=360)
     if operation == "explainSentence" and not translation:
         raise RuntimeError("Gemini returned a sentence guide without a translation.")
-    return {"title": title, "body": body, "translation": translation, "provider": f"gemini:{model}"}
+    return {
+        "title": title,
+        "body": body,
+        "translation": translation,
+        "provider": "gemini",
+        "model": model,
+    }
 
 
 class LiensDevelopmentHandler(SimpleHTTPRequestHandler):

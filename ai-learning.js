@@ -1,16 +1,14 @@
 /*
  * Liens Learning Assistance
  *
- * This module owns learner-scoped AI drafts only. It never imports, mutates,
- * indexes, or exports canonical Language Graph content. A production provider
- * is injected as window.LiensAIProvider and must implement generate(request).
+ * This module owns learner-scoped AI Learning Resources. It never imports,
+ * mutates, indexes, or exports canonical Language Graph content. Its durable
+ * store is the separate browser AI Learning Database (IndexedDB).
  */
 (() => {
   const ENABLED_KEY = 'liens-ai-learning-enabled';
-  const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
-  const RECENT_LOOKUPS_KEY = 'liens-ai-recent-lookups-v1';
-  const MAX_DRAFTS = 48;
-  const MAX_RECENT_LOOKUPS = 24;
+  const LEGACY_DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
+  const LEGACY_RECENT_LOOKUPS_KEY = 'liens-ai-recent-lookups-v1';
   const inFlight = new Map();
   const generationQueue = [];
   let activeGenerationCount = 0;
@@ -18,7 +16,15 @@
   const SUPPORTED_KINDS = new Set([
     'explanation', 'usage_note', 'memory_tip', 'examples', 'comparison',
     'common_mistake', 'sentence_guide', 'provisional_lookup',
+    'pronunciation_note', 'conjugation',
   ]);
+  const drafts = new Map();
+  const recentLookups = new Map();
+
+  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const normaliseLookup = value => plainText(value)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr');
+  const store = () => globalThis.LiensAILearningStore || null;
   const providerMethodFor = request => {
     if (request.kind === 'usage_note') return 'generateUsageNote';
     if (request.kind === 'memory_tip') return 'generateMemoryTip';
@@ -29,7 +35,7 @@
   };
 
   const keyFor = request => [
-    request.target?.id || `lookup:${plainText(request.query).toLocaleLowerCase('fr')}`,
+    request.target?.id || `lookup:${normaliseLookup(request.query)}`,
     request.kind,
     request.kind === 'sentence_guide' ? 'translation-v3-deterministic-analysis' : '',
     request.language || 'en',
@@ -37,46 +43,90 @@
     request.context?.senseId || '',
     request.context?.sentence || '',
   ].join('|');
-  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
-  const normaliseLookup = value => plainText(value)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr');
 
   const normaliseDraft = draft => ({
     ...draft,
     resourceKey: draft.resourceKey || draft.key,
+    lifecycle: draft.lifecycle === 'superseded' ? 'superseded' : 'active',
     revisionNumber: Number.isInteger(draft.revisionNumber) ? draft.revisionNumber : 1,
+    queryNormalized: draft.queryNormalized || normaliseLookup(draft.query),
   });
 
-  const readDrafts = () => {
+  const legacyList = key => {
     try {
-      const value = JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]');
-      return Array.isArray(value) ? value.map(normaliseDraft) : [];
+      const value = JSON.parse(localStorage.getItem(key) || '[]');
+      return Array.isArray(value) ? value : [];
     } catch {
       return [];
     }
   };
 
-  const writeDrafts = drafts => localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, MAX_DRAFTS)));
-  const readRecentLookups = () => {
-    try {
-      const value = JSON.parse(localStorage.getItem(RECENT_LOOKUPS_KEY) || '[]');
-      return Array.isArray(value) ? value.filter(item => plainText(item?.query)) : [];
-    } catch {
-      return [];
+  const hydrateMemory = () => {
+    const database = store();
+    if (database) {
+      database.listResources().map(normaliseDraft).forEach(draft => draft?.id && drafts.set(draft.id, draft));
+      database.listRecent().forEach(recent => recent?.normalizedQuery && recentLookups.set(recent.normalizedQuery, recent));
     }
   };
-  const writeRecentLookups = lookups => localStorage.setItem(
-    RECENT_LOOKUPS_KEY,
-    JSON.stringify(lookups.slice(0, MAX_RECENT_LOOKUPS)),
-  );
+
+  const migrateLegacyStorage = async () => {
+    const database = store();
+    if (!database) return;
+    const legacyDrafts = legacyList(LEGACY_DRAFTS_KEY).map(normaliseDraft).filter(draft => draft.id && draft.resourceKey);
+    const legacyRecents = legacyList(LEGACY_RECENT_LOOKUPS_KEY).filter(recent => plainText(recent?.query));
+    const missingDrafts = legacyDrafts.filter(draft => !drafts.has(draft.id));
+    const missingRecents = legacyRecents.map(recent => ({
+      query: plainText(recent.query),
+      normalizedQuery: recent.normalizedQuery || normaliseLookup(recent.query),
+      lastOpenedAt: recent.lastOpenedAt || new Date().toISOString(),
+    })).filter(recent => !recentLookups.has(recent.normalizedQuery));
+    await Promise.all([
+      ...missingDrafts.map(draft => database.putResource(draft)),
+      ...missingRecents.map(recent => database.putRecent(recent)),
+    ]);
+    missingDrafts.forEach(draft => drafts.set(draft.id, draft));
+    missingRecents.forEach(recent => recentLookups.set(recent.normalizedQuery, recent));
+    if (legacyDrafts.length || legacyRecents.length) {
+      localStorage.removeItem(LEGACY_DRAFTS_KEY);
+      localStorage.removeItem(LEGACY_RECENT_LOOKUPS_KEY);
+    }
+  };
+
+  const ready = Promise.resolve(store()?.ready?.())
+    .then(async () => {
+      hydrateMemory();
+      await migrateLegacyStorage();
+      globalThis.dispatchEvent?.(new Event('liens-ai-learning-ready'));
+    })
+    .catch(error => {
+      console.warn('Liens could not initialize the AI Learning Database.', error);
+    });
+
+  const replaceResource = async draft => {
+    const normalized = normaliseDraft(draft);
+    drafts.set(normalized.id, normalized);
+    const database = store();
+    if (database) await database.putResource(normalized);
+    else localStorage.setItem(LEGACY_DRAFTS_KEY, JSON.stringify([...drafts.values()]));
+    return normalized;
+  };
+
   const recordRecentLookup = query => {
     const displayQuery = plainText(query);
     const normalizedQuery = normaliseLookup(displayQuery);
     if (!displayQuery || !normalizedQuery) return null;
     const entry = { query: displayQuery, normalizedQuery, lastOpenedAt: new Date().toISOString() };
-    writeRecentLookups([entry, ...readRecentLookups().filter(item => item.normalizedQuery !== normalizedQuery)]);
+    recentLookups.set(normalizedQuery, entry);
+    ready.then(async () => {
+      const database = store();
+      if (database) await database.putRecent(entry);
+      else localStorage.setItem(LEGACY_RECENT_LOOKUPS_KEY, JSON.stringify(listRecentLookups()));
+    }).catch(() => {});
     return entry;
   };
+
+  const listRecentLookups = () => [...recentLookups.values()]
+    .sort((left, right) => String(right.lastOpenedAt).localeCompare(String(left.lastOpenedAt)));
 
   const publicTarget = target => target ? {
     id: target.id,
@@ -95,6 +145,7 @@
     const title = plainText(response?.title || request.title || 'Learning note').slice(0, 120);
     return {
       id: `ai-draft:${crypto.randomUUID()}`,
+      schemaVersion: 1,
       key: keyFor(request),
       resourceKey: keyFor(request),
       revisionNumber,
@@ -102,13 +153,22 @@
       language: request.language || 'en',
       targetId: request.target?.id || null,
       query: plainText(request.query) || null,
+      queryNormalized: normaliseLookup(request.query),
       title,
       body,
       translation: plainText(response?.translation || '').slice(0, 360) || null,
+      payload: response?.payload && typeof response.payload === 'object' ? response.payload : null,
       origin: 'ai_generated',
-      lifecycle: 'draft',
+      lifecycle: 'active',
       createdAt: new Date().toISOString(),
       provider: plainText(response?.provider || globalThis.LiensAIProvider?.id || 'configured-provider').slice(0, 80),
+      model: plainText(response?.model || '').slice(0, 120) || null,
+      generationContext: {
+        targetId: request.target?.id || null,
+        resourceKind: request.kind,
+        language: request.language || 'en',
+        contextVersion: request.context?.resourceVersion || null,
+      },
     };
   };
 
@@ -117,24 +177,23 @@
     const candidate = provider();
     return Boolean(candidate && (typeof candidate.isAvailable === 'function' ? candidate.isAvailable() : typeof candidate.generateLearningResource === 'function'));
   };
-
-  const revisionsFor = request => readDrafts()
-    .filter(draft => draft.resourceKey === keyFor(request))
+  const revisionsFor = request => [...drafts.values()]
+    .filter(draft => draft.lifecycle === 'active' && draft.resourceKey === keyFor(request))
     .sort((left, right) => right.revisionNumber - left.revisionNumber || String(right.createdAt).localeCompare(String(left.createdAt)));
   const get = request => revisionsFor(request)[0] || null;
-  // Online learning assistance is the default completion path. A learner can
-  // explicitly turn it off when they do not want network-backed drafts.
+  const findProvisionalLookup = query => [...drafts.values()]
+    .filter(draft => draft.lifecycle === 'active' && draft.kind === 'provisional_lookup' && draft.queryNormalized === normaliseLookup(query))
+    .sort((left, right) => String(right.createdAt).localeCompare(String(left.createdAt)))[0] || null;
   const enabled = () => localStorage.getItem(ENABLED_KEY) !== 'false';
   const setEnabled = value => localStorage.setItem(ENABLED_KEY, String(Boolean(value)));
 
   async function generate(request, { regenerate = false } = {}) {
     if (!SUPPORTED_KINDS.has(request?.kind)) throw new Error('Unsupported learning resource kind.');
+    await ready;
     if (!enabled()) return { status: 'disabled' };
     if (!providerReady()) return { status: 'provider_unavailable' };
-
     const existing = get(request);
     if (existing && !regenerate) return { status: 'cached', draft: existing };
-
     const method = providerMethodFor(request);
     if (typeof provider()[method] !== 'function') throw new Error(`The configured provider cannot ${method}.`);
     const response = await provider()[method](Object.freeze({
@@ -155,9 +214,8 @@
         output: 'plain_text_learning_resource',
       }),
     }));
-
     const draft = sanitizeResponse(response, request, (existing?.revisionNumber || 0) + 1);
-    writeDrafts([draft, ...readDrafts()]);
+    await replaceResource(draft);
     return { status: 'generated', draft };
   }
 
@@ -165,21 +223,18 @@
     if (activeGenerationCount >= MAX_CONCURRENT_GENERATIONS || !generationQueue.length) return;
     const next = generationQueue.shift();
     activeGenerationCount += 1;
-    Promise.resolve()
-      .then(() => generate(next.request))
-      .then(next.resolve, next.reject)
-      .finally(() => {
-        activeGenerationCount -= 1;
-        drainGenerationQueue();
-      });
+    Promise.resolve().then(() => generate(next.request)).then(next.resolve, next.reject).finally(() => {
+      activeGenerationCount -= 1;
+      drainGenerationQueue();
+    });
   }
 
   async function ensure(request) {
+    await ready;
     const existing = get(request);
     if (existing) return { status: 'cached', draft: existing };
     if (!enabled()) return { status: 'disabled' };
     if (!providerReady()) return { status: 'provider_unavailable' };
-
     const key = keyFor(request);
     if (!inFlight.has(key)) {
       const pending = new Promise((resolve, reject) => {
@@ -191,7 +246,31 @@
     return inFlight.get(key);
   }
 
+  async function supersede(request, reason = 'canonical_resource_available') {
+    await ready;
+    const matching = revisionsFor(request);
+    if (!matching.length) return false;
+    await Promise.all(matching.map(draft => replaceResource({
+      ...draft,
+      lifecycle: 'superseded',
+      supersededAt: new Date().toISOString(),
+      supersededBy: reason,
+    })));
+    return true;
+  }
+
+  async function clear(request) {
+    await ready;
+    const matching = revisionsFor(request);
+    matching.forEach(draft => drafts.delete(draft.id));
+    const database = store();
+    if (database) await database.deleteByResourceKey(keyFor(request));
+    else localStorage.setItem(LEGACY_DRAFTS_KEY, JSON.stringify([...drafts.values()]));
+  }
+
   globalThis.LiensLearningAssist = Object.freeze({
+    ready: () => ready,
+    storageMode: () => store()?.mode?.() || 'legacy-local-storage',
     enabled,
     setEnabled,
     providerReady,
@@ -202,10 +281,12 @@
     get,
     getRevisions: revisionsFor,
     keyFor,
-    recentLookups: readRecentLookups,
+    findProvisionalLookup,
+    recentLookups: listRecentLookups,
     recordRecentLookup,
     generate,
     ensure,
-    clear: request => writeDrafts(readDrafts().filter(item => item.key !== keyFor(request))),
+    supersede,
+    clear,
   });
 })();

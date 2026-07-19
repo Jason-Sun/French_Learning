@@ -2,6 +2,21 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-020 — Persist AI Learning Resources in a separate local database
+
+**Date:** 2026-07-19
+**Status:** Accepted
+
+### Decision
+
+Replace the browser-localStorage AI draft cache with a learner-scoped IndexedDB AI Learning Database. It stores AI Learning Resource revisions, normalized unknown-lookup history, provider/model provenance, timestamps, bounded generation context, and lifecycle state. It remains independent from the canonical SQLite graph and its browser package.
+
+Resolution is canonical source-backed resource → active AI Learning Database resource → online provider. When canonical coverage later occupies a matching supported learning slot, the AI resource is marked `superseded` and retained as history rather than deleted.
+
+### Consequences
+
+Repeat visits can reuse durable local drafts without provider cost, and unknown lookups can be searched by normalized query. AI cannot alter canonical objects, facts, evidence, relationships, or exports. The data remains per browser/device until a future user-state sync policy explicitly includes it.
+
 ## ADR-019 — Unknown lookups start with one bounded learning draft
 
 **Date:** 2026-07-19
