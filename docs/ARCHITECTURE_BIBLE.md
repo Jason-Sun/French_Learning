@@ -68,9 +68,9 @@ Canonical spelling is never normalized in stored presentation data. Search norma
 
 ## Sentence Intelligence
 
-The Sentence Intelligence Layer is a deterministic, local browser adapter over the exported graph. It tokenizes input, resolves forms and lemmas, handles selected contractions/elisions, detects supported expressions and grammar patterns, emits evidence-linked nodes and edges, and identifies review candidates. Analyses are transient: reusable knowledge is promoted to the main graph only through an explicit reviewed workflow.
+The Sentence Intelligence Layer is a deterministic, local browser adapter over the exported graph. It tokenizes input, resolves forms and lemmas, emits exact form-analysis nodes, handles selected contractions/elisions, detects supported expressions and grammar patterns, emits evidence-linked nodes and edges, and identifies review candidates. Analyses are transient: reusable knowledge is promoted to the main graph only through an explicit reviewed workflow.
 
-It is intentionally not an AI chat system. Its current grammar coverage is bounded; unknown material is surfaced honestly rather than fabricated.
+It is intentionally not an AI chat system. Its current grammar coverage is bounded; unknown material is surfaced honestly rather than fabricated. The presentation must keep matched Grammar Objects separate from resolved form observations. An AI Learning Resource receives this deterministic result as a read-only contract: it may explain a listed match but may not infer an additional construction or blend several homographic form analyses into one form page.
 
 ## Conjugation system
 

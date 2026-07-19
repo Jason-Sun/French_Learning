@@ -254,3 +254,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Keep one growing JSON file; query SQLite directly from the static browser immediately; build endpoint-specific API payloads that bypass a shared graph package.
 
 **Long-term impact:** Web, desktop, and mobile clients can share a stable data-package contract. The UI remains graph-oriented while data transport can scale, cache, and move to release assets without changing canonical SQLite structure.
+
+## ADR-019 — Deterministic analysis bounds learner-facing AI grammar
+
+**Date:** 2026-07-19
+
+**Decision:** Serialize the deterministic sentence analysis into every sentence Learning Resource request. The UI presents exact resolved form analyses separately from canonical Grammar Object matches. AI may explain only the listed grammar matches and exact form metadata; it may not infer or name an additional construction. A stricter resource-contract version creates a new local draft key rather than reusing misleading cached guidance.
+
+**Reason:** A form of `aller` can appear in many contexts. Calling every present form of `aller` *futur proche* would make a learning explanation confident but incorrect. The graph must establish what applies; AI teaches that result.
+
+**Alternatives:** Ask the model to be generally careful; let AI infer sentence grammar without structured context; treat an inflected form's surface spelling as one combined teaching object.
+
+**Long-term impact:** Sentence guidance remains useful without silently becoming a second grammar authority. Parser improvements can add canonical matches and form analyses without changing the Learning Layer contract.

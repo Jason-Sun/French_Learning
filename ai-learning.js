@@ -31,8 +31,9 @@
   const keyFor = request => [
     request.target?.id || `lookup:${plainText(request.query).toLocaleLowerCase('fr')}`,
     request.kind,
-    request.kind === 'sentence_guide' ? 'translation-v2' : '',
+    request.kind === 'sentence_guide' ? 'translation-v3-deterministic-analysis' : '',
     request.language || 'en',
+    request.context?.resourceVersion || '',
     request.context?.senseId || '',
     request.context?.sentence || '',
   ].join('|');
@@ -84,6 +85,7 @@
     type: target.type_code,
     cefrLevel: target.cefr_level || null,
     partOfSpeech: target.part_of_speech || null,
+    features: target.features || null,
   } : null;
 
   const sanitizeResponse = (response, request, revisionNumber) => {

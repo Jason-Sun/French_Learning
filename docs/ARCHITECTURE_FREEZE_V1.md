@@ -224,6 +224,7 @@ AI may not:
 - overwrite curated data;
 - present generated assertions as curated facts;
 - silently promote a parser or model output into a source-backed release.
+- infer a named grammar construction in learner-facing guidance unless the deterministic analysis supplied that canonical Grammar Object as a match.
 
 ## 7. Browser and client architecture
 

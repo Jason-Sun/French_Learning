@@ -49,12 +49,12 @@ This is deliberate development infrastructure only. A future OpenAI, Claude, Ope
 
 The request is deliberately narrow:
 
-- target display metadata and canonical ID, if a target exists;
+- target display metadata, canonical ID, and exact morphology when the target is an inflected form;
 - resource kind: `explanation`, `usage_note`, `memory_tip`, `examples`, `comparison`, `common_mistake`, `sentence_guide`, or `provisional_lookup`;
-- a bounded graph summary and optional sentence context;
+- a bounded deterministic graph summary and optional sentence context;
 - a constraint that canonical graph writes and relationship/object creation are prohibited.
 
-The returned text is validated as bounded plain-text learning content. It is stored only in browser local storage under a learner-scoped draft key. It is never inserted into SQLite or the generated browser data package.
+The returned text is validated as bounded plain-text learning content. A sentence request explicitly identifies its matched grammar objects, resolved form analyses, and matched expressions. Providers may explain those supplied matches, but must not infer or name an additional grammar construction. An inflected-form request identifies the exact morphology of the form page; a provider must not merge other homographic analyses into that page. Drafts are stored only in browser local storage under learner-scoped keys. They are never inserted into SQLite or the generated browser data package.
 
 ## UX contract
 
@@ -70,11 +70,11 @@ Known-object slots may be completed automatically when online assistance is enab
 
 The first generated note is compact. It is cached locally, labelled `AI-generated` and `Learning draft` (or `Provisional learning note`), and does not behave like a conversation. The learner can then explicitly choose progressive follow-ups—examples, memory tips, comparisons, a common mistake, or a reference-language resource—inside that same contextual surface. Each follow-up is a separate resource and provider call. This keeps an unknown lookup useful without paying for maximum content before the learner needs it. AI must never replace the page anchor or open a chat surface.
 
-Generation is opt-in through the learner's AI-assistance preference. The static application does not ship a secret, call a cloud service, or transmit learner text by default.
+Generation is controlled by the learner's AI-assistance preference. When enabled, visible primary teaching slots may be completed automatically; progressive follow-ups remain learner-requested. The static application does not ship a secret or transmit learner text when assistance is disabled.
 
 ## Local cache and future revisions
 
-Browser drafts are keyed by the target/sentence context, resource kind, and language. The active draft is the newest local revision; earlier generated revisions are retained in local storage rather than destructively replaced. Unknown lookup recents are stored separately as normalized query keys with their display text and most-recent-opened time; they are learner-local navigation history, not Language Objects or graph search entries. A normal request returns the cached draft. The module already supports an explicit regeneration flag for a future `Regenerate` control, and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
+Browser drafts are keyed by the target/sentence context, resource kind, language, and resource-contract version where a stricter analysis contract supersedes earlier output. The active draft is the newest local revision; earlier generated revisions are retained in local storage rather than destructively replaced. Unknown lookup recents are stored separately as normalized query keys with their display text and most-recent-opened time; they are learner-local navigation history, not Language Objects or graph search entries. The browser also keeps the current-session recent list so that returning Home immediately is reliable while persistent storage remains the long-term source. A normal request returns the cached draft. The module already supports an explicit regeneration flag for a future `Regenerate` control, and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
 
 A reviewed or source-backed Learning Resource remains the preferred rendering for a slot. Replacing an AI draft with curated content therefore requires no object, route, or page redesign: the surrounding contextual surface stays the same while its resource provenance changes.
 

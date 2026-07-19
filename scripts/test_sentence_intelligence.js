@@ -20,16 +20,20 @@ if (crypto.createHash('sha256').update(lookupPayload).digest('hex') !== manifest
 const objects = JSON.parse(lookupPayload).objects;
 const engine = new context.window.SentenceIntelligence(objects);
 const cases = [
-  ['Je vais au cinéma ce soir.', []],
+  ['Je vais au cinéma ce soir.', [], 'vais — present indicative, person 1 singular of aller'],
   ['Nous allons à Paris.', []],
   ['Je vais partir ce soir.', ['Futur proche']],
   ['Nous allons manger.', ['Futur proche']],
 ];
 
-for (const [sentence, expected] of cases) {
-  const actual = engine.analyze(sentence).grammar.map(node => node.label);
+for (const [sentence, expected, expectedForm] of cases) {
+  const analysis = engine.analyze(sentence);
+  const actual = analysis.grammar.map(node => node.label);
   if (JSON.stringify(actual) !== JSON.stringify(expected)) {
     throw new Error(`${sentence}: expected ${JSON.stringify(expected)}, received ${JSON.stringify(actual)}`);
+  }
+  if (expectedForm && !analysis.formAnalyses.some(node => node.label === expectedForm)) {
+    throw new Error(`${sentence}: expected deterministic form analysis ${expectedForm}`);
   }
 }
 
