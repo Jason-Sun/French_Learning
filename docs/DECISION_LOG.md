@@ -2,6 +2,19 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-019 — Unknown lookups start with one bounded learning draft
+
+**Date:** 2026-07-19
+**Status:** Accepted
+
+### Decision
+
+When a learner searches an item that has no local Language Object, Liens generates and caches only one short English `provisional_lookup` Learning Resource when online assistance is enabled. The unknown query is retained as normalized learner-local recent-lookup history, allowing the learner to reopen the cached learning surface from Home or by searching again. Examples, comparisons, memory tips, common-mistake notes, and reference-language resources are separate explicit requests.
+
+### Consequences
+
+The first encounter remains helpful without treating an unknown word as a reason to generate an entire dictionary entry. Cache reuse makes repeat visits free of new provider calls, while progressive disclosure keeps token cost and cognitive load proportional to learner intent. Neither the draft nor recent history creates a canonical object, fact, relationship, SQLite record, or browser graph search entry.
+
 ## ADR-017 — AI learning help is explicit, contextual, and revision-preserving
 
 **Date:** 2026-07-18

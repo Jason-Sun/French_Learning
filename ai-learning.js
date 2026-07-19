@@ -8,7 +8,9 @@
 (() => {
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
+  const RECENT_LOOKUPS_KEY = 'liens-ai-recent-lookups-v1';
   const MAX_DRAFTS = 48;
+  const MAX_RECENT_LOOKUPS = 24;
   const inFlight = new Map();
   const generationQueue = [];
   let activeGenerationCount = 0;
@@ -34,6 +36,9 @@
     request.context?.senseId || '',
     request.context?.sentence || '',
   ].join('|');
+  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const normaliseLookup = value => plainText(value)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr');
 
   const normaliseDraft = draft => ({
     ...draft,
@@ -51,7 +56,26 @@
   };
 
   const writeDrafts = drafts => localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, MAX_DRAFTS)));
-  const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const readRecentLookups = () => {
+    try {
+      const value = JSON.parse(localStorage.getItem(RECENT_LOOKUPS_KEY) || '[]');
+      return Array.isArray(value) ? value.filter(item => plainText(item?.query)) : [];
+    } catch {
+      return [];
+    }
+  };
+  const writeRecentLookups = lookups => localStorage.setItem(
+    RECENT_LOOKUPS_KEY,
+    JSON.stringify(lookups.slice(0, MAX_RECENT_LOOKUPS)),
+  );
+  const recordRecentLookup = query => {
+    const displayQuery = plainText(query);
+    const normalizedQuery = normaliseLookup(displayQuery);
+    if (!displayQuery || !normalizedQuery) return null;
+    const entry = { query: displayQuery, normalizedQuery, lastOpenedAt: new Date().toISOString() };
+    writeRecentLookups([entry, ...readRecentLookups().filter(item => item.normalizedQuery !== normalizedQuery)]);
+    return entry;
+  };
 
   const publicTarget = target => target ? {
     id: target.id,
@@ -64,7 +88,8 @@
 
   const sanitizeResponse = (response, request, revisionNumber) => {
     const body = plainText(response?.body || response?.content || '');
-    if (!body || body.length > 1800) throw new Error('The provider returned an invalid learning draft.');
+    const bodyLimit = request.kind === 'provisional_lookup' ? 650 : 1800;
+    if (!body || body.length > bodyLimit) throw new Error('The provider returned an invalid learning draft.');
     const title = plainText(response?.title || request.title || 'Learning note').slice(0, 120);
     return {
       id: `ai-draft:${crypto.randomUUID()}`,
@@ -175,6 +200,8 @@
     get,
     getRevisions: revisionsFor,
     keyFor,
+    recentLookups: readRecentLookups,
+    recordRecentLookup,
     generate,
     ensure,
     clear: request => writeDrafts(readDrafts().filter(item => item.key !== keyFor(request))),
