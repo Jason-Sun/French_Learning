@@ -28,7 +28,7 @@ An AI draft is not a weaker canonical fact. It is a different class of content e
 ```js
 {
   id: 'provider-id',
-  generateLearningResource: async resource => ({ title, body, provider }),
+  generateLearningResource: async resource => ({ title, body, provider, model, prompt_version }),
   generateUsageNote: async resource => ({ title, body, provider }),
   generateMemoryTip: async resource => ({ title, body, provider }),
   generateExamples: async resource => ({ title, body, provider }),
@@ -74,7 +74,7 @@ Generation is controlled by the learner's AI-assistance preference. When enabled
 
 ## AI Learning Database and revisions
 
-`ai-learning-store.js` owns a learner-scoped IndexedDB database named `liens-ai-learning`. It has two stores: `learning_resources` and `recent_lookups`. A resource records its resource key, target ID when one exists, normalized unknown-query key when applicable, kind, language, revision number, body/translation, optional structured payload, provider, model, timestamp, lifecycle, and bounded generation context. The generic resource model already accommodates future pronunciation notes and explicitly requested AI conjugation resources, although Liens does not yet render an AI-produced conjugation table. It is a durable local learning layer, not a graph database.
+`ai-learning-store.js` owns a learner-scoped IndexedDB database named `liens-ai-learning`. It has two stores: `learning_resources` and `recent_lookups`. A resource records its resource key, target ID when one exists, normalized unknown-query key when applicable, kind, language, revision number, body/translation, optional structured payload, provider, model, `prompt_version`, timestamp, lifecycle, and bounded generation context. The generic resource model already accommodates future pronunciation notes and explicitly requested AI conjugation resources, although Liens does not yet render an AI-produced conjugation table. It is a durable local learning layer, not a graph database.
 
 Resolution is strict and cost-aware:
 
@@ -86,7 +86,7 @@ canonical source-backed resource
 
 Browser drafts are keyed by target/sentence context, resource kind, language, and resource-contract version where a stricter analysis contract supersedes earlier output. The active draft is the newest local revision; earlier generated revisions remain in the AI Learning Database rather than being destructively replaced. Unknown lookup recents are separately indexed by normalized query with display text and most-recent-opened time. They are learner-local search history, not Language Objects or graph search entries. The former local-storage draft keys are migrated once into IndexedDB when available.
 
-A normal request returns the active stored draft without contacting a provider. `findProvisionalLookup` allows a normalized unknown query to reopen its stored first note even if it originated under an older cache-key version. The module already supports an explicit regeneration flag for a future `Regenerate` control and exposes revision retrieval for a future `View previous revisions` control. Neither control is part of the current calm learning UI.
+A normal request returns the active stored draft without contacting a provider. `findProvisionalLookup` allows a normalized unknown query to reopen its stored first note even if it originated under an older cache-key version. The provider may expose only its current prompt version; `needsRegeneration(request)` compares that value with the stored `prompt_version`, so a future calm “Regenerate with the latest prompt” action can create a new revision without deleting the earlier output. Prompt text remains exclusively inside the provider implementation. Neither regeneration nor revision-history controls are part of the current UI.
 
 A reviewed or source-backed Learning Resource remains the preferred rendering for a slot. Replacing an AI draft with curated content therefore requires no object, route, or page redesign: the surrounding contextual surface stays the same while its resource provenance changes.
 

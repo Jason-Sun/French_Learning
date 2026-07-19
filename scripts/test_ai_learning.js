@@ -49,9 +49,10 @@ context.globalThis = context;
 context.LiensAIProvider = {
   id: 'test-provider',
   isAvailable: () => true,
+  promptVersion: () => 'test-v4',
   generateLearningResource: async () => {
     calls += 1;
-    return { title: 'Paris', body: 'A city and the capital of France.' };
+    return { title: 'Paris', body: 'A city and the capital of France.', prompt_version: 'test-v3' };
   },
 };
 vm.createContext(context);
@@ -78,11 +79,13 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   assert.equal(first.status, 'generated');
   assert.equal(calls, 1, 'the initial lookup creates one draft');
   assert.equal(storedResources.size, 1, 'the generated draft is written to the durable AI Learning Database');
+  assert.equal([...storedResources.values()][0].prompt_version, 'test-v3', 'each draft records the prompt version that generated it');
   assert.equal(values.has('liens-ai-learning-drafts-v1'), false, 'drafts are not written back to legacy localStorage');
   const cached = await assist.ensure(request);
   assert.equal(cached.status, 'cached');
   assert.equal(calls, 1, 'opening a cached lookup does not generate again');
   assert.equal(assist.get(request).body, 'A city and the capital of France.');
+  assert.equal(assist.needsRegeneration(request), true, 'the resolver can detect a newer provider prompt without deleting the stored revision');
   assert.equal(assist.findProvisionalLookup('PARIS').title, 'Paris', 'AI lookups are searchable through normalized query');
   await assist.supersede(request);
   assert.equal(assist.get(request), null, 'a canonical replacement hides the AI draft from normal resolution');

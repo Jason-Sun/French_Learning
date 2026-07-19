@@ -163,11 +163,13 @@
       createdAt: new Date().toISOString(),
       provider: plainText(response?.provider || globalThis.LiensAIProvider?.id || 'configured-provider').slice(0, 80),
       model: plainText(response?.model || '').slice(0, 120) || null,
+      prompt_version: plainText(response?.prompt_version || response?.promptVersion || '').slice(0, 120) || null,
       generationContext: {
         targetId: request.target?.id || null,
         resourceKind: request.kind,
         language: request.language || 'en',
         contextVersion: request.context?.resourceVersion || null,
+        promptVersion: plainText(response?.prompt_version || response?.promptVersion || '').slice(0, 120) || null,
       },
     };
   };
@@ -177,10 +179,19 @@
     const candidate = provider();
     return Boolean(candidate && (typeof candidate.isAvailable === 'function' ? candidate.isAvailable() : typeof candidate.generateLearningResource === 'function'));
   };
+  const currentPromptVersion = () => {
+    const value = provider()?.promptVersion;
+    return plainText(typeof value === 'function' ? value() : value).slice(0, 120) || null;
+  };
   const revisionsFor = request => [...drafts.values()]
     .filter(draft => draft.lifecycle === 'active' && draft.resourceKey === keyFor(request))
     .sort((left, right) => right.revisionNumber - left.revisionNumber || String(right.createdAt).localeCompare(String(left.createdAt)));
   const get = request => revisionsFor(request)[0] || null;
+  const needsRegeneration = request => {
+    const draft = get(request);
+    const latest = currentPromptVersion();
+    return Boolean(draft && latest && draft.prompt_version !== latest);
+  };
   const findProvisionalLookup = query => [...drafts.values()]
     .filter(draft => draft.lifecycle === 'active' && draft.kind === 'provisional_lookup' && draft.queryNormalized === normaliseLookup(query))
     .sort((left, right) => String(right.createdAt).localeCompare(String(left.createdAt)))[0] || null;
@@ -274,11 +285,13 @@
     enabled,
     setEnabled,
     providerReady,
+    currentPromptVersion,
     refreshProviderAvailability: async () => {
       const candidate = provider();
       return typeof candidate?.refreshAvailability === 'function' ? candidate.refreshAvailability() : providerReady();
     },
     get,
+    needsRegeneration,
     getRevisions: revisionsFor,
     keyFor,
     findProvisionalLookup,

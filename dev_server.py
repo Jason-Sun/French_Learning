@@ -27,6 +27,7 @@ API_PATH = "/api/ai/learning-resource"
 STATUS_PATH = "/api/ai/status"
 MAX_REQUEST_BYTES = 16_000
 MAX_BODY_LENGTH = 1_800
+PROMPT_VERSION = "gemini-learning-v1"
 LANGUAGE_TAG_PATTERN = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$")
 ALLOWED_OPERATIONS = {
     "generateLearningResource",
@@ -169,6 +170,7 @@ def call_gemini(operation: str, resource: dict[str, Any]) -> dict[str, str]:
         "translation": translation,
         "provider": "gemini",
         "model": model,
+        "prompt_version": PROMPT_VERSION,
     }
 
 
@@ -187,7 +189,11 @@ class LiensDevelopmentHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path.split("?", 1)[0] == STATUS_PATH:
-            self.send_json(HTTPStatus.OK, {"provider": "gemini", "ready": bool(api_key())})
+            self.send_json(HTTPStatus.OK, {
+                "provider": "gemini",
+                "ready": bool(api_key()),
+                "prompt_version": PROMPT_VERSION,
+            })
             return
         super().do_GET()
 

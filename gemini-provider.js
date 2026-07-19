@@ -9,14 +9,17 @@
   const statusEndpoint = '/api/ai/status';
   const REQUEST_TIMEOUT_MS = 35_000;
   let available = false;
+  let promptVersion = null;
 
   async function refreshAvailability() {
     try {
       const response = await fetch(statusEndpoint, { headers: { Accept: 'application/json' } });
       const status = response.ok ? await response.json() : null;
       available = Boolean(status?.ready && status?.provider === 'gemini');
+      promptVersion = typeof status?.prompt_version === 'string' ? status.prompt_version : null;
     } catch {
       available = false;
+      promptVersion = null;
     }
     return available;
   }
@@ -46,6 +49,7 @@
   globalThis.LiensAIProvider = Object.freeze({
     id: 'gemini-development',
     isAvailable: () => available,
+    promptVersion: () => promptVersion,
     refreshAvailability,
     generateLearningResource: invoke('generateLearningResource'),
     generateUsageNote: invoke('generateUsageNote'),
