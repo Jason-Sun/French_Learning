@@ -36,6 +36,8 @@ The canonical lexical-baseline adapter is the one importer allowed to create a n
 
 The prepared C1/C2 manifest selects 3,155 C1 and 2,314 C2 FLELex rows from the same hash-locked TreeTagger / Beacco release. The generated SQLite and browser package are intentionally not committed by this preparation step; a release build must apply the manifest, run the scope audit, export a package, and publish the generated artifacts outside ordinary Git history. The matching C1/C2 Kaikki and Lexique manifests enrich this same baseline with senses, examples, lexical relations, expressions, morphology, and source-specific pronunciation representations; they never create a fallback lexical identity.
 
+`scripts/build_c1_c2_release.py` is the first end-to-end implementation of that contract. It accepts verified local copies of the three source artifacts, writes only to a new external release directory, applies the pinned manifests and deterministic verb derivations, then emits the graph, browser package, individual reports, and a release manifest with artifact checksums. It intentionally does not fetch a mutable upstream URL during a release build.
+
 ## Lexique 3.83 CEFR-scoped morphology and pronunciation baseline
 
 Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, a Lexique-specific phonological code, and syllabification. Its phonological code is a source representation, not verified IPA.

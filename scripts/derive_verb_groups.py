@@ -142,6 +142,15 @@ def main() -> None:
                 "INSERT OR IGNORE INTO source_records(id,release_id,external_key,record_kind,content_hash) VALUES (?,?,?,?,?)",
                 (record_id, RELEASE_ID, verb["canonical_id"], "verb_group_derivation", hashlib.sha256(derivation_key.encode()).hexdigest()),
             )
+            # A prior version of the same policy may have used a different
+            # deterministic record ID for the release/key uniqueness tuple.
+            # Resolve the stored record before attaching evidence so a repeat
+            # build never points at an ignored, non-existent proposed ID.
+            record_id = db.execute(
+                """SELECT id FROM source_records
+                   WHERE release_id=? AND external_key=? AND record_kind='verb_group_derivation'""",
+                (RELEASE_ID, verb["canonical_id"]),
+            ).fetchone()[0]
             if not group:
                 db.execute(
                     "INSERT OR IGNORE INTO import_exclusions(import_run_id,source_record_id,reason_code,explanation) VALUES (?,?,?,?)",

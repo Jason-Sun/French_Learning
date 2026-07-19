@@ -15,7 +15,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 
 ## Current milestone
 
-**Architecture Freeze v1.0 — completed.** The browser data-package/access-adapter portion of the Data Build and Release Foundation is complete; the remaining work is a single end-to-end build and release-manifest workflow.
+**Architecture Freeze v1.0 — completed.** The browser data package, access adapter, deterministic C1/C2 release build, checksum manifest, and external-artifact workflow are in place. Future work is to automate source acquisition/attribution checks and publish immutable releases beyond local development.
 
 **C1/C2 lexical baseline — release recipes validated.** The same hash-locked FLELex release has reproducible C1/C2 baseline, Kaikki sense/example/relation/expression, and Lexique morphology/pronunciation manifests. An isolated full enrichment build passes integrity checks; its generated package remains artifact-based until browser distribution is configured. C1/C2 grammar topology and pedagogical paradigm projection remain separate source-backed phases.
 

@@ -186,7 +186,7 @@ Each release manifest must identify at least:
 - licensing and attribution payload;
 - browser export contract version.
 
-The current pipeline has useful importers, manifests, validation, and audits, but still requires manual source preparation and has no single end-to-end build command or release manifest. That is an acknowledged gap. Before generated artifacts are removed from Git or A2 is materially expanded, Liens must implement and verify this build/release foundation.
+The C1/C2 build command (`scripts/build_c1_c2_release.py`) now verifies the pinned inputs, copies a verified base graph, applies the scoped import recipes and deterministic derivations, runs graph/export checks, and emits SQLite, browser shards, reports, and a checksum manifest into a new external release directory. A validated local C1/C2 release has been produced with this command. Source acquisition is still deliberately explicit: callers provide locally cached, checksum-verified upstream artifacts rather than relying on an unpinned download step.
 
 ## 5. Source provenance policy
 

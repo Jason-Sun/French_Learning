@@ -28,7 +28,7 @@ Object / sentence learning surfaces
 Local learner preferences and saved-object state
 ```
 
-SQLite is the authoritative runtime linguistic store. The versioned browser package is a read-optimized projection, not a competing database: a normalized lookup bootstrap resolves ordinary queries and deterministic sentence analysis, while full Language Object details load and cache by deterministic shard only when explored. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge. SQLite and browser packages are release artifacts once the deterministic build foundation described in the Architecture Freeze is complete.
+SQLite is the authoritative runtime linguistic store. The versioned browser package is a read-optimized projection, not a competing database: a normalized lookup bootstrap resolves ordinary queries and deterministic sentence analysis, while full Language Object details load and cache by deterministic shard only when explored. The browser may hold transient sentence analysis and learner state, but it must not become the authoritative source for linguistic knowledge. SQLite and browser packages are release artifacts once the deterministic build foundation described in the Architecture Freeze is complete. The browser adapter defaults to the checked-in development package and may select an explicitly served release package through the read-only `graphRoot` URL parameter; that selection never changes canonical data.
 
 ## Language Object Graph
 

@@ -12,6 +12,19 @@ python -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
+### Test a generated data release
+
+The checked-in browser graph is the development package. A generated C1/C2
+release is kept outside Git under `releases/`. After building one, serve the
+repository and add its browser path to the URL:
+
+```text
+http://localhost:8000/?graphRoot=releases/liens-c1-c2/browser
+```
+
+The query setting changes only the read-only local graph package; it does not
+change the application code or the canonical source database.
+
 ## Gemini development assistance
 
 Liens can optionally generate clearly labelled, non-canonical Learning Resource drafts through Gemini. The API key stays in your shell environment; it is never added to browser code or Git.

@@ -12,6 +12,7 @@ import hashlib
 import json
 import sqlite3
 import uuid
+from collections import defaultdict
 from pathlib import Path
 
 from canonical_identity import NAMESPACE, canonical_uuid
@@ -24,17 +25,6 @@ RUN_ID = "import:liens-conjugation-form-projection-v1"
 
 def stable(kind: str, value: str) -> str:
     return str(uuid.uuid5(NAMESPACE, f"liens:{kind}:{value}"))
-
-
-def source_records_for(db: sqlite3.Connection, canonical_id: str) -> list[str]:
-    return [row[0] for row in db.execute(
-        """SELECT DISTINCT mapping.source_record_id
-           FROM import_record_mappings AS mapping
-           JOIN source_records AS record ON record.id=mapping.source_record_id
-           JOIN source_releases AS release ON release.id=record.release_id
-           WHERE mapping.canonical_id=? AND release.catalog_id<>?""",
-        (canonical_id, CATALOG_ID),
-    )]
 
 
 def add_relation(db: sqlite3.Connection, source: str, target: str, kind: str, source_records: list[str]) -> tuple[int, int]:
@@ -58,6 +48,52 @@ def add_relation(db: sqlite3.Connection, source: str, target: str, kind: str, so
         )
         evidence += db.execute("SELECT changes()").fetchone()[0]
     return created, evidence
+
+
+def ensure_root_paradigm(
+    db: sqlite3.Connection,
+    lemma_id: str,
+    lemma_display: str,
+    lemma_canonical_id: str,
+    source_records: list[str],
+) -> tuple[str, int, int]:
+    """Return the verb's graph-native root paradigm, creating it if needed.
+
+    Lexique asserts individual form analyses rather than a learner-facing root
+    paradigm.  The root is therefore a transparent Liens derivation, created
+    only when source-backed forms prove that the verb has a conjugation path.
+    """
+    existing = db.execute(
+        """SELECT target_object_id FROM relationships
+           WHERE source_object_id=? AND relationship_type_code='belongs_to_conjugation'
+           ORDER BY target_object_id LIMIT 1""",
+        (lemma_id,),
+    ).fetchone()
+    if existing:
+        return existing[0], 0, 0
+
+    root_id = f"fr:paradigm:{lemma_id}"
+    identity_key = f"fr|conjugation_paradigm|owner={lemma_canonical_id}|scope=root"
+    db.execute(
+        """INSERT OR IGNORE INTO language_objects
+           (id,type_code,canonical_form,display_form,normalized_form,part_of_speech,
+            source_id,content_status,provenance)
+           VALUES (?,?,?,?,?,'VER',?,'metadata_ready','curated')""",
+        (root_id, "conjugation_paradigm", lemma_display, f"{lemma_display} conjugation", lemma_display.casefold(), CATALOG_ID),
+    )
+    db.execute(
+        """INSERT OR IGNORE INTO canonical_objects
+           (canonical_id,language_object_id,object_type_code,identity_key)
+           VALUES (?,?, 'conjugation_paradigm', ?)""",
+        (canonical_uuid(identity_key), root_id, identity_key),
+    )
+    db.execute(
+        """INSERT OR IGNORE INTO object_attributes(object_id,key,value_json)
+           VALUES (?, 'conjugation_root', ?)""",
+        (root_id, json.dumps({"owner_object_id": lemma_id, "version": 1})),
+    )
+    created, evidence = add_relation(db, lemma_id, root_id, "belongs_to_conjugation", source_records)
+    return root_id, created, evidence
 
 
 def main() -> None:
@@ -97,16 +133,29 @@ def main() -> None:
            JOIN relationships AS lemma_link ON lemma_link.source_object_id=form.id
              AND lemma_link.relationship_type_code='inflected_form_of'
            JOIN language_objects AS lemma ON lemma.id=lemma_link.target_object_id
-           JOIN relationships AS root ON root.source_object_id=lemma.id
+           LEFT JOIN relationships AS root ON root.source_object_id=lemma.id
              AND root.relationship_type_code='belongs_to_conjugation'
            JOIN canonical_objects AS form_canonical ON form_canonical.language_object_id=form.id
            JOIN canonical_objects AS lemma_canonical ON lemma_canonical.language_object_id=lemma.id
            WHERE form.type_code='inflected_form' AND form.source_id='lexique383'
            ORDER BY form.id"""
     ))
+    # Avoid a source-record query for every form. A production release may
+    # project tens of thousands of analyses, so provenance is loaded once and
+    # reused without weakening its relationship-level evidence.
+    source_records_by_canonical: dict[str, list[str]] = defaultdict(list)
+    for row in db.execute(
+        """SELECT DISTINCT mapping.canonical_id, mapping.source_record_id
+           FROM import_record_mappings AS mapping
+           JOIN source_records AS record ON record.id=mapping.source_record_id
+           JOIN source_releases AS release ON release.id=record.release_id
+           WHERE release.catalog_id<>?""",
+        (CATALOG_ID,),
+    ):
+        source_records_by_canonical[row["canonical_id"]].append(row["source_record_id"])
     db.commit()
 
-    created_paradigms = root_edges = tense_edges = form_edges = evidence_edges = skipped = 0
+    created_roots = created_paradigms = root_edges = tense_edges = form_edges = evidence_edges = skipped = 0
     db.execute("BEGIN")
     try:
         for form in forms:
@@ -114,6 +163,20 @@ def main() -> None:
             if not tense:
                 skipped += 1
                 continue
+            source_records = source_records_by_canonical.get(form["form_canonical_id"], [])
+            root_paradigm_id = form["root_paradigm_id"]
+            if not root_paradigm_id:
+                root_paradigm_id, created, evidence = ensure_root_paradigm(
+                    db,
+                    form["lemma_id"],
+                    form["lemma_display"],
+                    form["lemma_canonical_id"],
+                    source_records,
+                )
+                if created:
+                    created_roots += 1
+                root_edges += created
+                evidence_edges += evidence
             tense_object_id = tense["object_id"]
             tense_paradigm_id = f"fr:paradigm:{form['lemma_id']}:{form['mood']}:{form['tense']}"
             existing = db.execute("SELECT 1 FROM language_objects WHERE id=?", (tense_paradigm_id,)).fetchone()
@@ -135,8 +198,7 @@ def main() -> None:
                     (tense_paradigm_id, "conjugation_features", json.dumps({"mood": form["mood"], "tense": form["tense"], "label": db.execute("SELECT display_form FROM language_objects WHERE id=?", (tense_object_id,)).fetchone()[0], "display_order": tense["display_order"], "formation": tense["formation"], "tense_object_id": tense_object_id, "version": 1})),
                 )
                 created_paradigms += 1
-            source_records = source_records_for(db, form["form_canonical_id"])
-            created, evidence = add_relation(db, form["root_paradigm_id"], tense_paradigm_id, "contains", source_records)
+            created, evidence = add_relation(db, root_paradigm_id, tense_paradigm_id, "contains", source_records)
             root_edges += created; evidence_edges += evidence
             created, evidence = add_relation(db, tense_paradigm_id, tense_object_id, "realizes_tense", source_records)
             tense_edges += created; evidence_edges += evidence
@@ -150,6 +212,7 @@ def main() -> None:
     report = {
         "forms_examined": len(forms),
         "forms_without_catalogued_tense": skipped,
+        "root_paradigms_created": created_roots,
         "tense_paradigms_created": created_paradigms,
         "root_contains_edges_created": root_edges,
         "realizes_tense_edges_created": tense_edges,

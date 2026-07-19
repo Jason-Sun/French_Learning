@@ -9,7 +9,12 @@
       this.loadedShards=new Map();
     }
 
-    static async load(root='data/wordbank/browser'){
+    static async load(root){
+      // A release package can be tested beside the source tree without
+      // replacing the checked-in development graph. The default remains
+      // unchanged for ordinary learners and static hosting.
+      const configuredRoot=new URLSearchParams(window.location.search).get('graphRoot');
+      root=root||configuredRoot||'data/wordbank/browser';
       const base=root.replace(/\/$/,'');
       const manifest=await GraphData.fetchJson(base+'/manifest.json');
       const lookup=await GraphData.fetchJson(base+'/'+manifest.lookup.path);
