@@ -30,6 +30,7 @@ This directory is the durable source of truth for Liens. It records the product 
 | [Source and Import Layer](architecture/source_imports.md) | Source-independent ingestion, mapping, and provenance rules. | An importer, release, identity, or evidence contract changes. |
 | [Knowledge Lifecycle](architecture/knowledge_lifecycle.md) | Predicate facts, evidence, Learning Resource revisions, and parser boundaries. | Fact, learning-content, or analysis lifecycle changes. |
 | [AI Learning Assistance](architecture/ai_learning_assistance.md) | Browser AI-draft boundary, provider contract, learner experience, and promotion requirements. | AI assistance, provider, draft, or promotion behaviour changes. |
+| [Personal Learning Layer](architecture/personal_learning.md) | Learner-owned saves, collections, and review-event boundary. | Personal learning records, collection behavior, or review contract changes. |
 | [Grammar Network](architecture/grammar_network.md) | First-class grammar objects, taxonomy, relationships, and sentence gateway. | Grammar-object or grammar-analysis contract changes. |
 
 ## Scope hierarchy

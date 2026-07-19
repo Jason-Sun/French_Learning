@@ -9,7 +9,7 @@
 - The canonical long-term reference is [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md).
 - Canonical UUIDs, Object → Fact → Evidence, typed relationships, source independence, first-class grammar, pronunciation representations, and revisioned Learning Resources remain the durable graph foundation.
 - The local SQLite graph remains the authoritative runtime representation, but SQLite and browser indexes are designated generated release artifacts once the deterministic build/release pipeline is complete.
-- Collections, review, progress, preferences, and sync are explicitly a future user-state domain, separate from the shared canonical graph.
+- Collections, lightweight local review, progress, preferences, and future sync are a user-state domain, separate from the shared canonical graph.
 - AI is frozen as a draft/analysis layer: it may not write canonical data without explicit validation, review, and promotion.
 
 ### Current architecture gap
@@ -31,6 +31,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 - A versioned, evidence-backed French verb-group derivation imports 1,630 canonical `verb_group` facts: 1,440 first-group, 5 second-group, and 185 third-group classifications. The 153 `-ir` verbs without the required present-participle evidence remain explicitly unclassified.
 - Graph-native IPA and independent pronunciation for all 56 seeded core forms; local recording → local cached TTS → browser synthesis provider chain.
 - Optional Chinese display; English always visible; local saved-object state.
+- Personal Learning Layer MVP: learner-owned saved objects, collection memberships, and review events are persisted in a dedicated browser IndexedDB database. A save can target a word, lexical sense, inflected form, grammar object, expression, canonical sentence, or a learner-entered sentence without duplicating canonical language knowledge. Legacy local saves migrate idempotently. The current Today’s Review flow is intentionally lightweight: one calm reconnection per saved item per day, with retained review events but no claimed spaced-repetition algorithm.
 - Contextual AI Learning Assistance: the provider-neutral Learning Resource Resolver automatically completes visible missing learning slots with clearly labelled AI drafts when online assistance is available. A dedicated browser IndexedDB AI Learning Database persists learner-scoped resources, revisions, provider/model/prompt-version provenance, lifecycle state, and normalized unknown-lookups separately from the canonical graph. Resolution is canonical source-backed resource → active AI resource → online generation, so repeat visits do not spend tokens. Canonical coverage takes precedence and supersedes matching AI history without deleting it. Resource identity includes target, kind, context, language, and stricter resource-contract versions when needed; English and enabled reference languages resolve, cache, label, and revise independently. An unknown lookup is deliberately narrower: it creates one bounded English provisional note, records a local recent lookup, and waits for the learner to request each follow-up or reference-language resource. Local graph analysis always renders first; sentence guidance is constrained by deterministic matches; and drafts never have a canonical graph write path. Gemini is the first development adapter, served through a local environment-key server.
 - A durable documentation system with product, architecture, roadmap, decision, contributor, and subsystem contracts.
 - Refined visual interaction system: shared focus, active, hover, motion, responsive-spacing, touch-target, empty-state, and reduced-motion behavior while preserving the existing visual identity.
@@ -59,7 +60,7 @@ The repository still contains generated SQLite and browser-package artifacts, an
 
 - Broader curated word/form definitions, examples, collocations, and verified-IPA coverage.
 - Additional conjugation data and reviewed tense resources.
-- Production review scheduling, collection modes, account persistence, and synchronization.
+- Production review scheduling, richer collection modes, account persistence, and synchronization.
 - Reading, listening, writing, and exercise object types/surfaces.
 - Local audio assets or local TTS caching.
 - Structured AI draft ingestion and human review workflow.

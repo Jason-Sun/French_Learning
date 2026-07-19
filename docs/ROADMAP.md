@@ -5,7 +5,7 @@ The roadmap is organized by product capability. It is not a promise of implement
 ## Completed foundations
 
 - **Language knowledge graph:** SQLite Language Objects, typed relationships, stable IDs, browser export, accent-insensitive local lookup, and A1–B2 lexical coverage.
-- **Learning surfaces:** direct object routing, back/home navigation, bilingual support with optional Chinese, local saves, and vocabulary view.
+- **Learning loop MVP:** direct object routing, back/home navigation, bilingual support with optional Chinese, typed local saves, flexible collections, and a calm Today’s Review flow backed by learner-owned IndexedDB state.
 - **Sentence Intelligence:** deterministic local token resolution, grammar/expression recognition, sentence breakdown, and teacher-guidance links.
 - **Verb system:** graph-native forms, pedagogical learning groups, reusable tenses, component-based realizations, and structured teaching resources.
 - **Pronunciation foundation:** graph-native pronunciation objects, independent core-form IPA, local-first provider architecture, and lightweight source display.
@@ -51,7 +51,7 @@ Add reviewed pronunciation metadata, local cached recordings or local TTS, liais
 
 ### Review and Collections
 
-Build collection types for vocabulary, sentences, and collocations; introduce durable spaced-review state and meaningful learning actions.
+Evolve the typed-save and collection MVP into relationship-aware prompts, durable spaced-review scheduling, goals, account persistence, and sync—without flattening graph objects into generic cards.
 
 ### Reading, Listening, and Writing
 
@@ -59,7 +59,7 @@ Add connected reading passages, listening exercises, writing feedback objects, a
 
 ### AI Enrichment
 
-Introduce structured, provenance-bound draft generation only after review workflow, data contracts, and safety boundaries are designed.
+Refine structured, provenance-bound learning drafts through real teaching-quality evaluation, curated replacement, and a future review/promotion workflow.
 
 ### Publishing
 

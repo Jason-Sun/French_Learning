@@ -129,6 +129,12 @@ Collections and review items are not shared Language Objects. They are user-stat
 
 User state may add personal notes, but it must never duplicate or mutate canonical facts. Sync conflicts need an explicit policy per record type; canonical content remains release-controlled and read-only to clients.
 
+### Personal Learning Layer MVP
+
+The first browser implementation stores learner-owned state in a dedicated `liens-personal-learning` IndexedDB database. It contains `learning_objects`, `collections`, `collection_memberships`, and `review_events`. A `learning_object` is a typed learner record that points to one canonical UUID when available, plus the saved context that made it meaningful (for example, a chosen lexical sense or a sentence analysis). A user-entered sentence without a canonical sentence object remains a learner target; it is never silently promoted into the graph.
+
+The built-in **Saved** collection is the durable default. Additional collections are memberships, so one saved meaning or form can belong to several collections without copied cards. The MVP review surface reads those learner records and records one response event at a time. It intentionally does not claim an SRS policy: scheduling, user accounts, and synchronization can be added above the same record identities later. Legacy `localStorage` saves migrate idempotently by target key.
+
 ### Analysis boundary
 
 Future sentence analysis creates an analysis instance containing input text, token spans, candidate matches, confidence, and grammar/relationship references. It is an interpretation of a learner input, not a canonical sentence or a source of linguistic truth. It may reference canonical UUIDs and Learning Resources, but cannot directly create or overwrite them.

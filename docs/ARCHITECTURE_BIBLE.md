@@ -96,7 +96,7 @@ The legacy `pronunciations` table remains an import-compatible boundary and is s
 
 ## Learning and persistence
 
-Every saved or reviewable item is keyed by a stable Language Object ID. The current static prototype stores saved items and the Chinese-display preference in browser local storage. Learner-scoped AI Learning Resources and unknown-lookup history instead live in a separate IndexedDB AI Learning Database; it may reference canonical IDs but cannot mutate or become part of SQLite. SQLite provides durable linguistic data; account-level review synchronization is a future persistence concern and must reference IDs rather than copy language content.
+Every saved or reviewable item is keyed by a stable Language Object ID where a canonical object exists; a learner-entered sentence keeps a separate learner target key plus its original input. The Personal Learning Layer persists typed saved objects, collection memberships, and append-only review events in a separate browser IndexedDB database. It may reference canonical IDs but cannot mutate or become part of SQLite. Learner-scoped AI Learning Resources and unknown-lookup history live in their own IndexedDB AI Learning Database under the same boundary. SQLite provides durable linguistic data; account-level synchronization is a future persistence concern and must reference IDs rather than copy language content.
 
 ## Source and Learning Layers
 

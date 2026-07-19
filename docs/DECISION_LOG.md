@@ -281,3 +281,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** Ask the model to be generally careful; let AI infer sentence grammar without structured context; treat an inflected form's surface spelling as one combined teaching object.
 
 **Long-term impact:** Sentence guidance remains useful without silently becoming a second grammar authority. Parser improvements can add canonical matches and form analyses without changing the Learning Layer contract.
+
+## ADR-020 — Personal learning objects are typed references, not copied graph data
+
+**Date:** 2026-07-19
+
+**Decision:** Store a learner save as a typed Personal Learning Object with its own stable local ID, target key, optional canonical object UUID, owner/context references, collection memberships, and review events. Persist it in a dedicated IndexedDB Personal Learning Layer, separate from both the canonical SQLite graph and the AI Learning Database. The first review flow records calm reconnection events without claiming spaced-repetition scheduling.
+
+**Reason:** Saving a word, one of its senses, an inflected form, a grammar object, an expression, or a sentence carries different learning intent. Flattening them into copied “cards” would lose their graph context and risk stale duplicated linguistic content.
+
+**Alternatives:** A single localStorage list of labels; make collections canonical graph objects; copy definitions and examples into each saved card; introduce a full SRS model before validating the learning loop.
+
+**Long-term impact:** Collections, review scheduling, account sync, and relationship-aware prompts can evolve without changing the canonical graph or the AI resource cache. Future clients need only sync learner IDs and canonical references, never duplicate language facts.
