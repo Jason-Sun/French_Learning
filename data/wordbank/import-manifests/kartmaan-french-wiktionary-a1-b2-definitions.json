@@ -1,0 +1,21 @@
+{
+  "catalog": {
+    "id": "kartmaan-french-dictionary",
+    "name": "Kartmaan French Dictionary, derived from French Wiktionary / WiktionaryX",
+    "homepage_url": "https://huggingface.co/datasets/Kartmaan/french-dictionary",
+    "license": "CC BY-SA 4.0",
+    "attribution_text": "Kartmaan French Dictionary (CC BY-SA 4.0), derived from French Wiktionary via WiktionaryX; preserve attribution and share-alike obligations."
+  },
+  "release": {
+    "id": "kartmaan-french-dictionary-2026-03-31",
+    "label": "Pinned dataset revision 3d6eb61064ddf716a3edf96bb8bc36726d597f8a",
+    "artifact_uri": "https://huggingface.co/datasets/Kartmaan/french-dictionary/resolve/3d6eb61064ddf716a3edf96bb8bc36726d597f8a/french_dict.parquet",
+    "sha256": "c9640265e39bd9e0a1cf2434abee2ff5c296fa376849e909323ffc9866a2ccbe",
+    "scope": "French-language lexical definitions from a pinned French Wiktionary-derived release; no English translation claim."
+  },
+  "import": {
+    "adapter": "kartmaan_french_wiktionary_definitions",
+    "adapter_version": "1",
+    "selection": {"levels": ["A1", "A2", "B1", "B2"]}
+  }
+}

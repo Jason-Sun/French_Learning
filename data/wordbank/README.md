@@ -182,6 +182,32 @@ python3 scripts/import_kaikki_a1_senses.py \
   --report data/wordbank/import-reports/kaikki-enwiktionary-french-a1-senses.json
 ```
 
+### Complementary French Wiktionary definitions
+
+The hash-locked `Kartmaan/french-dictionary` Parquet release is a CC BY-SA 4.0
+French Wiktionary / WiktionaryX-derived source. It supplements the Kaikki
+English-Wiktionary extraction with French-language definitions where the latter
+has no exact word/POS sense. It does **not** claim to supply English
+translations.
+
+The importer accepts only exact normalized surface and POS matches; it never
+uses an automatic noun/adjective, form/lemma, or spelling reconciliation to
+increase coverage. It creates `french_definition` facts with independent source
+evidence, while English teaching content remains Kaikki-backed or a clearly
+labelled Learning Resource.
+
+The adapter requires `pandas` with a Parquet engine such as `pyarrow`:
+
+```bash
+python3 scripts/add_french_definition_predicate.py \
+  --database data/wordbank/liens-knowledge.sqlite
+python3 scripts/import_french_wiktionary_definitions.py \
+  --database data/wordbank/liens-knowledge.sqlite \
+  --source /path/to/french_dict.parquet \
+  --manifest data/wordbank/import-manifests/kartmaan-french-wiktionary-a1-b2-definitions.json \
+  --report data/wordbank/import-reports/kartmaan-french-wiktionary-a1-b2-definitions.json
+```
+
 Use the same frozen release for its attributable translated examples and explicit lexical relations:
 
 ```bash

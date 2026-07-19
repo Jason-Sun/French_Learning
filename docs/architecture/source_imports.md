@@ -58,6 +58,20 @@ When FLELex and Kaikki classify the same French surface differently, a manifest 
 
 The `has_sense` edge is also source-evidenced from the exact source sense record. A source-backed sense therefore retains both the relationship to its word and the evidence for its English glosses independently.
 
+## Complementary French Wiktionary definition baseline
+
+`Kartmaan/french-dictionary` is a pinned, CC BY-SA 4.0 French
+Wiktionary/WiktionaryX-derived release. It supplements the Kaikki extraction
+only where an A1–B2 word/POS identity has no existing source-backed sense. Its
+facts are `french_definition` values in language `fr`; they are not represented
+as English glosses, translations, or AI output.
+
+The adapter accepts only exact normalized source-surface and POS mappings.
+Source POS differences, inflected-form analyses, and spelling variants remain
+explicit gaps unless a future manifest contains a separately reviewed,
+evidence-preserving reconciliation. This keeps source taxonomy intact and
+prevents a coverage percentage from introducing an incorrect canonical sense.
+
 The same frozen release supplies short, translated examples and explicit synonym/antonym relations. The importer accepts only extracted `example` records with an English translation and bounded sentence length. Each sentence is independent, retains a source-record alignment to the illustrated sense, and contributes an evidenced `illustrates` edge. Phrase entries are not automatically relabelled as collocations unless a future source explicitly provides that classification.
 
 The connections importer resolves source-sense records through their canonical lexical-sense targets rather than assuming a particular CEFR import-run name. This keeps A1 and A2–B2 source mappings compatible under one reproducible contract.

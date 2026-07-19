@@ -94,6 +94,17 @@ def main() -> None:
                  GROUP BY relation.id HAVING COUNT(evidence.source_record_id) = 0
                )""",
         ),
+        "french_wiktionary_sense_edges": count(
+            database,
+            """SELECT COUNT(*) FROM (
+                 SELECT relation.id FROM relationships AS relation
+                 JOIN language_objects AS sense ON sense.id = relation.target_object_id
+                 LEFT JOIN relationship_evidence AS evidence ON evidence.relationship_id = relation.id
+                 WHERE sense.source_id = 'kartmaan-french-dictionary'
+                   AND relation.relationship_type_code = 'has_sense'
+                 GROUP BY relation.id HAVING COUNT(evidence.source_record_id) = 0
+               )""",
+        ),
         "kaikki_sentence_edges": count(
             database,
             """SELECT COUNT(*) FROM (
