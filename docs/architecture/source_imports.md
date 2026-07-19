@@ -32,6 +32,10 @@ The production provenance import uses the official TreeTagger / Beacco TSV artif
 
 Each selection is defined by the manifest’s explicit `level` or `levels` list. Its report accounts for every selected row by level as a canonical mapping or explicit exclusion, and evidences the source-supported part of speech, CEFR level, and total frequency facts independently. A multi-level import is one reproducible source release run, not a new identity system.
 
+The canonical lexical-baseline adapter is the one importer allowed to create a new `word` Language Object from FLELex. It derives the source-independent identity `fr|word|POS|normalized lemma`, mints its UUID from that identity, and records three independently evidenced Facts: part of speech, CEFR level, and frequency per million. All other importers resolve that identity; they may not create a fallback word merely because a source mentions one.
+
+The prepared C1/C2 manifest selects 3,155 C1 and 2,314 C2 FLELex rows from the same hash-locked TreeTagger / Beacco release. The generated SQLite and browser package are intentionally not committed by this preparation step; a release build must apply the manifest, run the scope audit, export a package, and publish the generated artifacts outside ordinary Git history.
+
 ## Lexique 3.83 CEFR-scoped morphology and pronunciation baseline
 
 Lexique 3.83 supplies source-backed inflected surfaces, lemmas, verb features, gender, number, a Lexique-specific phonological code, and syllabification. Its phonological code is a source representation, not verified IPA.

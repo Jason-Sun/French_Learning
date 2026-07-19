@@ -293,3 +293,15 @@ The next foundation milestone is a reproducible data build and release process, 
 **Alternatives:** A single localStorage list of labels; make collections canonical graph objects; copy definitions and examples into each saved card; introduce a full SRS model before validating the learning loop.
 
 **Long-term impact:** Collections, review scheduling, account sync, and relationship-aware prompts can evolve without changing the canonical graph or the AI resource cache. Future clients need only sync learner IDs and canonical references, never duplicate language facts.
+
+## ADR-021 — C1/C2 begins with a canonical lexical-baseline release recipe
+
+**Date:** 2026-07-19
+
+**Decision:** Extend the graph to C1/C2 through a FLELex lexical-baseline importer that creates source-backed word objects only. It uses the existing source-independent UUID identity convention, records predicate-level CEFR/POS/frequency evidence, is idempotent, and is validated against the pinned source release before any enrichment import runs. Generated SQLite and browser exports remain release artifacts rather than ordinary Git additions.
+
+**Reason:** The legacy A1–B2 bootstrap builder was intentionally limited and cannot safely become the long-term creation path for a production graph. C1/C2 must enter through the canonical graph rules already used by enrichment importers.
+
+**Alternatives:** Re-run the legacy A1–B2 builder with a wider constant; let senses or morphology importers mint missing words; commit a larger generated SQLite/browser package before proving the release pipeline.
+
+**Long-term impact:** Any later CEFR scope uses the same source-independent baseline contract. Senses, forms, pronunciation, examples, expressions, grammar, and learning resources can enrich the created objects independently without changing their identity or weakening provenance.

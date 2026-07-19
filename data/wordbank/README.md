@@ -101,6 +101,26 @@ python3 scripts/import_flelex_beacco.py \
 
 The adapter resolves existing canonical UUIDs, records immutable source rows and mappings, and adds evidence only to matching CEFR, part-of-speech, and frequency facts. It aborts rather than silently changing a canonical object or fact.
 
+### C1/C2 lexical-baseline preparation
+
+The C1/C2 expansion starts with the canonical lexical-baseline importer rather than the legacy A1–B2 bootstrap builder. This importer is allowed to create only source-backed `word` objects; senses, forms, examples, expressions, and grammar remain separate enrichment phases.
+
+```bash
+python scripts/import_flelex_lexical_baseline.py \
+  --database /path/to/release/liens-knowledge.sqlite \
+  --source /path/to/FleLex_TT_Beacco.tsv \
+  --manifest data/wordbank/import-manifests/flelex-beacco-tree-tagger-c1-c2.json \
+  --report /path/to/reports/flelex-c1-c2-lexical-baseline.json
+
+python scripts/audit_cefr_lexical_baseline.py \
+  --database /path/to/release/liens-knowledge.sqlite \
+  --source /path/to/FleLex_TT_Beacco.tsv \
+  --manifest data/wordbank/import-manifests/flelex-beacco-tree-tagger-c1-c2.json \
+  --report /path/to/reports/flelex-c1-c2-lexical-baseline-audit.json
+```
+
+The audit requires 100% selected-row mapping, matching stored CEFR/POS/frequency metadata, predicate-level source evidence, no duplicate canonical identities, and no relevant foreign-key or orphan failures. The generated graph and browser package are release artifacts, not ordinary source files.
+
 ### Source-backed Lexique morphology import
 
 Lexique 3.83 provides inflected forms, lemma links, grammatical features, a source-specific phonological code, and syllabification. Its code is not treated as IPA.
