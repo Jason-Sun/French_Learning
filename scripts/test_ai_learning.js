@@ -8,6 +8,7 @@ const vm = require('node:vm');
 const packPaths = [
   'data/learning-packs/core-a1-v1.json',
   'data/learning-packs/core-everyday-function-words-v1.json',
+  'data/learning-packs/core-everyday-words-v1.json',
 ];
 const packResourceKeys = new Set();
 for (const packPath of packPaths) {

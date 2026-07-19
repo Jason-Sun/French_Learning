@@ -12,6 +12,7 @@
   const PREBUILT_PACK_URLS = Object.freeze([
     'data/learning-packs/core-a1-v1.json',
     'data/learning-packs/core-everyday-function-words-v1.json',
+    'data/learning-packs/core-everyday-words-v1.json',
   ]);
   const inFlight = new Map();
   const generationQueue = [];
