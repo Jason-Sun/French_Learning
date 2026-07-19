@@ -9,7 +9,10 @@
   const ENABLED_KEY = 'liens-ai-learning-enabled';
   const LEGACY_DRAFTS_KEY = 'liens-ai-learning-drafts-v1';
   const LEGACY_RECENT_LOOKUPS_KEY = 'liens-ai-recent-lookups-v1';
-  const PREBUILT_PACK_URLS = Object.freeze(['data/learning-packs/core-a1-v1.json']);
+  const PREBUILT_PACK_URLS = Object.freeze([
+    'data/learning-packs/core-a1-v1.json',
+    'data/learning-packs/core-everyday-function-words-v1.json',
+  ]);
   const inFlight = new Map();
   const generationQueue = [];
   let activeGenerationCount = 0;

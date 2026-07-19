@@ -5,6 +5,28 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
+const packPaths = [
+  'data/learning-packs/core-a1-v1.json',
+  'data/learning-packs/core-everyday-function-words-v1.json',
+];
+const packResourceKeys = new Set();
+for (const packPath of packPaths) {
+  const pack = JSON.parse(fs.readFileSync(packPath, 'utf8'));
+  assert.equal(pack.schemaVersion, 1, `${packPath} has the supported schema version`);
+  assert.equal(typeof pack.id, 'string', `${packPath} has a stable pack ID`);
+  assert.ok(Array.isArray(pack.resources) && pack.resources.length, `${packPath} has resources`);
+  for (const resource of pack.resources) {
+    assert.equal(typeof resource.id, 'string', `${packPath} resource has an ID`);
+    assert.equal(typeof resource.targetId, 'string', `${packPath} resource has an exact target ID`);
+    assert.equal(typeof resource.kind, 'string', `${packPath} resource has a kind`);
+    assert.ok(['en', 'zh-Hans'].includes(resource.language), `${packPath} resource uses a supported teaching language`);
+    assert.ok(resource.title && resource.body && resource.body.length <= 1800, `${packPath} resource has bounded learner content`);
+    const identity = `${resource.targetId}|${resource.kind}|${resource.language}|${JSON.stringify(resource.context || {})}`;
+    assert.equal(packResourceKeys.has(identity), false, `${packPath} does not duplicate a resource identity`);
+    packResourceKeys.add(identity);
+  }
+}
+
 const values = new Map();
 const localStorage = {
   getItem: key => values.has(key) ? values.get(key) : null,
