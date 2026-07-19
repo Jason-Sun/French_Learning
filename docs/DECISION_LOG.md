@@ -2,6 +2,19 @@
 
 This is an append-only record. Amend historical entries only to correct factual errors; record a new decision when direction changes.
 
+## ADR-023 — Native-app navigation path
+
+**Date:** 2026-07-19
+**Status:** Accepted
+
+### Decision
+
+Liens uses one native-app navigation system: contextual Back and Forward controls in the persistent header. Page-level Back buttons are not part of the product. Controls are rendered only when their destination is available. Back/Forward traverses a branch-based in-session path and restores view state; opening a new destination after Back discards the old Forward branch. The Liens logo and Home control reset the path completely and begin a fresh exploration session.
+
+### Consequences
+
+Navigation resembles Finder, Apple Music, and Settings rather than a browser. Learners remain oriented in an exploration flow without being asked to reason about history, duplicated Back affordances, or stale Forward paths.
+
 ## ADR-022 — One source-independent Pronunciation Object with parallel representations
 
 **Date:** 2026-07-19

@@ -60,7 +60,7 @@ Liens should feel calm, minimal, smooth, continuous, and premium.
 - Search accepts language as the learner has it: a word, form, expression, or sentence. The learner should not need to classify the input first.
 - Direct resolution is preferable to an unnecessary results page.
 - Visual anchors stay stable whenever possible. Exploring a sense should still feel like exploring the same word; exploring grammar in a sentence should preserve the sentence as context.
-- Navigation is simple and trustworthy: Back returns to meaningful context; Home is always easy to reach.
+- Navigation is simple and trustworthy: it follows a native-app path, not browser history. Back and Forward appear only when a meaningful adjacent destination exists; navigating to a new destination discards the old Forward branch. Home (the Liens logo or Home control) begins a fresh exploration session and clears both directions.
 - Progressive disclosure prevents a rich graph from becoming visual noise. Common and relevant information appears first; detail opens in place or on a deliberate next step.
 - Motion explains continuity, focus, or a state change. It never exists merely to decorate, delay, or impress.
 - Touch, keyboard, and screen-reader interaction deserve the same clarity as pointer interaction.
