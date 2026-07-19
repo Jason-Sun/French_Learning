@@ -4,22 +4,22 @@ Liens is a learning-first French web app. It treats words, forms, collocations, 
 
 ## Run locally
 
-For local graph-only development, serve the files with any static web server, then open `index.html` in a browser. For example, with Python installed:
+For local graph-only development, serve the files with any static web server. Do not open `index.html` directly with `file://`: the graph is split into fetchable data shards and must be served over HTTP. For example, with Python installed:
 
 ```bash
-python -m http.server 8000
+python -m http.server 4182
 ```
 
-Then visit `http://localhost:8000`.
+Then visit `http://127.0.0.1:4182/`.
 
 ### Test a generated data release
 
-The checked-in browser graph is the development package. A generated C1/C2
-release is kept outside Git under `releases/`. After building one, serve the
-repository and add its browser path to the URL:
+The checked-in browser graph is the portable A1–B2 development package. A generated C1/C2
+release is kept outside Git under `releases/`. When that local release is available, the
+app automatically prefers the complete A1–C2 package. To pin it explicitly, use:
 
 ```text
-http://localhost:8000/?graphRoot=releases/liens-c1-c2/browser
+http://127.0.0.1:4182/?graphRoot=releases/liens-c1-c2/browser
 ```
 
 The query setting changes only the read-only local graph package; it does not

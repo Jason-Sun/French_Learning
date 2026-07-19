@@ -11,14 +11,24 @@
 
     static async load(root){
       // A release package can be tested beside the source tree without
-      // replacing the checked-in development graph. The default remains
-      // unchanged for ordinary learners and static hosting.
+      // replacing the checked-in development graph. Prefer the complete local
+      // release when it is present, but keep the checked-in package as a
+      // portable fallback for a fresh clone.
       const configuredRoot=new URLSearchParams(window.location.search).get('graphRoot');
-      root=root||configuredRoot||'data/wordbank/browser';
-      const base=root.replace(/\/$/,'');
-      const manifest=await GraphData.fetchJson(base+'/manifest.json');
-      const lookup=await GraphData.fetchJson(base+'/'+manifest.lookup.path);
-      return new GraphData(base,manifest,lookup);
+      const roots=root?[root]:configuredRoot?[configuredRoot]:[
+        'releases/liens-c1-c2/browser',
+        'data/wordbank/browser',
+      ];
+      let lastError;
+      for(const candidate of roots){
+        const base=candidate.replace(/\/$/,'');
+        try{
+          const manifest=await GraphData.fetchJson(base+'/manifest.json');
+          const lookup=await GraphData.fetchJson(base+'/'+manifest.lookup.path);
+          return new GraphData(base,manifest,lookup);
+        }catch(error){lastError=error}
+      }
+      throw lastError||new Error('Could not load a local graph package.');
     }
 
     static async fetchJson(path){
