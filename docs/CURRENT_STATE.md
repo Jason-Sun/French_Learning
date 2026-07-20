@@ -7,7 +7,7 @@
 ## Architecture Freeze v1.0
 
 - The canonical long-term reference is [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md).
-- [MANUAL.md](MANUAL.md) is the comprehensive Architecture & Product Manual for long-term handover; it cross-references the constitutional documents and bounded subsystem contracts without replacing their authority.
+- [LIENS_BOOK.md](LIENS_BOOK.md) is the concise Product & Architecture Book for long-term orientation; it cross-references the constitutional documents and bounded subsystem contracts without replacing their authority.
 - Canonical UUIDs, Object → Fact → Evidence, typed relationships, source independence, first-class grammar, pronunciation representations, and revisioned Learning Resources remain the durable graph foundation.
 - The local SQLite graph remains the authoritative runtime representation, but SQLite and browser indexes are designated generated release artifacts once the deterministic build/release pipeline is complete.
 - Collections, lightweight local review, progress, preferences, and future sync are a user-state domain, separate from the shared canonical graph.

@@ -2,13 +2,13 @@
 
 This directory is the durable source of truth for Liens. It records the product intent, architectural contracts, decisions, delivery plan, and current implementation state so that future contributors do not need chat history or commit archaeology to work safely.
 
-## Complete handover manual
+## Product & Architecture Book
 
-[Architecture & Product Manual](MANUAL.md) is the comprehensive five-year handover reference. It explains product philosophy, layers, data ownership, database contracts, import/release operations, AI integration, feature ownership, design history, and roadmap. Start there when inheriting the system, then use the normative documents below when making changes.
+[Liens Product & Architecture Book](LIENS_BOOK.md) is the concise visual orientation to the product, graph, learning layers, AI boundary, and release model. Start there, then use the focused living contracts below when making a change.
 
 ## Start here
 
-1. Read the [Architecture & Product Manual](MANUAL.md) for the complete system handover.
+1. Read the [Liens Product & Architecture Book](LIENS_BOOK.md) for the complete system orientation.
 2. Read [LIENS_BIBLE.md](LIENS_BIBLE.md) to understand Liens' enduring product identity.
 3. Read [PRODUCT_BIBLE.md](PRODUCT_BIBLE.md) to understand the active learning and experience contract.
 4. Read [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md) before planning a future-facing system or changing a layer boundary.
@@ -22,7 +22,7 @@ This directory is the durable source of truth for Liens. It records the product 
 
 | Document | Purpose | Update when |
 | --- | --- | --- |
-| [Architecture & Product Manual](MANUAL.md) | Complete long-term handover guide, with chapters under `manual/`. | Any chapter's system, product, operational, or feature explanation becomes inaccurate. |
+| [Liens Product & Architecture Book](LIENS_BOOK.md) | Concise visual product and architecture orientation. | Its product narrative, system overview, or current feature map becomes inaccurate. |
 | [Liens Bible](LIENS_BIBLE.md) | Highest-level product constitution and long-lived identity. | Liens' enduring product philosophy changes. |
 | [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md) | Long-term product-system boundaries, data-build/release model, and mandatory engineering gates. | A documented architectural decision changes a frozen boundary. |
 | [Architecture Bible](ARCHITECTURE_BIBLE.md) | Constitutional technical principles and system boundaries. | A durable architecture, ownership rule, or cross-system contract changes. |
