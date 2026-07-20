@@ -256,7 +256,216 @@ Sentence Intelligence is intentionally modest and deterministic. It identifies h
 
 ---
 
-## 8. AI: complete learning without fake certainty
+## 8. Core Runtime Flows
+
+This is Liens’ operational blueprint. The diagrams describe the intended durable runtime, not merely a code path in the current browser prototype. **Implemented now** marks behaviour available today; **next evolution** marks a boundary that is already designed but not yet fully built.
+
+### Runtime invariants
+
+- **Canonical knowledge is read-only at runtime.** No browser action, parser, or provider call can create a canonical object, fact, evidence record, or relationship.
+- **Learning content is replaceable.** Curated/source-backed content wins; AI drafts are retained with provenance and can be superseded, not silently promoted or erased.
+- **Personal state is learner-owned.** Saving or reviewing an object creates a personal pointer and events, never a second copy of language data.
+- **Local analysis precedes online help.** The graph is useful without Gemini; AI fills a teaching gap rather than becoming the route to meaning.
+- **The learner stays in context.** A flow resolves into the existing word, form, grammar, or sentence surface rather than an external chatbot or duplicate page.
+
+### 8.1 Word Search Flow
+
+```mermaid
+flowchart TD
+  A[User enters French text] --> B[Preserve original input]
+  B --> C[Normalize: trim, case-fold, accent-insensitive key]
+  C --> D{Sentence-shaped input?}
+  D -->|Yes| S[Sentence Analysis Flow]
+  D -->|No| E[Canonical browser lookup]
+  E -->|lemma / form / expression / grammar found| F[Open canonical object surface]
+  E -->|no object| G[AI Learning DB: normalized provisional lookup]
+  G -->|active cached draft| H[Open provisional learning surface]
+  G -->|miss + assistance enabled| I[Generate one bounded draft]
+  I --> J[Store revision with provenance]
+  J --> H
+  G -->|miss + offline/disabled| K[Honest local no-coverage state]
+  F --> L[Resolve teaching slots]
+  L --> M[Canonical resource → AI cache → optional generation]
+```
+
+**Steps.** Input retains its original spelling for the learner, but a normalized key makes `etre`, `ÊTRE`, and `être` resolve to the same canonical object. The graph lookup checks canonical lemmas, forms, expressions, and appropriate grammar objects. A form opens its own object and points to the lemma; it is not substituted with the lemma. If no object exists, Liens first checks the learner-local AI database for the same normalized provisional lookup. Only a true miss can use online assistance, and it produces one compact note—not an invented full dictionary entry. Once an object is open, each missing teaching slot resolves independently: source-backed/curated resource first, then cached AI resource, then an allowed generation.
+
+**Why this shape.** The early prototype risked treating every lookup as either a hard “not found” or a fresh AI request. Common dictionaries usually require exact accents or expose a search-results page; chat products make every word a new conversation and pay the cost again later. We rejected duplicate no-accent objects, an intermediate results page, and automatic generation of a whole entry for unknown text. Liens instead separates *resolving language identity* from *filling learning content*.
+
+**USP.** Search is forgiving and immediate without corrupting canonical spelling or trust. The same query becomes cheaper and more useful over time because learning drafts are reusable. **Next evolution:** a server/desktop graph adapter can replace the static browser lookup without changing this resolver contract; reviewed source imports supersede a matching provisional draft automatically.
+
+### 8.2 Sentence Analysis Flow
+
+```mermaid
+flowchart TD
+  A[User pastes any French sentence] --> B[Tokenize and retain spans]
+  B --> C[Normalize token candidates]
+  C --> D[Match canonical words and inflected forms]
+  D --> E[Match contractions/elisions]
+  E --> F[Match ordered expressions and collocations]
+  F --> G[Match supported canonical grammar patterns]
+  G --> H[Build deterministic Sentence Intelligence analysis]
+  H --> I[Render linked sentence learning surface]
+  I --> J{Teaching slot missing and assistance allowed?}
+  J -->|No| K[Explore local words, forms, expressions, grammar]
+  J -->|Yes| L[AI explains supplied deterministic matches]
+  L --> M[Cache non-canonical Learning Resource]
+  M --> K
+```
+
+**Steps.** Tokenization preserves the learner’s exact text and character spans. Local matching resolves forms to lemmas, recognizes selected contractions such as `au` and `du`, then checks multi-word sequences before grammar patterns. Sentence Intelligence assembles these evidence-backed observations into a non-canonical analysis instance. The page links every confident match back to its Language Object. AI receives that structured analysis as context and can explain *why* a matched tense or construction is used; it may not add a named grammar construction that the deterministic layer did not match.
+
+**Why this shape.** A sentence page that only breaks text into chips is not teaching, but a free-form AI parsing answer has no durable links or reliable boundary between observation and invention. We rejected exact-sentence-only lookup, a syntax-tree-first UI, and “ask the LLM to decide all grammar.” Liens treats a sentence as a gateway into existing graph knowledge, with AI as the teacher sitting beside the map.
+
+**USP.** Every accurate local match is clickable, explorable, and reusable across learners; explanation quality improves as graph coverage expands rather than being recreated from zero. **Implemented now:** deterministic forms, selected contractions, expressions, and limited grammar matching. **Next evolution:** broader parser adapters may add candidates and confidence, but their output remains non-canonical until a reviewed import creates graph knowledge.
+
+### 8.3 Pronunciation Flow
+
+```mermaid
+flowchart TD
+  A[Open a Language Object] --> B[Find its own Pronunciation Object]
+  B --> C{Verified Kaikki IPA?}
+  C -->|Yes| D[Display canonical source-backed IPA]
+  C -->|No| E{Lexique representation?}
+  E -->|Yes| F[Show Lexique code/syllables; optional derived IPA labelled Derived from Lexique]
+  E -->|No| G[Show pronunciation unavailable]
+  D --> H[Pronunciation button]
+  F --> H
+  G --> H
+  H --> I{Local recording/cache available?}
+  I -->|Yes| J[Play local asset]
+  I -->|No| K[Browser SpeechSynthesis French fallback]
+```
+
+**Steps.** Each lemma, form, expression, or other speakable object finds its own stable Pronunciation Object. The UI prefers verified Kaikki IPA. Lexique phonological code and syllabification remain parallel source representations; a deterministic conversion can provide a visibly derived fallback, never pretend to be verified IPA. Playback is a separate provider chain: future/local audio first, browser TTS next. A form never inherits a lemma’s IPA merely to avoid an empty field.
+
+**Why this shape.** The product exposed an important confusion: browser speech could pronounce a word while the page correctly said no verified IPA. Many apps erase that distinction, or copy the lemma pronunciation to every conjugated form. We rejected one opaque pronunciation string, source conversion without labels, cloud-only audio, and lemma fallback. Liens separates linguistic representation from how sound is delivered.
+
+**USP.** Learners get immediate speech while understanding what Liens actually knows. **Implemented now:** Kaikki IPA/variants/audio metadata, Lexique representations and derived fallback, browser synthesis; remote audio playback is intentionally not enabled. **Next evolution:** verified local recordings and local TTS can join the same chain without changing page data or controls.
+
+### 8.4 AI Learning Flow
+
+```mermaid
+flowchart TD
+  A[Contextual learning need] --> B[Create typed request: target, kind, context, language]
+  B --> C[Canonical/curated resource lookup]
+  C -->|found| D[Render trusted resource]
+  C -->|missing| E[AI Learning DB lookup]
+  E -->|active revision found| F[Render labelled cached draft]
+  E -->|miss| G{Assistance enabled + provider available?}
+  G -->|No| H[Calm generation affordance / local state]
+  G -->|Yes| I[Provider builds internal prompt]
+  I --> J[Invoke selected model]
+  J --> K[Validate bounded output]
+  K --> L[Store revision: provider, model, prompt version, context, language, time]
+  L --> F
+  D --> M[Canonical resource later wins]
+  F --> M
+  M --> N[Mark matching AI draft superseded; retain history]
+```
+
+**Steps.** UI code asks for an intention—`explainSentence`, `generateUsageNote`, `generateExamples`, and so on—not a prompt. The request identity includes target, resource kind, sentence/sense context, language, and a contract version. The provider owns prompt construction. Gemini is the current development adapter, using environment-held credentials and its recorded prompt/model version. The answer is bounded, validated, labelled AI-generated, and stored as an immutable local revision. Later regeneration creates another revision; it never destroys the old one. A future source-backed or curated resource takes precedence and marks the draft superseded.
+
+**Why this shape.** Generic `generate(prompt)` APIs leak prompt design throughout an app and make a provider swap expensive. Chat bubbles also tempt the learner to leave the object they were studying. We rejected AI as canonical truth, automatic bulk generation, Chinese-specific fields, and localStorage-only caching. Liens models AI output as multilingual Learning Resources, independent of the graph and of a particular provider.
+
+**USP.** AI feels like native Liens content rather than a robot conversation, while the provenance is never hidden. **Implemented now:** Gemini adapter, prompt-version storage, IndexedDB cache/revisions, contextual actions, bounded unknown lookup, and multilingual resource identity. **Next evolution:** a provider registry, secure proxy, explicit generation-run metadata, evaluation, review queue, and user-controlled regeneration policies.
+
+### 8.5 Vocabulary and Personal Learning Flow
+
+```mermaid
+flowchart TD
+  A[Browse Vocabulary Library or open object] --> B{Learner presses Save?}
+  B -->|No| C[Continue canonical exploration]
+  B -->|Yes| D[Create/update Personal Learning Object]
+  D --> E[Pointer to canonical UUID + saved context]
+  E --> F{Add to a collection?}
+  F -->|Yes| G[Collection membership]
+  F -->|No| H[Notebook inbox]
+  G --> I[Notebook list/card views]
+  H --> I
+  I --> J[Open original Language Object]
+  I --> K[Review event history]
+```
+
+**Steps.** Vocabulary Library reads the canonical graph by CEFR, frequency, and part of speech; it never creates a second vocabulary store. Save creates a learner-owned record pointing to exactly what was saved: a word, a lexical sense, a form, an expression, grammar, or a sentence. Collections contain those typed personal records. Notebook views read these pointers, open the original graph page, and never copy dictionary content into a flashcard database.
+
+**Why this shape.** During development, “Vocabulary Notebook” initially became a saved-items surface, while the real need for browsing all A1–C2 words remained unmet. Traditional apps commonly collapse global catalog, saved word, and flashcard into one object. We rejected a duplicate dictionary, a generic string bookmark, and a notebook that flattens sense/form/sentence distinctions. Liens separates the public language graph from the learner’s relationship with it.
+
+**USP.** Discovery and ownership coexist: a learner can browse the shared language path, then preserve exactly the meaning or form that matters. **Implemented now:** CEFR Library, typed saves, collections, notebook list/card navigation, and review events in personal IndexedDB. **Next evolution:** sync can replicate personal records by canonical UUID without copying the canonical graph.
+
+### 8.6 Review Flow
+
+```mermaid
+flowchart TD
+  A[Today’s Review] --> B[Select due/reconnection candidates from Personal Learning DB]
+  B --> C[Open original object in a focused review frame]
+  C --> D[Use graph context: word ↔ form ↔ sense ↔ grammar ↔ sentence]
+  D --> E{Learner response}
+  E -->|Again| F[Record review event; short return]
+  E -->|Good| G[Record review event; advance interval]
+  E -->|Easy| H[Record review event; longer interval]
+  F --> I[Update learner scheduling state]
+  G --> I
+  H --> I
+  I --> J[Future due queue]
+```
+
+**Steps.** Review reads personal records and their event history, then opens the original object so the learner can reconnect it to its graph context. The intended scheduler records a response event (`Again`, `Good`, or `Easy`) and derives future due state from those events rather than mutating canonical data. Candidate selection can use relationships: a confusing form may surface with its lemma, a saved sense with a source-aligned example, or a grammar object beside the form that realizes it.
+
+**Why this shape.** A flashcard algorithm alone is not Liens’ advantage; treating every card as isolated repeats the fragmentation that Liens was built to solve. We rejected copying content into static cards and claiming an SRS algorithm before its learner value was proven. **The choice.** Start with one calm daily reconnection and retain review events; add scheduling only when it can exploit graph context responsibly.
+
+**USP.** Review can become understanding-oriented rather than recall-only. **Implemented now:** lightweight Today’s Review and retained review events, with no claimed spaced-repetition scheduler. **Next evolution:** the `Again / Good / Easy` event flow, due-state projection, and relationship-aware candidate policies are designed targets, not yet a shipped scheduling promise.
+
+### 8.7 Import and Release Flow
+
+```mermaid
+flowchart TD
+  A[Pinned, checksum-verified source datasets] --> B[Source manifests]
+  B --> C[Source-specific importers]
+  C --> D[Canonical UUID mapping]
+  D --> E[Objects, predicate facts, evidence, relationships]
+  E --> F[Validation and coverage audit]
+  F -->|failure| G[Explicit exclusion/conflict report]
+  F -->|pass| H[Canonical SQLite release]
+  H --> I[Generate browser lookup + lazy shards]
+  I --> J[Package integrity manifest]
+  J --> K[External local/release artifact]
+```
+
+**Steps.** A source is pinned by manifest before an importer maps source records to existing or new canonical UUIDs. Importers add evidence-backed facts and edges; they do not reshape identity around a source. Validation checks foreign keys, orphaned facts/relationships, duplicates, evidence, coverage, and package integrity. Conflicting or unsupported rows become visible exclusions, not silent data. A successful build emits SQLite, browser package, reports, and checksums outside ordinary Git; Git stores the recipe—schemas, migrations, scripts, manifests, curated inputs, and docs.
+
+**Why this shape.** The prototype’s tracked SQLite and browser packages grew to gigabytes, while hand-editable artifacts obscured reproducibility. Git LFS would store the same generated truth in a different place without solving source replacement or release discipline. We rejected browser JSON as canonical data, unpinned downloads, and AI-generated canonical gap filling.
+
+**USP.** Liens can grow from A1 to future languages without sacrificing provenance or repository health. **Implemented now:** pinned-source build scripts, audits, external artifact strategy, and sharded static package. **Next evolution:** automated source acquisition, attribution/license checks, signed release publishing, and incremental client updates.
+
+### 8.8 Native Navigation Flow
+
+```mermaid
+flowchart TD
+  A[Current view state] --> B[Open a destination]
+  B --> C[Snapshot current route, scroll, selected sense, tabs, filters]
+  C --> D{Opened after Back?}
+  D -->|Yes| E[Discard old Forward branch]
+  D -->|No| F[Append destination to path]
+  E --> F
+  F --> G[Render new destination at top]
+  G --> H{Back available?}
+  H -->|Yes| I[Back restores prior snapshot]
+  I --> J{Forward available?}
+  J -->|Yes| K[Forward restores next snapshot]
+  L[Home / Liens logo] --> M[Clear Back and Forward path]
+  M --> N[Render Home]
+```
+
+**Steps.** Before every destination change, Liens records view state: scroll position, selected sense/form, expanded panels, Vocabulary filters, sort, and page. A new destination after Back begins a new branch and clears only the old Forward path. Back and Forward traverse existing snapshots rather than creating new pages. Home and the logo deliberately erase the exploration path, beginning a new session. Controls appear only when an action exists.
+
+**Why this shape.** Page-level Back buttons, browser-style infinite history, and reset-on-render behaviour made early graph exploration confusing and lost context. We rejected duplicate navigation controls and a Chrome/Safari mental model. Liens adopts the quieter pattern of Finder, Apple Music, and Settings.
+
+**USP.** The learner can wander deeply through connected language while always feeling oriented. **Implemented now:** branch-based header navigation, state/scroll restoration, and Home reset. **Next evolution:** persisted cross-session exploration history may be considered only if it preserves this intentional, non-browser-like mental model.
+
+---
+
+## 9. AI: complete learning without fake certainty
 
 The resolver order is:
 
@@ -281,7 +490,7 @@ To add OpenAI, Claude, OpenRouter, or a local model: implement the same typed pr
 
 ---
 
-## 9. How the graph is built and released
+## 10. How the graph is built and released
 
 The repository tracks **source manifests, schemas, migrations, importers, audits, and build scripts**. SQLite and browser indexes are generated release outputs whenever practical—not hand-maintained truth.
 
@@ -305,7 +514,7 @@ Every import is pinned by source release and records provenance. Validation chec
 
 ---
 
-## 10. The learner’s surfaces
+## 11. The learner’s surfaces
 
 | Surface | Purpose | Design intent |
 | --- | --- | --- |
@@ -322,7 +531,7 @@ Navigation follows a focused native-app model: a single Back/Forward path preser
 
 ---
 
-## 11. The next chapters
+## 12. The next chapters
 
 **Strong today:** local A1–C2 graph browsing, forms and conjugation, source/derived pronunciation representations, sentence gateway, AI learning drafts, Vocabulary Library, notebook/collections, and lightweight review.
 
