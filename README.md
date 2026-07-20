@@ -1,36 +1,38 @@
 # Liens — French learning in context
 
-Liens is a learning-first French web app. It treats words, forms, collocations, and sentences as connected learning objects rather than separate dictionary entries or chat messages.
+Liens is a French-learning web app I built for the way I actually want to learn: by following connections between words, forms, grammar, examples, and sentences instead of treating each as a separate lookup.
 
 ## Project overview
 
-Most French-learning tools make learners move between a dictionary, conjugator,
-grammar site, translation tool, flashcards, and an AI chat. Liens is an
-explorable, local-first Language Graph that brings those learning paths into one
-calm interface. A word leads to its forms, senses, pronunciation, grammar,
-expressions, examples, and related sentences; a sentence is an entry point into
-the same graph, not a dead-end analysis.
+While learning French, I kept hitting the same friction: a dictionary tells me
+what a word means, a conjugator shows a form, a grammar page explains a rule,
+and an AI chat helps with a sentence—but none of them remembers the context or
+connects the pieces. Liens is my attempt to make that experience feel continuous.
 
-The graph is the evidence-backed source of linguistic truth. AI may fill a
-missing teaching resource, but it is labelled, cached separately, and never
-silently changes canonical knowledge.
+It is local-first and built around an explorable Language Graph. A word can lead
+to its forms, senses, pronunciation, grammar, expressions, examples, and related
+sentences. A sentence is not a dead end; it is another way into the same network.
+The graph holds evidence-backed linguistic knowledge. AI can help when a teaching
+note is missing, but its output is labelled, cached separately, and never quietly
+rewrites the graph.
 
 ## Key features
 
 - **Local Language Graph:** A1–C2 words, forms, senses, expressions, grammar,
-  pronunciation representations, and examples are connected as navigable
-  Language Objects.
+  pronunciation, and examples are connected, so exploration does not stop at a
+  single definition.
 - **Search that understands forms:** Accent-insensitive lookup resolves lemmas,
   inflected forms, and multi-word expressions to their canonical objects.
 - **Sentence Intelligence:** Deterministic local analysis identifies tokens,
   known forms, expressions, and grammar before optional teaching enrichment.
-- **Learning in context:** Word and sentence pages keep the current object as a
-  visual anchor, with graph-native conjugation, pronunciation, and examples.
+- **Learning in context:** Word and sentence pages keep the current object in
+  view, with conjugation, pronunciation, and examples close at hand.
 - **Personal learning:** Save words, senses, forms, expressions, grammar, and
   sentences; organize them in collections; browse a Vocabulary Library; and use
   the lightweight Today’s Review loop.
-- **Optional AI Learning Layer:** Clearly labelled drafts and translations are
-  cached in a separate browser database, so local graph facts stay trustworthy.
+- **Optional AI Learning Layer:** When the graph lacks a teaching note, Liens can
+  add a clearly labelled draft and cache it locally—without blurring the line
+  between generated help and sourced facts.
 
 ## Getting started
 
@@ -46,9 +48,9 @@ Then visit `http://127.0.0.1:4182/`.
 
 The Language Graph is a generated release artifact and is intentionally not tracked in Git.
 Build or obtain a verified local release before serving the app. The generated SQLite
-database, browser graph package, and reports are excluded because of their size; a
-verified release can be provided separately if required. A local A1–C2 release is
-kept outside Git under `releases/`. When that local release is available, the app
+database, browser graph package, and reports are excluded because they are large;
+a verified release can be provided separately if required. A local A1–C2 release is
+kept outside Git under `releases/`. When it is available, the app
 automatically prefers the complete package. To pin it explicitly, use:
 
 ```text
@@ -62,7 +64,7 @@ change the application code or the canonical source database. See
 
 ## How to test
 
-With a local graph release available, try these small journeys:
+With a local graph release available, these are good ways to get a feel for it:
 
 1. Search **être**, then open **sommes** from its conjugation table to see a form
    as its own object and return through native Back/Forward navigation.
@@ -76,7 +78,7 @@ With a local graph release available, try these small journeys:
 
 ## Gemini development assistance
 
-Liens can optionally generate clearly labelled, non-canonical Learning Resource drafts through Gemini. The API key stays in your shell environment; it is never added to browser code or Git.
+Liens can optionally generate clearly labelled, non-canonical learning drafts through Gemini. The API key stays in your shell environment; it is never added to browser code or Git.
 
 ```bash
 export GEMINI_API_KEY='your-key'
@@ -89,27 +91,29 @@ This local server is for rapid development only. A backend or edge proxy replace
 
 ## Local pronunciation playback
 
-IPA and audio references live in the Language Object graph. The playback layer is separate from that metadata: it first uses a local cached recording when `local_audio_path` is present, otherwise the browser's local `SpeechSynthesis` provider speaks the object's canonical French form. Neither path uses a server, cloud API, or AI service. Later local-TTS providers can be added without changing the button or pronunciation metadata.
+IPA and audio references live in the Language Graph, while playback is deliberately
+separate. Liens first uses a local cached recording when `local_audio_path` is
+present; otherwise, the browser's `SpeechSynthesis` speaks the canonical French
+form. This keeps “the app can say it” separate from “the app has verified
+pronunciation data.” Neither path needs a server, cloud API, or AI service.
 
 ## OpenAI technologies used
 
-**Codex + GPT-5.6 accelerated the build.** Liens was developed iteratively with
-Codex using GPT-5.6 for product and graph-architecture decisions, implementation,
-schema and importer design, refactoring, debugging, interactive QA, UI iteration,
-and the project’s architecture/product handbook. The detailed design history is
-preserved in the Liens Book.
+**Codex + GPT-5.6 accelerated the build.** I used Codex with GPT-5.6 throughout
+the project: to test product ideas, work through the graph architecture, implement
+and refactor the app, design importers and schemas, debug, run QA passes, improve
+the UI, and document the decisions. The Liens Book keeps that design history.
 
 **Runtime AI is provider-independent.** The current development adapter uses
-Gemini for optional Learning Resource generation: sentence explanations,
-translations, usage notes, examples, comparisons, and memory tips. This is
-deliberate: GPT-5.6 powered the core development workflow, while the application
-keeps a typed provider boundary so OpenAI or another model can be added without
-changing the UI or canonical graph. Liens does not currently send runtime user
-requests to a GPT-5.6 API; it does not claim that it does.
+Gemini for optional sentence explanations, translations, usage notes, examples,
+comparisons, and memory tips. GPT-5.6 was central to building Liens, but the app
+does not currently send user requests to a GPT-5.6 API. I kept the provider
+boundary typed and narrow so an OpenAI or local provider can be added later
+without changing the UI or the canonical graph.
 
 ## Build Week contributions
 
-During Build Week, Liens evolved from a small French-learning prototype into a
+During Build Week, Liens grew from a small French-learning prototype into a
 local-first learning platform:
 
 - designed a source-independent, provenance-backed Language Graph and deterministic build pipeline;
@@ -127,25 +131,24 @@ local-first learning platform:
 
 ## Data sources
 
-Canonical linguistic data is imported reproducibly from pinned, attributable
-releases. The primary sources include **FLELex / Beacco** (CEFR and frequency),
+Canonical linguistic data comes from pinned, attributable releases, so the graph
+can be rebuilt and checked rather than hand-maintained. The primary sources include **FLELex / Beacco** (CEFR and frequency),
 **Lexique 3.83** (morphology, phonological code, syllabification), **Morphalou
 3.1** (simple verb paradigms), **Kaikki / Wiktionary-derived releases** (senses,
 examples, expressions, lexical relations, IPA, and audio metadata), and curated
 grammar material where available. Source records and evidence remain attached to
 facts and relationships.
 
-AI-generated explanations are Learning Resources stored separately in browser
-IndexedDB. They never create or modify canonical objects, facts, or relationships;
-source-backed content takes precedence when it becomes available.
+AI-generated explanations live separately in browser IndexedDB. They never create
+or modify canonical objects, facts, or relationships; sourced content wins when
+it becomes available.
 
 ## Project documentation
 
-The complete product and architecture handbook is [**LIENS_BOOK.md**](docs/LIENS_BOOK.md).
-It explains the product philosophy, canonical model, runtime flows, design
-rationale, and evolution of Liens. Supporting technical documentation is in
-[docs/](docs/README.md).
+For the full story, see [**LIENS_BOOK.md**](docs/LIENS_BOOK.md): the product
+philosophy, data model, runtime flows, design rationale, and evolution of Liens.
+Supporting technical documentation is in [docs/](docs/README.md).
 
 ## Current status
 
-This runnable local prototype demonstrates the core loop: **Learn → Explore → Save → Review**. It uses a SQLite Language Object Graph as the linguistic source of truth, a generated browser index for static local lookup, deterministic Sentence Intelligence, graph-native conjugation, and graph-native pronunciation. Gemini can add structured, labelled Learning Resource drafts through the local development server; it never replaces local facts or becomes a visible chatbot.
+This runnable local prototype demonstrates the core loop: **Learn → Explore → Save → Review**. It uses a SQLite Language Graph for local lookup, deterministic Sentence Intelligence, graph-native conjugation and pronunciation, and a separate AI Learning Layer. Gemini can add structured, labelled drafts through the local development server; it never replaces local facts or turns Liens into a chatbot.
