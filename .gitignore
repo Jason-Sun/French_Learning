@@ -3,3 +3,12 @@ __pycache__/
 *.pyc
 .env
 releases/
+
+# Generated Language Graph release outputs. Source manifests, schemas, curated
+# inputs, importers, audits, and build scripts remain version-controlled; these
+# files are reproducible local/release artifacts and must never be committed.
+/data/wordbank/*.sqlite
+/data/wordbank/*.sqlite3
+/data/wordbank/*.db
+/data/wordbank/browser/
+/data/wordbank/import-reports/

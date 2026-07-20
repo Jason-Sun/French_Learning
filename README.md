@@ -14,16 +14,19 @@ Then visit `http://127.0.0.1:4182/`.
 
 ### Test a generated data release
 
-The checked-in browser graph is the portable A1–B2 development package. A generated C1/C2
-release is kept outside Git under `releases/`. When that local release is available, the
-app automatically prefers the complete A1–C2 package. To pin it explicitly, use:
+The Language Graph is a generated release artifact and is intentionally not tracked in Git.
+Build or obtain a verified local release before serving the app. A generated A1–C2 release
+is kept outside Git under `releases/`. When that local release is available, the app
+automatically prefers the complete package. To pin it explicitly, use:
 
 ```text
 http://127.0.0.1:4182/?graphRoot=releases/liens-c1-c2/browser
 ```
 
 The query setting changes only the read-only local graph package; it does not
-change the application code or the canonical source database.
+change the application code or the canonical source database. See
+[data/wordbank/README.md](data/wordbank/README.md) for the rebuild inputs and
+[docs/ARCHITECTURE_FREEZE_V1.md](docs/ARCHITECTURE_FREEZE_V1.md) for the artifact policy.
 
 ## Gemini development assistance
 

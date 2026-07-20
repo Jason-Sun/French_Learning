@@ -1,5 +1,24 @@
 # Liens local language knowledge graph
 
+## Artifact policy
+
+The SQLite databases, browser package, and import reports in this directory are
+**generated local/release artifacts**. They are intentionally ignored by Git.
+The repository tracks the reproducible inputs: manifests, schemas, curated
+inputs, import scripts, audits, and this build guidance. Build reports should be
+written into the release directory (or remain local), never committed as source.
+
+For the complete A1–C2 release, prefer:
+
+```bash
+python3 scripts/build_c1_c2_release.py
+```
+
+The command requires the checksum-verified upstream source artifacts described
+by the pinned manifests. It emits SQLite, browser shards, reports, and a
+checksum manifest into an external release directory. No generated graph file
+belongs in ordinary Git history.
+
 `liens-knowledge.sqlite` is the app's local, versioned learning-data store. It is designed to be bundled with a future server or queried in-browser through SQLite WASM; the product must not call AI merely to resolve a core word.
 
 `liens-wordbank.sqlite` remains the v1 import source. `liens-knowledge.sqlite` is the durable v2 schema the app should use.
