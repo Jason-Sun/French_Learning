@@ -77,6 +77,68 @@ Alternatives deliberately rejected: a flat dictionary schema, one enormous brows
 
 ---
 
+## 4. Evolution of Liens
+
+Liens did not begin as a graph project. It began with a simple but demanding question: *can French learning stop forcing a learner to leave one tool for another?* This is the design history of the answer.
+
+### 1 — From a demo dictionary to a learning-first product
+
+**The original problem.** The first project was a small French lookup demo with a limited word list. It could show a word, but it could not support the actual moment of learning: seeing a form in a sentence, understanding why it appears there, hearing it, saving it, and returning to it later. **Why the common answer was insufficient.** A conventional dictionary solves reference, not learning; a chatbot solves a momentary question but does not preserve a dependable structure. **Alternatives considered.** We could have expanded the demo word list, embedded an AI chat panel, or copied a dictionary-style multi-page design. Each would have made the prototype look richer while keeping the learner’s experience fragmented. **The choice.** Liens became a learning environment governed by `Learn → Explore → Save → Review`. **Why.** The product had to make connections, not pages, the primary unit of experience. **What this enabled.** Every later choice—graph, sentences, personal learning, and AI—could be judged by whether it improved that continuous loop.
+
+### 2 — From words as records to Language Objects as a graph
+
+**The original problem.** Treating *venir*, *viens*, *avoir besoin de*, a grammar construction, and an example sentence as unrelated record types created immediate dead ends. A learner who opened *sommes* needed to reach *être*, its tense, examples, and related grammar; a word table could not express that naturally. **Why the common answer was insufficient.** Most vocabulary products attach inflections and examples as fields under a word, while grammar sites and sentence tools are separate products. That prevents any of them from being first-class destinations. **Alternatives considered.** Separate vocabulary/grammar/sentence databases, page-specific JSON, or a word table with hand-written “related” links. They would have accumulated special cases at every new feature. **The choice.** Every meaningful language element became a Language Object with typed relationships. **Why.** One identity model lets any object participate in the same learning flow. **What this enabled.** Forms, expressions, grammar, pronunciation, sentences, collocations, and future exercises can be added as data and connections rather than as isolated product silos.
+
+### 3 — From source-shaped imports to permanent canonical identity
+
+**The original problem.** A prototype database can take an importer’s row ID as identity. A durable learning platform cannot: sources change, records are replaced, and learner saves must survive. We also discovered that a word can have one source for CEFR, another for IPA, and another for senses. **Why the common answer was insufficient.** A single source column on an object cannot explain which source supports which claim, nor can it represent a disagreement without overwriting something. **Alternatives considered.** Auto-increment IDs, importer-generated UUIDs, object-level provenance only, or a “best current value” field. These all made migration, conflict review, and durable personal links fragile. **The choice.** Liens adopted permanent source-independent UUIDs and the model `Language Object → predicate Fact → Evidence`; relationships have their own evidence as well. **Why.** Identity must belong to the graph, while sources support claims within it. **What this enabled.** Replaceable importers, multiple evidence-backed facts, explicit disagreement, stable APIs, and personal collections that survive future source upgrades.
+
+### 4 — From a dictionary schema to senses, multi-word structure, and grammar
+
+**The original problem.** A definition string could not distinguish *prendre* “to take” from *prendre* “to buy,” link an example to the right meaning, or let a learner save one meaning rather than the entire word. Likewise, an expression’s display text could not preserve component order, and sentence grammar was at risk of becoming a transient AI label. **Why the common answer was insufficient.** Dictionary interfaces often flatten senses into prose; grammar apps store rules in a separate course tree; many language models re-identify grammar from scratch on every request. **Alternatives considered.** Keep definitions as blobs, make every sense a heavy standalone page, store expression components in JSON, or let AI dynamically name grammar. **The choice.** Lexical senses, multi-word objects with ordered components, and grammar concepts all became canonical objects. Senses render inside their owner word so the lemma remains the anchor. **Why.** The graph needs precise identity; the learner needs calm context. **What this enabled.** Sense-aligned examples, grammar pages with prerequisites and contrasts, reliable expression matching, and future review of a particular meaning or construction.
+
+### 5 — From a tiny wordbank to reproducible source-backed coverage
+
+**The original problem.** “Add all A1 words” exposed a critical distinction: a larger list is not a production foundation. Function words, prepositions, forms, frequency, definitions, and coverage gaps all mattered as much as familiar nouns and verbs. **Why the common answer was insufficient.** Hand-curated demo lists and LLM-generated vocabulary are fast but cannot prove what they cover, reproduce an import, or scale credibly to B2 and beyond. **Alternatives considered.** Hard-code a target count, merge data directly into the app, or let AI fill canonical gaps. They would have made the product appear complete while hiding its weakest data. **The choice.** Import pinned, attributable releases through a source-independent pipeline: FLELex/Beacco for CEFR and frequency, Lexique and Morphalou for morphology, Kaikki/Wiktionary material for senses and examples, and curated sources for grammar. **Why.** Coverage must be measured against a source release, not claimed from a demo. **What this enabled.** A1–C2 release builds, honest exclusion reports, repeatable audits, and an architecture capable of adding later datasets without redesign.
+
+### 6 — From conjugation tables to graph-native morphology
+
+**The original problem.** Early conjugation showed only scattered present forms and participles, often in database order. Even a regular A1 verb such as *manger* could display a teaching shell with no usable forms; clicking a form did not always open its own page. **Why the common answer was insufficient.** Static conjugation tables duplicate strings, hide a form’s identity, and require UI changes every time a new tense is added. Giant tense dropdowns also treat learning progression as a database filter. **Alternatives considered.** Hard-code paradigms for popular verbs, generate forms from rules without evidence, or keep one raw table ordered by grammatical metadata. **The choice.** Inflected forms are Language Objects linked to lemmas and evidence-backed paradigms; the UI uses learning groups, canonical pronoun order (`je`, `tu`, `il / elle / on`, …), and verb-group teaching metadata. **Why.** A conjugation should be both a learning path and a graph traversal surface. **What this enabled.** Clickable forms, source-backed simple morphology at scale, future tense data as imports rather than UI work, and sentence resolution through forms.
+
+### 7 — From “IPA everywhere” to honest pronunciation representations
+
+**The original problem.** A form may not sound like its lemma, while the browser could pronounce a word even when Liens had no verified IPA. Calling every available phonetic value IPA would have misled the learner. **Why the common answer was insufficient.** Many apps have one opaque pronunciation field or treat cloud/browser speech as proof of a canonical pronunciation. That erases source differences and regional variants. **Alternatives considered.** Reuse lemma IPA for forms, convert Lexique codes invisibly, store only audio, or rely solely on browser TTS. **The choice.** Each object owns a source-independent Pronunciation Object with parallel Kaikki IPA, Lexique phonological code/syllables, audio metadata, and visibly derived Lexique IPA when appropriate. Browser synthesis is a separate playback fallback. **Why.** Useful delivery and verified linguistic evidence are different concerns. **What this enabled.** Honest coverage, pronunciation variants, future cached recordings/local TTS, and better source upgrades without breaking a learner’s page.
+
+### 8 — From sentence lookup to the Sentence Intelligence gateway
+
+**The original problem.** Learners do not only search headwords; they paste “Je vais au cinéma ce soir.” The first local sentence view could tokenize text and label newly seen tokens, but it lacked translation and teacher-like explanation. **Why the common answer was insufficient.** Exact sentence search only helps with preloaded examples. A parser-only screen exposes technical analysis; a chatbot-only answer can be fluent yet disconnect from existing words and grammar. **Alternatives considered.** Treat every input as a word search, send all text to AI, or build a fully general parser before the graph was ready. **The choice.** Sentence Intelligence performs deterministic local resolution first: normalize, find lemmas/forms/expressions/contractions, identify supported canonical grammar, and render graph links. Contextual teaching can then use the result. **Why.** The sentence is a gateway into durable knowledge, not an answer that disappears. **What this enabled.** Traceable sentence pages, increasingly rich local coverage, and AI explanations constrained by known matches rather than invented grammar truth.
+
+### 9 — From an awkward word page to anchored meaning exploration
+
+**The original problem.** Opening a sense as a new generic page produced titles such as “prendre · to get; to buy.” It visually suggested that the learner had left *prendre*, wasted the strongest anchor, and made meaning navigation feel like browsing a database. **Why the common answer was insufficient.** Heavy tabs hide content behind another navigation model; a long list of fully expanded senses overwhelms; separate pages fragment reading flow. **Alternatives considered.** A sense route with a giant heading, tabs, or one enormous definitions panel. **The choice.** The lemma stays large and stable. A compact Meanings section expands one sense in place, shows the most common senses first, and reveals examples, collocations, and notes progressively. **Why.** The learner is exploring one word with several lives, not opening unrelated entries. **What this enabled.** Direct sense identity still works for links and saves while the UI remains premium, calm, mobile-friendly, and ready for richer sense-level resources.
+
+### 10 — From browser back buttons to native exploration
+
+**The original problem.** The app accumulated page-level Back controls; opening a vocabulary entry could inherit scroll position, and going Back made it impossible to return Forward without losing context. This made graph exploration feel unreliable. **Why the common answer was insufficient.** Browser history is infinite and exposes implementation mechanics; page-specific buttons duplicate the same action; naive rerendering loses selected sense, filters, and scroll. **Alternatives considered.** Keep a Back button on every page, let the browser own all history, or reset every destination. **The choice.** Liens uses one branch-based, Apple-like Back/Forward path in the persistent header. It restores view state, clears Forward when a new branch begins, and lets Home/Logo reset the session. **Why.** Learners should navigate language, not think about history stacks. **What this enabled.** Deeper graph journeys, preserved Vocabulary Library context, consistent mobile behavior, and a design language closer to Finder or Apple Music than a web browser.
+
+### 11 — From “Vocabulary Notebook” ambiguity to two learning surfaces
+
+**The original problem.** “Vocabulary Notebook” initially became a useful saved-items view, but that was not the same need as browsing the complete local vocabulary. Learners needed both discovery by CEFR and a personal memory trail. **Why the common answer was insufficient.** Dictionary indexes are not learner paths; flashcard apps usually treat global catalog and saved cards as the same thing. **Alternatives considered.** One giant scrolling word list, a second copied dictionary database, or a generic saved-item store that discarded object type. **The choice.** The Vocabulary Library queries the canonical graph by CEFR, part of speech, and frequency with pagination; the Notebook holds typed learner-owned pointers, collections, and review events. **Why.** Shared knowledge and personal learning have different ownership and different jobs. **What this enabled.** Frequency-first discovery from A1–C2, calm card/list revisiting, type-aware saves, and future graph-based review without duplicating canonical content.
+
+### 12 — From optional AI button to a complete Learning Layer
+
+**The original problem.** A mature graph still leaves empty teaching slots—especially explanations, Chinese reference help, usage notes, and unknown words. Requiring the learner to request every missing resource made the product feel incomplete; generating everything immediately wasted tokens and overloaded pages. **Why the common answer was insufficient.** Chat bubbles make AI a separate destination, repeat context, and encourage unbounded output. Pure local coverage leaves silent empty pages. **Alternatives considered.** No AI, one generic `generate(prompt)` API, an always-on chatbot, or AI directly enriching canonical facts. **The choice.** Liens requests typed learning resources in context. Known pages generate compact help progressively; unknown lookups receive one bounded provisional note first; resources are language-aware, clearly labelled, and cached. **Why.** The graph guarantees correctness while the Learning Layer strives for completeness without pretending drafts are facts. **What this enabled.** In-place sentence explanations, English plus optional Chinese resources, controlled costs, improved prompts without UI redesign, and a path to teacher/human authored resources.
+
+### 13 — From localStorage drafts to a durable AI Learning Database
+
+**The original problem.** Early generated content survived only in browser cache behavior that was too weak for revisions, provenance, search, or source replacement. Gemini could also be busy, making repeated requests both costly and unreliable. **Why the common answer was insufficient.** LocalStorage is not a learning-content store; a provider response with no lifecycle is neither reusable nor auditable. **Alternatives considered.** Save AI output into canonical SQLite, regenerate on every visit, or keep opaque blobs on individual word pages. **The choice.** A dedicated IndexedDB AI Learning Database stores target/kind/context/language identity, revisions, provider/model/prompt version, timestamps, lifecycle, and recent unknown lookups. Resolution is canonical → active AI resource → online generation; later canonical content supersedes, but does not erase, drafts. **Why.** Reuse must be permanent enough to help the learner and isolated enough to preserve the graph. **What this enabled.** Lower API cost, offline reuse of prior help, bounded prebuilt learning packs, future regeneration/history, provider comparison, and an editorial promotion workflow.
+
+### 14 — From a hackathon repository to a product that can survive handover
+
+**The original problem.** The prototype’s data artifacts grew into gigabytes, while major decisions lived partly in conversation and partly in code. That was not sustainable for A2–C2, collaboration, or a future production release. **Why the common answer was insufficient.** Keeping generated SQLite/browser assets in ordinary Git inflates history; README-only knowledge loses the reasons behind boundaries. **Alternatives considered.** Git LFS as the default source of truth, a monolithic manual, or relying on commits and chat history. **The choice.** Architecture Freeze v1.0 established generated-artifact boundaries: version control keeps schemas, manifests, importers, audits, curated inputs, and build configuration; releases are reproducible external artifacts. This book captures the product reasoning, while concise living contracts retain precision. **Why.** A future engineer needs both the recipe and the judgment behind it. **What this enabled.** Scalable releases, clean repository hygiene, future native clients, reliable source updates, and a shared intellectual foundation for Liens beyond the original build.
+
+---
+
 ## Design Rationale — the stories behind the system
 
 These are not implementation rules. They record the learner problems that made Liens choose its shape.
@@ -115,7 +177,7 @@ These are not implementation rules. They record the learner problems that made L
 
 ---
 
-## 4. The system at a glance
+## 5. The system at a glance
 
 ```mermaid
 flowchart TB
@@ -148,7 +210,7 @@ flowchart TB
 
 ---
 
-## 5. The language model
+## 6. The language model
 
 ```mermaid
 erDiagram
@@ -173,7 +235,7 @@ erDiagram
 
 ---
 
-## 6. When a learner searches
+## 7. When a learner searches
 
 ```mermaid
 flowchart LR
@@ -194,7 +256,7 @@ Sentence Intelligence is intentionally modest and deterministic. It identifies h
 
 ---
 
-## 7. AI: complete learning without fake certainty
+## 8. AI: complete learning without fake certainty
 
 The resolver order is:
 
@@ -219,7 +281,7 @@ To add OpenAI, Claude, OpenRouter, or a local model: implement the same typed pr
 
 ---
 
-## 8. How the graph is built and released
+## 9. How the graph is built and released
 
 The repository tracks **source manifests, schemas, migrations, importers, audits, and build scripts**. SQLite and browser indexes are generated release outputs whenever practical—not hand-maintained truth.
 
@@ -243,7 +305,7 @@ Every import is pinned by source release and records provenance. Validation chec
 
 ---
 
-## 9. The learner’s surfaces
+## 10. The learner’s surfaces
 
 | Surface | Purpose | Design intent |
 | --- | --- | --- |
@@ -260,7 +322,7 @@ Navigation follows a focused native-app model: a single Back/Forward path preser
 
 ---
 
-## 10. The next chapters
+## 11. The next chapters
 
 **Strong today:** local A1–C2 graph browsing, forms and conjugation, source/derived pronunciation representations, sentence gateway, AI learning drafts, Vocabulary Library, notebook/collections, and lightweight review.
 
