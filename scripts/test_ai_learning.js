@@ -9,6 +9,7 @@ const packPaths = [
   'data/learning-packs/core-a1-v1.json',
   'data/learning-packs/core-everyday-function-words-v1.json',
   'data/learning-packs/core-everyday-words-v1.json',
+  'data/learning-packs/demo-sentence-je-vais-manger-v1.json',
 ];
 const packResourceKeys = new Set();
 for (const packPath of packPaths) {
@@ -18,11 +19,11 @@ for (const packPath of packPaths) {
   assert.ok(Array.isArray(pack.resources) && pack.resources.length, `${packPath} has resources`);
   for (const resource of pack.resources) {
     assert.equal(typeof resource.id, 'string', `${packPath} resource has an ID`);
-    assert.equal(typeof resource.targetId, 'string', `${packPath} resource has an exact target ID`);
+    assert.ok(typeof resource.targetId === 'string' || (resource.kind === 'sentence_guide' && typeof resource.query === 'string'), `${packPath} resource has a canonical target or exact sentence context`);
     assert.equal(typeof resource.kind, 'string', `${packPath} resource has a kind`);
     assert.ok(['en', 'zh-Hans'].includes(resource.language), `${packPath} resource uses a supported teaching language`);
     assert.ok(resource.title && resource.body && resource.body.length <= 1800, `${packPath} resource has bounded learner content`);
-    const identity = `${resource.targetId}|${resource.kind}|${resource.language}|${JSON.stringify(resource.context || {})}`;
+    const identity = `${resource.targetId || resource.query}|${resource.kind}|${resource.language}|${JSON.stringify(resource.context || {})}`;
     assert.equal(packResourceKeys.has(identity), false, `${packPath} does not duplicate a resource identity`);
     packResourceKeys.add(identity);
   }
@@ -155,6 +156,31 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   const prebuiltCached = await assist.ensure(prebuiltRequest);
   assert.equal(prebuiltCached.status, 'cached', 'a prebuilt learning resource prevents an unnecessary provider call');
   assert.equal(calls, 1, 'the provider is not called for a matching prebuilt resource');
+  const sentenceRequest = {
+    kind: 'sentence_guide',
+    language: 'en',
+    title: 'Understanding Je vais manger.',
+    query: 'Je vais manger.',
+    context: { sentence: 'Je vais manger.' },
+  };
+  const sentenceImported = await assist.importPrebuiltPack({
+    schemaVersion: 1,
+    id: 'test-sentence-pack',
+    resources: [{
+      id: 'je-vais-manger-en',
+      kind: 'sentence_guide',
+      language: 'en',
+      query: 'Je vais manger.',
+      context: { sentence: 'Je vais manger.' },
+      title: 'Understanding Je vais manger.',
+      body: 'This is the futur proche.',
+      translation: 'I am going to eat.',
+    }],
+  });
+  assert.equal(sentenceImported, 1, 'a prebuilt sentence guide imports without inventing a canonical sentence target');
+  assert.equal(assist.get(sentenceRequest).translation, 'I am going to eat.', 'the sentence guide supplies its cached translation');
+  assert.equal((await assist.ensure(sentenceRequest)).status, 'cached', 'a prebuilt sentence guide prevents an unnecessary provider call');
+  assert.equal(calls, 1, 'the provider is not called for the cached sentence guide');
   const duplicatePack = await assist.importPrebuiltPack({
     schemaVersion: 1,
     id: 'test-core-pack-v2',

@@ -13,6 +13,7 @@
     'data/learning-packs/core-a1-v1.json',
     'data/learning-packs/core-everyday-function-words-v1.json',
     'data/learning-packs/core-everyday-words-v1.json',
+    'data/learning-packs/demo-sentence-je-vais-manger-v1.json',
   ]);
   const inFlight = new Map();
   const generationQueue = [];
@@ -121,7 +122,9 @@
     if (!pack || pack.schemaVersion !== 1 || typeof pack.id !== 'string' || !Array.isArray(pack.resources)) return 0;
     let imported = 0;
     for (const resource of pack.resources) {
-      if (!resource || typeof resource.id !== 'string' || typeof resource.targetId !== 'string'
+      const hasCanonicalTarget = typeof resource?.targetId === 'string';
+      const isSentenceGuide = resource?.kind === 'sentence_guide' && typeof resource?.query === 'string';
+      if (!resource || typeof resource.id !== 'string' || (!hasCanonicalTarget && !isSentenceGuide)
         || !SUPPORTED_KINDS.has(resource.kind) || typeof resource.title !== 'string' || typeof resource.body !== 'string') continue;
       const request = packRequest(resource);
       const resourceKey = keyFor(request);
@@ -135,7 +138,7 @@
         revisionNumber: 1,
         kind: resource.kind,
         language: request.language,
-        targetId: resource.targetId,
+        targetId: resource.targetId || null,
         query: plainText(resource.query) || null,
         queryNormalized: normaliseLookup(resource.query),
         title: plainText(resource.title).slice(0, 120),
@@ -150,7 +153,7 @@
         prompt_version: plainText(resource.prompt_version || pack.prompt_version || '').slice(0, 120) || null,
         packId: pack.id,
         generationContext: {
-          targetId: resource.targetId,
+          targetId: resource.targetId || null,
           resourceKind: resource.kind,
           language: request.language,
           contextVersion: request.context?.resourceVersion || null,

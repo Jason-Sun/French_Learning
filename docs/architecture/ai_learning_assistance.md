@@ -93,11 +93,13 @@ supersession rules as an online draft. It is not part of SQLite or the browser
 graph package.
 
 Each packed record declares its pack ID, AI provider/model, prompt version, and
-creation time, and is labelled as an AI-generated learning draft in the UI. An
-existing active learner resource is never overwritten by a shipped default. This
-allows common material to work without an online provider while preserving the
-strict order: canonical coverage first, then a local learning resource, then an
-online call only when no resource exists.
+creation time, and is labelled as an AI-generated learning draft in the UI. A
+record normally targets a canonical object; a `sentence_guide` may instead be
+identified by its exact sentence context, without inventing a canonical
+Sentence Object. An existing active learner resource is never overwritten by a
+shipped default. This allows common material to work without an online provider
+while preserving the strict order: canonical coverage first, then a local
+learning resource, then an online call only when no resource exists.
 
 Browser drafts are keyed by target/sentence context, resource kind, language, and resource-contract version where a stricter analysis contract supersedes earlier output. The active draft is the newest local revision; earlier generated revisions remain in the AI Learning Database rather than being destructively replaced. Unknown lookup recents are separately indexed by normalized query with display text and most-recent-opened time. They are learner-local search history, not Language Objects or graph search entries. The former local-storage draft keys are migrated once into IndexedDB when available.
 

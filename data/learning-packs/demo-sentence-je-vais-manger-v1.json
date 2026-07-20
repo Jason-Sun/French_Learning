@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "liens-demo-sentence-je-vais-manger-v1",
+  "title": "Liens sentence-learning demonstration",
+  "createdAt": "2026-07-20T00:00:00.000Z",
+  "provider": "Liens prebuilt learning pack",
+  "model": "curated demonstration resource",
+  "prompt_version": "liens-demo-sentence-v1",
+  "resources": [
+    {
+      "id": "je-vais-manger-en",
+      "kind": "sentence_guide",
+      "language": "en",
+      "query": "Je vais manger.",
+      "context": {
+        "sentence": "Je vais manger."
+      },
+      "title": "Understanding Je vais manger.",
+      "translation": "I am going to eat.",
+      "body": "Je vais manger uses the futur proche (near future). Vais is the first-person singular present form of aller, followed by the infinitive manger. French uses this pattern—aller + infinitive—for an action the speaker intends or expects soon. Only aller is conjugated; manger stays in the infinitive.",
+      "createdAt": "2026-07-20T00:00:00.000Z"
+    },
+    {
+      "id": "je-vais-manger-zh-hans",
+      "kind": "sentence_guide",
+      "language": "zh-Hans",
+      "query": "Je vais manger.",
+      "context": {
+        "sentence": "Je vais manger."
+      },
+      "title": "理解 Je vais manger.",
+      "translation": "我要去吃／我将要吃。",
+      "body": "这句话使用最近将来时（futur proche）。vais 是 aller 的第一人称单数现在时，后面接不定式 manger。法语用 aller + 不定式表达说话人打算很快做、或预计即将发生的动作。只有 aller 变位，manger 保持不定式。",
+      "createdAt": "2026-07-20T00:00:00.000Z"
+    }
+  ]
+}
