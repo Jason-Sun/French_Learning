@@ -11,4 +11,5 @@ releases/
 /data/wordbank/*.sqlite3
 /data/wordbank/*.db
 /data/wordbank/browser/
+/data/wordbank/wordbank-index.json
 /data/wordbank/import-reports/
