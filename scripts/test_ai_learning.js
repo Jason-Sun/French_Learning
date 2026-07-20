@@ -181,6 +181,12 @@ vm.runInContext(fs.readFileSync('ai-learning.js', 'utf8'), context);
   assert.equal(assist.get(sentenceRequest).translation, 'I am going to eat.', 'the sentence guide supplies its cached translation');
   assert.equal((await assist.ensure(sentenceRequest)).status, 'cached', 'a prebuilt sentence guide prevents an unnecessary provider call');
   assert.equal(calls, 1, 'the provider is not called for the cached sentence guide');
+  const unpunctuatedSentenceRequest = {
+    ...sentenceRequest,
+    query: 'Je vais manger',
+    context: { sentence: 'Je vais manger' },
+  };
+  assert.equal(assist.get(unpunctuatedSentenceRequest).translation, 'I am going to eat.', 'sentence guidance ignores cosmetic terminal punctuation');
   const duplicatePack = await assist.importPrebuiltPack({
     schemaVersion: 1,
     id: 'test-core-pack-v2',

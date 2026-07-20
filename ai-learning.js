@@ -30,6 +30,9 @@
   const plainText = value => String(value || '').replace(/\s+/g, ' ').trim();
   const normaliseLookup = value => plainText(value)
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr');
+  // Sentence teaching resources belong to the learner's sentence, not to a
+  // cosmetic final period or question mark typed into the search field.
+  const normaliseSentenceKey = value => normaliseLookup(value).replace(/[.!?…]+$/u, '').trim();
   const store = () => globalThis.LiensAILearningStore || null;
   const providerMethodFor = request => {
     if (request.kind === 'usage_note') return 'generateUsageNote';
@@ -41,13 +44,15 @@
   };
 
   const keyFor = request => [
-    request.target?.id || `lookup:${normaliseLookup(request.query)}`,
+    request.target?.id || (request.kind === 'sentence_guide'
+      ? `sentence:${normaliseSentenceKey(request.context?.sentence || request.query)}`
+      : `lookup:${normaliseLookup(request.query)}`),
     request.kind,
     request.kind === 'sentence_guide' ? 'translation-v3-deterministic-analysis' : '',
     request.language || 'en',
     request.context?.resourceVersion || '',
     request.context?.senseId || '',
-    request.context?.sentence || '',
+    request.kind === 'sentence_guide' ? normaliseSentenceKey(request.context?.sentence) : '',
   ].join('|');
 
   const normaliseDraft = draft => ({
