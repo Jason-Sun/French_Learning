@@ -2,21 +2,27 @@
 
 This directory is the durable source of truth for Liens. It records the product intent, architectural contracts, decisions, delivery plan, and current implementation state so that future contributors do not need chat history or commit archaeology to work safely.
 
+## Complete handover manual
+
+[Architecture & Product Manual](MANUAL.md) is the comprehensive five-year handover reference. It explains product philosophy, layers, data ownership, database contracts, import/release operations, AI integration, feature ownership, design history, and roadmap. Start there when inheriting the system, then use the normative documents below when making changes.
+
 ## Start here
 
-1. Read [LIENS_BIBLE.md](LIENS_BIBLE.md) to understand Liens' enduring product identity.
-2. Read [PRODUCT_BIBLE.md](PRODUCT_BIBLE.md) to understand the active learning and experience contract.
-3. Read [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md) before planning a future-facing system or changing a layer boundary.
-4. Read [ARCHITECTURE_BIBLE.md](ARCHITECTURE_BIBLE.md) before designing or changing a technical system.
-5. Read [CURRENT_STATE.md](CURRENT_STATE.md) before beginning work in the repository.
-6. Read [ROADMAP.md](ROADMAP.md) to place a proposed milestone in the larger product.
-7. Read [DECISION_LOG.md](DECISION_LOG.md) before revisiting an established architectural choice.
-8. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) for the required development protocol.
+1. Read the [Architecture & Product Manual](MANUAL.md) for the complete system handover.
+2. Read [LIENS_BIBLE.md](LIENS_BIBLE.md) to understand Liens' enduring product identity.
+3. Read [PRODUCT_BIBLE.md](PRODUCT_BIBLE.md) to understand the active learning and experience contract.
+4. Read [ARCHITECTURE_FREEZE_V1.md](ARCHITECTURE_FREEZE_V1.md) before planning a future-facing system or changing a layer boundary.
+5. Read [ARCHITECTURE_BIBLE.md](ARCHITECTURE_BIBLE.md) before designing or changing a technical system.
+6. Read [CURRENT_STATE.md](CURRENT_STATE.md) before beginning work in the repository.
+7. Read [ROADMAP.md](ROADMAP.md) to place a proposed milestone in the larger product.
+8. Read [DECISION_LOG.md](DECISION_LOG.md) before revisiting an established architectural choice.
+9. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [AI Development Protocol](AI_DEVELOPMENT_PROTOCOL.md) for the required development protocol.
 
 ## Documents and update rules
 
 | Document | Purpose | Update when |
 | --- | --- | --- |
+| [Architecture & Product Manual](MANUAL.md) | Complete long-term handover guide, with chapters under `manual/`. | Any chapter's system, product, operational, or feature explanation becomes inaccurate. |
 | [Liens Bible](LIENS_BIBLE.md) | Highest-level product constitution and long-lived identity. | Liens' enduring product philosophy changes. |
 | [Architecture Freeze v1.0](ARCHITECTURE_FREEZE_V1.md) | Long-term product-system boundaries, data-build/release model, and mandatory engineering gates. | A documented architectural decision changes a frozen boundary. |
 | [Architecture Bible](ARCHITECTURE_BIBLE.md) | Constitutional technical principles and system boundaries. | A durable architecture, ownership rule, or cross-system contract changes. |

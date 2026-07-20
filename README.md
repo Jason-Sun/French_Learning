@@ -51,7 +51,7 @@ IPA and audio references live in the Language Object graph. The playback layer i
 
 ## Project documentation
 
-The long-term product and engineering source of truth lives in [docs/](docs/README.md). Start with the Product Bible and Architecture Bible before proposing a feature; use Current State for the verified implementation snapshot and the Decision Log for established architectural choices.
+The long-term product and engineering source of truth lives in [docs/](docs/README.md). Start with the [Architecture & Product Manual](docs/MANUAL.md) for complete handover, then use the constitutional documents, Current State, and Decision Log for authoritative change control.
 
 ## Current status
 
