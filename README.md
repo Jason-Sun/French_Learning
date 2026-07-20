@@ -1,6 +1,6 @@
 # Liens — French learning in context
 
-Liens is a French-learning web app I built for the way I actually want to learn: by following connections between words, forms, grammar, examples, and sentences instead of treating each as a separate lookup.
+Liens is a French-learning app I built because I wanted a better way to learn French myself.: by following connections between words, forms, grammar, examples, and sentences instead of treating each as a separate lookup.
 
 ## Project overview
 
