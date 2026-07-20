@@ -177,6 +177,8 @@ These are not implementation rules. They record the learner problems that made L
 
 ---
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ## 5. The system at a glance
 
 ```mermaid
@@ -268,6 +270,8 @@ This is Liens’ operational blueprint. The diagrams describe the intended durab
 - **Local analysis precedes online help.** The graph is useful without Gemini; AI fills a teaching gap rather than becoming the route to meaning.
 - **The learner stays in context.** A flow resolves into the existing word, form, grammar, or sentence surface rather than an external chatbot or duplicate page.
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ### 8.1 Word Search Flow
 
 ```mermaid
@@ -294,6 +298,8 @@ flowchart TD
 
 **USP.** Search is forgiving and immediate without corrupting canonical spelling or trust. The same query becomes cheaper and more useful over time because learning drafts are reusable. **Next evolution:** a server/desktop graph adapter can replace the static browser lookup without changing this resolver contract; reviewed source imports supersede a matching provisional draft automatically.
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ### 8.2 Sentence Analysis Flow
 
 ```mermaid
@@ -319,6 +325,8 @@ flowchart TD
 
 **USP.** Every accurate local match is clickable, explorable, and reusable across learners; explanation quality improves as graph coverage expands rather than being recreated from zero. **Implemented now:** deterministic forms, selected contractions, expressions, and limited grammar matching. **Next evolution:** broader parser adapters may add candidates and confidence, but their output remains non-canonical until a reviewed import creates graph knowledge.
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ### 8.3 Pronunciation Flow
 
 ```mermaid
@@ -342,6 +350,8 @@ flowchart TD
 **Why this shape.** The product exposed an important confusion: browser speech could pronounce a word while the page correctly said no verified IPA. Many apps erase that distinction, or copy the lemma pronunciation to every conjugated form. We rejected one opaque pronunciation string, source conversion without labels, cloud-only audio, and lemma fallback. Liens separates linguistic representation from how sound is delivered.
 
 **USP.** Learners get immediate speech while understanding what Liens actually knows. **Implemented now:** Kaikki IPA/variants/audio metadata, Lexique representations and derived fallback, browser synthesis; remote audio playback is intentionally not enabled. **Next evolution:** verified local recordings and local TTS can join the same chain without changing page data or controls.
+
+<div style="break-before: page; page-break-before: always;"></div>
 
 ### 8.4 AI Learning Flow
 
@@ -370,6 +380,8 @@ flowchart TD
 
 **USP.** AI feels like native Liens content rather than a robot conversation, while the provenance is never hidden. **Implemented now:** Gemini adapter, prompt-version storage, IndexedDB cache/revisions, contextual actions, bounded unknown lookup, and multilingual resource identity. **Next evolution:** a provider registry, secure proxy, explicit generation-run metadata, evaluation, review queue, and user-controlled regeneration policies.
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ### 8.5 Vocabulary and Personal Learning Flow
 
 ```mermaid
@@ -392,6 +404,8 @@ flowchart TD
 **Why this shape.** During development, “Vocabulary Notebook” initially became a saved-items surface, while the real need for browsing all A1–C2 words remained unmet. Traditional apps commonly collapse global catalog, saved word, and flashcard into one object. We rejected a duplicate dictionary, a generic string bookmark, and a notebook that flattens sense/form/sentence distinctions. Liens separates the public language graph from the learner’s relationship with it.
 
 **USP.** Discovery and ownership coexist: a learner can browse the shared language path, then preserve exactly the meaning or form that matters. **Implemented now:** CEFR Library, typed saves, collections, notebook list/card navigation, and review events in personal IndexedDB. **Next evolution:** sync can replicate personal records by canonical UUID without copying the canonical graph.
+
+<div style="break-before: page; page-break-before: always;"></div>
 
 ### 8.6 Review Flow
 
@@ -416,6 +430,8 @@ flowchart TD
 
 **USP.** Review can become understanding-oriented rather than recall-only. **Implemented now:** lightweight Today’s Review and retained review events, with no claimed spaced-repetition scheduler. **Next evolution:** the `Again / Good / Easy` event flow, due-state projection, and relationship-aware candidate policies are designed targets, not yet a shipped scheduling promise.
 
+<div style="break-before: page; page-break-before: always;"></div>
+
 ### 8.7 Import and Release Flow
 
 ```mermaid
@@ -437,6 +453,8 @@ flowchart TD
 **Why this shape.** The prototype’s tracked SQLite and browser packages grew to gigabytes, while hand-editable artifacts obscured reproducibility. Git LFS would store the same generated truth in a different place without solving source replacement or release discipline. We rejected browser JSON as canonical data, unpinned downloads, and AI-generated canonical gap filling.
 
 **USP.** Liens can grow from A1 to future languages without sacrificing provenance or repository health. **Implemented now:** pinned-source build scripts, audits, external artifact strategy, and sharded static package. **Next evolution:** automated source acquisition, attribution/license checks, signed release publishing, and incremental client updates.
+
+<div style="break-before: page; page-break-before: always;"></div>
 
 ### 8.8 Native Navigation Flow
 
